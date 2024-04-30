@@ -1,0 +1,399 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Windows系统安全 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述Windows操作系统的安全策略及安全防护建议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Windows系统安全">
+<meta property="og:url" content="https://www.nicopilot.online/posts/winsec2.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述Windows操作系统的安全策略及安全防护建议">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/2_cover.png">
+<meta property="article:published_time" content="2024-04-30T08:05:07.000Z">
+<meta property="article:modified_time" content="2024-04-30T08:05:12.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="Windows系统安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/2_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/winsec2.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Windows系统安全',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-30 16:05:12'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Windows系统安全</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-30T08:05:07.000Z" title="发表于 2024-04-30 16:05:07">2024-04-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-30T08:05:12.000Z" title="更新于 2024-04-30 16:05:12">2024-04-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Windows系统安全"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Window系统安全"><a href="#Window系统安全" class="headerlink" title="Window系统安全"></a>Window系统安全</h1><h2 id="安全基线概述"><a href="#安全基线概述" class="headerlink" title="安全基线概述"></a>安全基线概述</h2><h3 id="操作系统安全基线"><a href="#操作系统安全基线" class="headerlink" title="操作系统安全基线"></a>操作系统安全基线</h3><p><strong>安全基线</strong></p>
+<ul>
+<li>服务器安全基线是为了满足安全规范要求，服务器必须要达到的安全（最低）标准</li>
+</ul>
+<p><strong>主要有以下作用</strong></p>
+<ul>
+<li>设置口令复杂度策略，防止暴力破解密码</li>
+<li>控制用户或文件权限，减少被攻击后的影响</li>
+<li>最小化安装操作系统，防止不必要的服务带来的安全问题</li>
+</ul>
+<p><strong>基线范围</strong></p>
+<ul>
+<li>安全基线在银行、证券、运营商、互联网行业等信息安全领域的应用范围非常广泛</li>
+</ul>
+<p><strong>通常包含以下：</strong></p>
+<ul>
+<li>操作系统</li>
+<li>网络设备</li>
+<li>数据库</li>
+</ul>
+<h3 id="Windows系统安全配置"><a href="#Windows系统安全配置" class="headerlink" title="Windows系统安全配置"></a>Windows系统安全配置</h3><p><strong>安全配置</strong></p>
+<ul>
+<li>用户管理</li>
+<li>密码策略管理</li>
+<li>共享管理</li>
+<li>文件权限管理</li>
+<li>用户权限管理</li>
+<li>日志审核管理</li>
+<li>远程管理</li>
+<li>其他安全选项</li>
+</ul>
+<h2 id="系统账户安全"><a href="#系统账户安全" class="headerlink" title="系统账户安全"></a>系统账户安全</h2><h3 id="本地安全策略"><a href="#本地安全策略" class="headerlink" title="本地安全策略"></a>本地安全策略</h3><p><strong>指的是为保护本计算机资源而配置的规则</strong></p>
+<ul>
+<li>账户策略：密码策略和账户锁定策略</li>
+<li>本地策略：审核策略、用户权限分配、安全选项</li>
+</ul>
+<h3 id="本地安全策略工具"><a href="#本地安全策略工具" class="headerlink" title="本地安全策略工具"></a>本地安全策略工具</h3><p><strong>开始  &#x3D;&gt;  管理工具  &#x3D;&gt;  本地安全策略</strong></p>
+<p><img src="/../img/img_artical/2.2.1.png" alt="2.2.1"></p>
+<h3 id="账户策略"><a href="#账户策略" class="headerlink" title="账户策略"></a>账户策略</h3><p><strong>账户策略：控制用户账户如何与计算机交互</strong></p>
+<ul>
+<li>密码策略：确定密码的设置，如密码复杂度和密码长度等</li>
+<li>账户锁定策略：确定账户锁定的条件和时间</li>
+</ul>
+<h3 id="密码策略"><a href="#密码策略" class="headerlink" title="密码策略"></a>密码策略</h3><p><strong>密码必须符合复杂性要求</strong></p>
+<ul>
+<li>不能包含用户的账户名</li>
+<li>包含以下四类字符中的三类字符：大写字母（A到Z），小写字母（a到z），数字（0到9），非字母字符（例如!  $  #  %等）</li>
+</ul>
+<p><strong>密码最小值</strong></p>
+<ul>
+<li>取值范围0-14，0表示无限长度</li>
+</ul>
+<p><strong>密码最长使用期限</strong></p>
+<ul>
+<li>默认42天，取值范围0-999，0表示永不过期</li>
+</ul>
+<p><strong>密码最短使用期限</strong></p>
+<ul>
+<li>取值范围0-998，默认0表示无限制，随时可更改密码</li>
+</ul>
+<p><strong>强制密码历史</strong></p>
+<ul>
+<li>默认0表示历史曾经使用过的密码可以随便使用，取值范围0-24</li>
+</ul>
+<p><strong>测试密码破解的网址：<a target="_blank" rel="noopener" href="https://www.security.org/how-secure-is-my-password/"><strong>https://www.security.org/how-secure-is-my-password/</strong></a></strong></p>
+<h3 id="账户锁定策略"><a href="#账户锁定策略" class="headerlink" title="账户锁定策略"></a>账户锁定策略</h3><p><strong>配置账户锁定策略，防止暴力破解攻击</strong></p>
+<p><strong>账户锁定时间</strong></p>
+<ul>
+<li>在自动解锁之前保持锁定的分钟数，取值范围0-99999,0表示永不自动解锁，只能由管理员手动解锁</li>
+</ul>
+<p><strong>账户锁定阈值</strong></p>
+<ul>
+<li>登录尝试失败的次数，取值范围0-999，默认0表示不锁定账户</li>
+</ul>
+<p><strong>重置账户锁定计数器</strong></p>
+<ul>
+<li>多长时间内累加失败次数</li>
+</ul>
+<h2 id="系统审核"><a href="#系统审核" class="headerlink" title="系统审核"></a>系统审核</h2><h3 id="审核策略"><a href="#审核策略" class="headerlink" title="审核策略"></a>审核策略</h3><p><strong>本地策略适用于计算机，包含以下策略：</strong></p>
+<ul>
+<li>审核策略：设置计算机上的安全日志中的日志记录</li>
+<li>用户权限分配：设置用户和组的权限</li>
+<li>安全选项：为计算机指定安全设置</li>
+</ul>
+<p><strong>配置以安全日志的方式记录安全相关事件</strong></p>
+<ul>
+<li>审核策略更改，记录对策略的修改事件</li>
+<li>审核登录事件，记录用户登录成功或失败事件</li>
+<li>审核账户管理，记录用户添加&#x2F;删除&#x2F;重命名&#x2F;禁用&#x2F;启用等事件</li>
+</ul>
+<h2 id="用户权限配置"><a href="#用户权限配置" class="headerlink" title="用户权限配置"></a>用户权限配置</h2><h3 id="用户权限分配"><a href="#用户权限分配" class="headerlink" title="用户权限分配"></a>用户权限分配</h3><p><strong>设置用户和组的权限</strong></p>
+<ul>
+<li>允许通过远程桌面服务登录</li>
+<li>允许本地登录</li>
+<li>拒绝本地登录</li>
+<li>更改系统时间</li>
+<li>备份文件和目录</li>
+</ul>
+<h2 id="安全选项配置"><a href="#安全选项配置" class="headerlink" title="安全选项配置"></a>安全选项配置</h2><h3 id="安全选项策略"><a href="#安全选项策略" class="headerlink" title="安全选项策略"></a>安全选项策略</h3><p><strong>本地策略  &#x3D;&gt;  安全选项</strong></p>
+<ul>
+<li>交互式登录：无需按Ctrl+Alt+Del，默认禁用</li>
+<li>交互式登录：提示用户在密码过期之前更改密码，默认5天</li>
+<li>交互式登录：不显示最后的用户名，默认禁用</li>
+<li>关机：允许系统在未登录的情况下关闭，默认禁用</li>
+</ul>
+<h2 id="账户系统安全加固"><a href="#账户系统安全加固" class="headerlink" title="账户系统安全加固"></a>账户系统安全加固</h2><h3 id="Window账户"><a href="#Window账户" class="headerlink" title="Window账户"></a>Window账户</h3><p><strong>多用户系统</strong></p>
+<ul>
+<li>Windows不应只有一个管理员账户、应根据业备需求，设定不同的用户和用户组，如管理员账户、Web用户、数据库用户</li>
+</ul>
+<p><strong>定期检查用户，删除无用、过期的账户</strong></p>
+<ul>
+<li>应保证所有用户均为有效且在用</li>
+</ul>
+<p><strong>禁用Guest账户</strong></p>
+<ul>
+<li>系统应禁用Guest账户，Guest账户默认不开启</li>
+</ul>
+<h3 id="Windows账户管理"><a href="#Windows账户管理" class="headerlink" title="Windows账户管理"></a>Windows账户管理</h3><p><strong>账户管理</strong></p>
+<ul>
+<li>更改默认管理员账户名称（应更改默认管理员administrator的名称，防止暴力破解等问题）</li>
+<li>不显示最后的用户名（用户登出后，下次登录时，不应显示上次登录用户的名称）</li>
+</ul>
+<p><strong>检测方法</strong></p>
+<ul>
+<li>控制面板  &#x3D;&gt;  系统和安全  &#x3D;&gt;  管理工具  &#x3D;&gt;  计算机管理</li>
+<li>控制面板  &#x3D;&gt;  系统和安全  &#x3D;&gt;  管理工具  &#x3D;&gt;  本地安全策略</li>
+</ul>
+<h3 id="查看账户"><a href="#查看账户" class="headerlink" title="查看账户"></a>查看账户</h3><p><strong>查看系统当前账户</strong></p>
+<ul>
+<li>打开cmd查看当前账户</li>
+<li>开始  &#x3D;&gt;  控制面板  &#x3D;&gt;  管理工具  &#x3D;&gt;  计算机管理，进入本地用户和组，查看用户</li>
+<li>打开注册表，查看用户和组</li>
+</ul>
+<p><strong>以管理员登录，进入命令提示环境查看用户</strong></p>
+<ul>
+<li>运行cmd</li>
+<li>net user</li>
+</ul>
+<p><strong>打开注册表查看用户</strong></p>
+<ul>
+<li>运行regedit</li>
+<li>HKEY_LOCAL_MACHINE&#x2F;SAM&#x2F;SAM&#x2F;Domains&#x2F;Account&#x2F;Users&#x2F;</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/winsec2.html">https://www.nicopilot.online/posts/winsec2.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Windows%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8/">Windows系统安全</a></div><div class="post_share"><div class="social-share" data-image="/img/2_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/winsec3.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-Windows系统安全</div></div></a></div><div class="next-post pull-right"><a href="/posts/winsec1.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Windows系统安全</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/winsec1.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-Windows系统安全</div></div></a></div><div><a href="/posts/winsec3.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-Windows系统安全</div></div></a></div><div><a href="/posts/winsec4.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-Windows系统安全</div></div></a></div><div><a href="/posts/winsec5.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-Windows系统安全</div></div></a></div><div><a href="/posts/winsec6.html" title="网络安全-Windows系统安全"><img class="cover" src="/img/2_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-Windows系统安全</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Window%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8"><span class="toc-number">1.</span> <span class="toc-text">Window系统安全</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%9F%BA%E7%BA%BF%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">安全基线概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E5%9F%BA%E7%BA%BF"><span class="toc-number">1.1.1.</span> <span class="toc-text">操作系统安全基线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.2.</span> <span class="toc-text">Windows系统安全配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E8%B4%A6%E6%88%B7%E5%AE%89%E5%85%A8"><span class="toc-number">1.2.</span> <span class="toc-text">系统账户安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">本地安全策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5%E5%B7%A5%E5%85%B7"><span class="toc-number">1.2.2.</span> <span class="toc-text">本地安全策略工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.3.</span> <span class="toc-text">账户策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.4.</span> <span class="toc-text">密码策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E9%94%81%E5%AE%9A%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.5.</span> <span class="toc-text">账户锁定策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%AE%A1%E6%A0%B8"><span class="toc-number">1.3.</span> <span class="toc-text">系统审核</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A1%E6%A0%B8%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.1.</span> <span class="toc-text">审核策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">用户权限配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E5%88%86%E9%85%8D"><span class="toc-number">1.4.1.</span> <span class="toc-text">用户权限分配</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%80%89%E9%A1%B9%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">安全选项配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%80%89%E9%A1%B9%E7%AD%96%E7%95%A5"><span class="toc-number">1.5.1.</span> <span class="toc-text">安全选项策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%A6%E6%88%B7%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA"><span class="toc-number">1.6.</span> <span class="toc-text">账户系统安全加固</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Window%E8%B4%A6%E6%88%B7"><span class="toc-number">1.6.1.</span> <span class="toc-text">Window账户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows%E8%B4%A6%E6%88%B7%E7%AE%A1%E7%90%86"><span class="toc-number">1.6.2.</span> <span class="toc-text">Windows账户管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%B4%A6%E6%88%B7"><span class="toc-number">1.6.3.</span> <span class="toc-text">查看账户</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(https://assets.akilar.top/image/cover1.webp);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">10</span><span class="categoryBar-list-descr">Ubuntu指南</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/categories'|| '/categories' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

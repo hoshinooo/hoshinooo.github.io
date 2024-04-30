@@ -1,0 +1,382 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-网络应用基础3 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述华为路由器的基础命令配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-网络应用基础3">
+<meta property="og:url" content="https://www.nicopilot.online/posts/netbase3.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述华为路由器的基础命令配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/1_cover.png">
+<meta property="article:published_time" content="2024-04-30T06:21:08.000Z">
+<meta property="article:modified_time" content="2024-04-30T06:21:11.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="网络应用基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/1_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/netbase3.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-网络应用基础3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-30 14:21:11'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/1_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-网络应用基础3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-30T06:21:08.000Z" title="发表于 2024-04-30 14:21:08">2024-04-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-30T06:21:11.000Z" title="更新于 2024-04-30 14:21:11">2024-04-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-网络应用基础3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="网络应用基础3"><a href="#网络应用基础3" class="headerlink" title="网络应用基础3"></a>网络应用基础3</h1><h2 id="远程管理交换机"><a href="#远程管理交换机" class="headerlink" title="远程管理交换机"></a>远程管理交换机</h2><h3 id="配置IP地址"><a href="#配置IP地址" class="headerlink" title="配置IP地址"></a>配置IP地址</h3><p><strong>远程管理需要通过IP地址访问网络设备</strong></p>
+<ul>
+<li>交换机的端口默认无法配置IP地址</li>
+<li>需要使用虚拟端口Vlanif 1</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;SW1&gt;system-view</span> <span class="string"></span></span><br><span class="line"><span class="attr">Enter</span> <span class="string">system view, return user view with Ctrl+Z.</span></span><br><span class="line"><span class="attr">[SW1]interface</span> <span class="string">Vlanif 1                           //进入Vlanif 1虚拟接口</span></span><br><span class="line"><span class="attr">[SW1-Vlanif1]ip</span> <span class="string">address 192.168.1.1 24            //配置IP地址为192.168.1.1，子网掩码为24</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置远程登录密码"><a href="#配置远程登录密码" class="headerlink" title="配置远程登录密码"></a>配置远程登录密码</h3><p><strong>远程登录需要配置VTY接口</strong></p>
+<ul>
+<li><p>VTY是虚拟终端，是一种网络设备远程连接的方式</p>
+</li>
+<li><p>vty 0 4表示同时开启0-4五个会话，即可最多同时供五个用户进行连接</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[SW1]user-interface</span> <span class="string">vty 0 4                                //进入用户接口VTY</span></span><br><span class="line"><span class="attr">[SW1-ui-vty0-4]set</span> <span class="string">authentication password cipher 123456   //配置密码为密文123456</span></span><br><span class="line"><span class="attr">[SW1-ui-vty0-4]user</span> <span class="string">privilege level 15                     //设置用户权限为15</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>用户等级权限如下：</strong></p>
+<ul>
+<li>0 参观，ping、tracert、telnet、display、quit等</li>
+<li>1 监控，reboot、reset、undo、debugging等</li>
+<li>2 系统配置，所有配置命令（管理级配置命令除外）</li>
+<li>3<del>15，所有命令（4</del>15用于精细化权限管理）</li>
+</ul>
+<h3 id="远程连接测试"><a href="#远程连接测试" class="headerlink" title="远程连接测试"></a>远程连接测试</h3><p><strong>需要支持telnet的客户端软件</strong></p>
+<ul>
+<li><p>第三方软件，如SecureCRT、Putty、Xshell等</p>
+</li>
+<li><p>路由器&#x2F;交换机自带telnet命令</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;SW2&gt;telnet</span> <span class="string">192.168.1.1                                     //telnet + 目标主机IP地址</span></span><br><span class="line"><span class="attr">Trying</span> <span class="string">192.168.1.1 ...</span></span><br><span class="line"><span class="attr">Press</span> <span class="string">CTRL+K to abort</span></span><br><span class="line"><span class="attr">Connected</span> <span class="string">to 192.168.1.1 ...</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">Login</span> <span class="string">authentication</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">Password</span>:                                                  <span class="string">//输入密码</span></span><br><span class="line"><span class="attr">Info</span>: <span class="string">The max number of VTY users is 5, and the number</span></span><br><span class="line">      <span class="attr">of</span> <span class="string">current VTY users on line is 1.</span></span><br><span class="line">      <span class="attr">The</span> <span class="string">current login time is 2023-11-23 19:57:58.</span></span><br><span class="line"><span class="attr">&lt;SW1&gt;</span>                                                      <span class="string">//主机名已从SW2变为SW1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="路由介绍"><a href="#路由介绍" class="headerlink" title="路由介绍"></a>路由介绍</h2><h3 id="什么是路由器"><a href="#什么是路由器" class="headerlink" title="什么是路由器"></a>什么是路由器</h3><p><strong>负责在不同网络之间转发数据的设备</strong></p>
+<ul>
+<li>路由器决定到达目标的路径</li>
+<li>路由器也为直连网络的主机充当”网关”角色</li>
+</ul>
+<p><img src="/../img/img_artical/1.3.1.png" alt="1.3.1"></p>
+<p><strong>路由器是实现网络互连的核心设备</strong></p>
+<h2 id="路由器工作原理"><a href="#路由器工作原理" class="headerlink" title="路由器工作原理"></a>路由器工作原理</h2><h3 id="路由器工作原理简述"><a href="#路由器工作原理简述" class="headerlink" title="路由器工作原理简述"></a>路由器工作原理简述</h3><p><strong>每台路由器维护一份路由表，路由表记录着：</strong></p>
+<ul>
+<li>要访问XX网段应从哪个接口发送数据</li>
+<li>可到达的下一个路由器（主机）的地址</li>
+</ul>
+<p><strong>路由器如何工作？</strong></p>
+<ul>
+<li><p>路由器接收数据包</p>
+</li>
+<li><p>检查数据包中的目标IP</p>
+</li>
+<li><p>在路由表中查找与目标IP相匹配的路由条目</p>
+</li>
+<li><p>路由表中找到与目标IP相匹配的路由条目后，按照此条目所指的方向将数据转发出去</p>
+</li>
+</ul>
+<p><img src="/../img/img_artical/1.3.2.png" alt="1.3.2"></p>
+<h2 id="路由表基本配置"><a href="#路由表基本配置" class="headerlink" title="路由表基本配置"></a>路由表基本配置</h2><h3 id="配置设备名、接口地址"><a href="#配置设备名、接口地址" class="headerlink" title="配置设备名、接口地址"></a>配置设备名、接口地址</h3><p><strong>配置设备名（sysname）</strong></p>
+<p><strong>配置接口地址（ip address IP地址 子网掩码）</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;Huawei&gt;u</span> <span class="string">t m                                         //取消终端提示消息</span></span><br><span class="line"><span class="attr">Info</span>: <span class="string">Current terminal monitor is off.                </span></span><br><span class="line"><span class="attr">&lt;Huawei&gt;system-view</span>                                   <span class="string">//进入系统视图</span></span><br><span class="line"><span class="attr">Enter</span> <span class="string">system view, return user view with Ctrl+Z.</span></span><br><span class="line"><span class="attr">[Huawei]sysname</span> <span class="string">R1                                    //将路由器改名为R1</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet 0/0/0                   //进入GE0/0/0端口</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.254 24  //配置IP地址为192.168.1.254 子网掩码为255.255.255.0</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="保存路由器配置"><a href="#保存路由器配置" class="headerlink" title="保存路由器配置"></a>保存路由器配置</h3><p><strong>保存路由器配置（save）</strong></p>
+<ul>
+<li>大多数通用操作与交换机配置相同</li>
+</ul>
+<p>	</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;R1&gt;save</span></span><br><span class="line">  <span class="attr">The</span> <span class="string">current configuration will be written to the device. </span></span><br><span class="line">  <span class="attr">Are</span> <span class="string">you sure to continue? (y/n)[n]:y                              //提示配置将被写入设备，是否继续，输入y继续</span></span><br><span class="line">  <span class="attr">It</span> <span class="string">will take several minutes to save configuration file, please wait.......</span></span><br><span class="line">  <span class="attr">Configuration</span> <span class="string">file had been saved successfully</span></span><br><span class="line">  <span class="attr">Note</span>: <span class="string">The configuration file will take effect after being activated</span></span><br><span class="line"><span class="attr">&lt;R1&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="直连路由"><a href="#直连路由" class="headerlink" title="直连路由"></a>直连路由</h2><h3 id="什么是直连路由"><a href="#什么是直连路由" class="headerlink" title="什么是直连路由"></a>什么是直连路由</h3><p><strong>直连路由是指路由器接口所连接的网络段</strong></p>
+<h3 id="路由器组网示例"><a href="#路由器组网示例" class="headerlink" title="路由器组网示例"></a>路由器组网示例</h3><p><strong>多网段互连</strong></p>
+<ul>
+<li>教学部、市场部各自有独立网段，如何实现互连？</li>
+</ul>
+<p><img src="/../img/img_artical/1.3.3.png" alt="1.3.3"></p>
+<p><strong>PC1配置：</strong></p>
+<p><img src="/../img/img_artical/1.3.4.png" alt="1.3.4"></p>
+<p><strong>PC2配置：</strong></p>
+<p><img src="/../img/img_artical/1.3.5.png" alt="1.3.5"></p>
+<p><strong>PC3配置：</strong></p>
+<p><img src="/../img/img_artical/1.3.6.png" alt="1.3.6"></p>
+<p><strong>PC4配置：</strong></p>
+<p><img src="/../img/img_artical/1.3.7.png" alt="1.3.7"></p>
+<p><strong>路由器R1配置：</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;Huawei&gt;u</span> <span class="string">t m</span></span><br><span class="line"><span class="attr">Info</span>: <span class="string">Current terminal monitor is off.</span></span><br><span class="line"><span class="attr">&lt;Huawei&gt;system-view</span> <span class="string"></span></span><br><span class="line"><span class="attr">Enter</span> <span class="string">system view, return user view with Ctrl+Z.</span></span><br><span class="line"><span class="attr">[Huawei]sysname</span> <span class="string">R1</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet 0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.2.254 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]interface</span> <span class="string">GigabitEthernet 0/0/1</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/1]ip</span> <span class="string">address 192.168.1.254 24</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>验证连通性：PC1 ping PC2、PC3、PC4</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">PC&gt;ping</span> <span class="string">192.168.1.2</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Ping</span> <span class="string">192.168.1.2: 32 data bytes, Press Ctrl_C to break</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.1.2: bytes=32 seq=1 ttl=128 time=47 ms</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.1.2: bytes=32 seq=2 ttl=128 time=31 ms</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.1.2: bytes=32 seq=3 ttl=128 time=31 ms</span></span><br><span class="line"></span><br><span class="line"><span class="attr">---</span> <span class="string">192.168.1.2 ping statistics ---</span></span><br><span class="line">  <span class="attr">3</span> <span class="string">packet(s) transmitted</span></span><br><span class="line">  <span class="attr">3</span> <span class="string">packet(s) received</span></span><br><span class="line">  <span class="attr">0.00%</span> <span class="string">packet loss</span></span><br><span class="line">  <span class="attr">round-trip</span> <span class="string">min/avg/max = 31/36/47 ms</span></span><br><span class="line"></span><br><span class="line"><span class="attr">PC&gt;ping</span> <span class="string">192.168.2.1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Ping</span> <span class="string">192.168.2.1: 32 data bytes, Press Ctrl_C to break</span></span><br><span class="line"><span class="attr">Request</span> <span class="string">timeout!</span></span><br><span class="line"><span class="attr">Request</span> <span class="string">timeout!</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.2.1: bytes=32 seq=3 ttl=127 time=62 ms</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.2.1: bytes=32 seq=4 ttl=127 time=63 ms</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.2.1: bytes=32 seq=5 ttl=127 time=62 ms</span></span><br><span class="line"></span><br><span class="line"><span class="attr">---</span> <span class="string">192.168.2.1 ping statistics ---</span></span><br><span class="line">  <span class="attr">5</span> <span class="string">packet(s) transmitted</span></span><br><span class="line">  <span class="attr">3</span> <span class="string">packet(s) received</span></span><br><span class="line">  <span class="attr">40.00%</span> <span class="string">packet loss</span></span><br><span class="line">  <span class="attr">round-trip</span> <span class="string">min/avg/max = 0/62/63 ms</span></span><br><span class="line"></span><br><span class="line"><span class="attr">PC&gt;ping</span> <span class="string">192.168.2.2</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Ping</span> <span class="string">192.168.2.2: 32 data bytes, Press Ctrl_C to break</span></span><br><span class="line"><span class="attr">Request</span> <span class="string">timeout!</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.2.2: bytes=32 seq=2 ttl=127 time=47 ms</span></span><br><span class="line"><span class="attr">From</span> <span class="string">192.168.2.2: bytes=32 seq=3 ttl=127 time=62 ms</span></span><br><span class="line"></span><br><span class="line"><span class="attr">---</span> <span class="string">192.168.2.2 ping statistics ---</span></span><br><span class="line">  <span class="attr">3</span> <span class="string">packet(s) transmitted</span></span><br><span class="line">  <span class="attr">2</span> <span class="string">packet(s) received</span></span><br><span class="line">  <span class="attr">33.33%</span> <span class="string">packet loss</span></span><br><span class="line">  <span class="attr">round-trip</span> <span class="string">min/avg/max = 0/54/62 ms</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="查看路由表"><a href="#查看路由表" class="headerlink" title="查看路由表"></a>查看路由表</h3><p><strong>查看路由表 display ip routing-table</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]display</span> <span class="string">ip routing-table </span></span><br><span class="line"><span class="attr">Route</span> <span class="string">Flags: R - relay, D - download to fib</span></span><br><span class="line"><span class="attr">------------------------------------------------------------------------------</span></span><br><span class="line"><span class="attr">Routing</span> <span class="string">Tables: Public</span></span><br><span class="line">         <span class="attr">Destinations</span> : <span class="string">10       Routes : 10       </span></span><br><span class="line"></span><br><span class="line"><span class="attr">Destination/Mask</span>    <span class="string">Proto   Pre  Cost      Flags NextHop         Interface</span></span><br><span class="line"></span><br><span class="line">      <span class="attr">127.0.0.0/8</span>   <span class="string">Direct  0    0           D   127.0.0.1       InLoopBack0</span></span><br><span class="line">      <span class="attr">127.0.0.1/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       InLoopBack0</span></span><br><span class="line"><span class="attr">127.255.255.255/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       InLoopBack0</span></span><br><span class="line">    <span class="attr">192.168.1.0/24</span>  <span class="string">Direct  0    0           D   192.168.1.254   GigabitEthernet0/0/1         </span></span><br><span class="line">    <span class="attr">//通往1.0网段找1.254地址，从0/0/1接口出去</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">192.168.1.254/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       GigabitEthernet</span></span><br><span class="line"><span class="attr">0/0/1</span></span><br><span class="line">  <span class="attr">192.168.1.255/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       GigabitEthernet</span></span><br><span class="line"><span class="attr">0/0/1</span></span><br><span class="line">    <span class="attr">192.168.2.0/24</span>  <span class="string">Direct  0    0           D   192.168.2.254   GigabitEthernet0/0/0        </span></span><br><span class="line">    <span class="attr">//通往2.0网段找2.254地址，从0/0/0接口出去</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">192.168.2.254/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       GigabitEthernet</span></span><br><span class="line"><span class="attr">0/0/0</span></span><br><span class="line">  <span class="attr">192.168.2.255/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       GigabitEthernet</span></span><br><span class="line"><span class="attr">0/0/0</span></span><br><span class="line"><span class="attr">255.255.255.255/32</span>  <span class="string">Direct  0    0           D   127.0.0.1       InLoopBack0</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="远程管理路由器"><a href="#远程管理路由器" class="headerlink" title="远程管理路由器"></a>远程管理路由器</h2><h3 id="配置远程登录"><a href="#配置远程登录" class="headerlink" title="配置远程登录"></a>配置远程登录</h3><p><strong>远程登录需要配置VTY接口</strong></p>
+<ul>
+<li><p>VTY是虚拟终端，是一种网络设备远程连接的方式</p>
+</li>
+<li><p>vty 0 4表示同时开启0-4五个会话，即可最多同时供五个用户进行连接</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]user-interface</span> <span class="string">vty 0 4                                //进入用户接口VTY</span></span><br><span class="line"><span class="attr">[R1-ui-vty0-4]set</span> <span class="string">authentication password cipher 123456   //配置密码为密文123456</span></span><br><span class="line"><span class="attr">[R1-ui-vty0-4]user</span> <span class="string">privilege level 15                     //设置用户权限为15</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>用户等级权限如下：</strong></p>
+<ul>
+<li>0 参观，ping、tracert、telnet、display、quit等</li>
+<li>1 监控，reboot、reset、undo、debugging等</li>
+<li>2 系统配置，所有配置命令（管理级配置命令除外）</li>
+<li>3<del>15，所有命令（4</del>15用于精细化权限管理）</li>
+</ul>
+<h3 id="远程连接测试-1"><a href="#远程连接测试-1" class="headerlink" title="远程连接测试"></a>远程连接测试</h3><p><strong>需要支持telnet的客户端软件</strong></p>
+<ul>
+<li><p>第三方软件，如SecureCRT、Putty、Xshell等</p>
+</li>
+<li><p>路由器&#x2F;交换机自带telnet命令</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;SW1&gt;telnet</span> <span class="string">192.168.1.1                                     //telnet + 目标主机IP地址</span></span><br><span class="line"><span class="attr">Trying</span> <span class="string">192.168.1.1 ...</span></span><br><span class="line"><span class="attr">Press</span> <span class="string">CTRL+K to abort</span></span><br><span class="line"><span class="attr">Connected</span> <span class="string">to 192.168.1.1 ...</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">Login</span> <span class="string">authentication</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">Password</span>:                                                  <span class="string">//输入密码</span></span><br><span class="line"><span class="attr">Info</span>: <span class="string">The max number of VTY users is 5, and the number</span></span><br><span class="line">      <span class="attr">of</span> <span class="string">current VTY users on line is 1.</span></span><br><span class="line">      <span class="attr">The</span> <span class="string">current login time is 2023-11-23 19:57:58.</span></span><br><span class="line"><span class="attr">&lt;R1&gt;</span>                                                      <span class="string">//主机名已从SW1变为R1</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/netbase3.html">https://www.nicopilot.online/posts/netbase3.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E5%9F%BA%E7%A1%80/">网络应用基础</a></div><div class="post_share"><div class="social-share" data-image="/img/1_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/netbase4.html" title="网络安全-网络应用基础4"><img class="cover" src="/img/1_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-网络应用基础4</div></div></a></div><div class="next-post pull-right"><a href="/posts/netbase2.html" title="网络安全-网络应用基础2"><img class="cover" src="/img/1_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-网络应用基础2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/netbase1.html" title="网络安全-网络应用基础1"><img class="cover" src="/img/1_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-网络应用基础1</div></div></a></div><div><a href="/posts/netbase2.html" title="网络安全-网络应用基础2"><img class="cover" src="/img/1_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-网络应用基础2</div></div></a></div><div><a href="/posts/netbase4.html" title="网络安全-网络应用基础4"><img class="cover" src="/img/1_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-30</div><div class="title">网络安全-网络应用基础4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E5%9F%BA%E7%A1%803"><span class="toc-number">1.</span> <span class="toc-text">网络应用基础3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">1.1.</span> <span class="toc-text">远程管理交换机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEIP%E5%9C%B0%E5%9D%80"><span class="toc-number">1.1.1.</span> <span class="toc-text">配置IP地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81"><span class="toc-number">1.1.2.</span> <span class="toc-text">配置远程登录密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="toc-number">1.1.3.</span> <span class="toc-text">远程连接测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">路由介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">什么是路由器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">路由器工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E7%AE%80%E8%BF%B0"><span class="toc-number">1.3.1.</span> <span class="toc-text">路由器工作原理简述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">路由表基本配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%AE%BE%E5%A4%87%E5%90%8D%E3%80%81%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80"><span class="toc-number">1.4.1.</span> <span class="toc-text">配置设备名、接口地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E8%B7%AF%E7%94%B1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">保存路由器配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1"><span class="toc-number">1.5.</span> <span class="toc-text">直连路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1"><span class="toc-number">1.5.1.</span> <span class="toc-text">什么是直连路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E7%BB%84%E7%BD%91%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.5.2.</span> <span class="toc-text">路由器组网示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-number">1.5.3.</span> <span class="toc-text">查看路由表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="toc-number">1.6.</span> <span class="toc-text">远程管理路由器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95"><span class="toc-number">1.6.1.</span> <span class="toc-text">配置远程登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95-1"><span class="toc-number">1.6.2.</span> <span class="toc-text">远程连接测试</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(https://assets.akilar.top/image/cover1.webp);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">10</span><span class="categoryBar-list-descr">Ubuntu指南</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/categories'|| '/categories' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>
