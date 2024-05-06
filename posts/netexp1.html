@@ -1,0 +1,506 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-网络通信原理1 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述OSI和TCP&#x2F;IP分层模型，理解物理层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-网络通信原理1">
+<meta property="og:url" content="https://www.nicopilot.online/posts/netexp1.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述OSI和TCP&#x2F;IP分层模型，理解物理层">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/3_cover.png">
+<meta property="article:published_time" content="2024-05-06T01:02:25.000Z">
+<meta property="article:modified_time" content="2024-05-06T01:02:31.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="网络通信原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/3_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/netexp1.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-网络通信原理1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-06 09:02:31'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/3_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-网络通信原理1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-06T01:02:25.000Z" title="发表于 2024-05-06 09:02:25">2024-05-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-06T01:02:31.000Z" title="更新于 2024-05-06 09:02:31">2024-05-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-网络通信原理1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="网络通信原理"><a href="#网络通信原理" class="headerlink" title="网络通信原理"></a>网络通信原理</h1><h2 id="协议分层"><a href="#协议分层" class="headerlink" title="协议分层"></a>协议分层</h2><h3 id="计算机网络发展"><a href="#计算机网络发展" class="headerlink" title="计算机网络发展"></a>计算机网络发展</h3><p><strong>计算机的诞生</strong></p>
+<ul>
+<li>1946年2月14日ENIAC诞生</li>
+</ul>
+<p><strong>计算机网络的诞生</strong></p>
+<ul>
+<li>1969年APNET诞生</li>
+</ul>
+<p><strong>不同网络之间的互联</strong></p>
+<ul>
+<li>由于网络标准不一样，无法完成互联</li>
+</ul>
+<h3 id="计算机网络功能"><a href="#计算机网络功能" class="headerlink" title="计算机网络功能"></a>计算机网络功能</h3><p><strong>数据通信、资源共享、增加数据可靠性、提高系统处理能力（主要功能数据通信）</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.1.png" alt="3.1.1"></p>
+<h3 id="什么是协议"><a href="#什么是协议" class="headerlink" title="什么是协议"></a>什么是协议</h3><p><strong>什么是协议?</strong></p>
+<ul>
+<li><p>为了使数据可以在网络上从源传递到目的地，网络上所有设备需要”讲”相同的”语言”</p>
+</li>
+<li><p>描述网络通信”语言”规范的一组规则就是协议</p>
+</li>
+<li><p>例如：两个人交谈，必须使用相同的语言，如果你说汉语，他说阿拉伯语……</p>
+</li>
+</ul>
+<p><strong>数据通信协议的定义</strong></p>
+<ul>
+<li>决定数据的格式和传输的一组规则或者一组惯例</li>
+</ul>
+<h3 id="为什么分层"><a href="#为什么分层" class="headerlink" title="为什么分层"></a>为什么分层</h3><p><strong>网络通信的过程很复杂</strong></p>
+<ul>
+<li>数据以电子信号的形式穿越介质到达正确的计算机，然后转换成最初的形式，以便接收者能够阅读</li>
+<li>为了降低网络设计的复杂性，将协议进行了分层设计，方便网络故障的定位</li>
+</ul>
+<h3 id="邮局实例（传统通信）"><a href="#邮局实例（传统通信）" class="headerlink" title="邮局实例（传统通信）"></a>邮局实例（传统通信）</h3><p><img src="/../img/img_artical/net_sec/3.1.2.png" alt="3.1.2"></p>
+<h2 id="理解OSI模型"><a href="#理解OSI模型" class="headerlink" title="理解OSI模型"></a>理解OSI模型</h2><h3 id="OSI协议模型"><a href="#OSI协议模型" class="headerlink" title="OSI协议模型"></a>OSI协议模型</h3><p><img src="/../img/img_artical/net_sec/3.1.3.png" alt="3.1.3"></p>
+<h3 id="OSI七层模型"><a href="#OSI七层模型" class="headerlink" title="OSI七层模型"></a>OSI七层模型</h3><p><strong>OSI参考模型</strong></p>
+<ul>
+<li>国际标准化组织(International Standard Organization，ISO)于1984年正式颁布开放系统互连 (Open System Interconnection，OSI) 参考模型</li>
+<li>所有的软件和硬件开发都遵循统一的OSI模型</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.4.png" alt="3.1.4"></p>
+<h3 id="OSI七层的功能简介"><a href="#OSI七层的功能简介" class="headerlink" title="OSI七层的功能简介"></a>OSI七层的功能简介</h3><table>
+<thead>
+<tr>
+<th align="center">层名称</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">应用层</td>
+<td align="center">为用户提供各种服务功能，比如各种应用程序，网络服务与最终用户的一个接口</td>
+</tr>
+<tr>
+<td align="center">表示层</td>
+<td align="center">数据的表示、安全、压缩、加密等</td>
+</tr>
+<tr>
+<td align="center">会话层</td>
+<td align="center">建立、维护、终止会话，例如断点续传</td>
+</tr>
+<tr>
+<td align="center">传输层</td>
+<td align="center">定义传输数据的协议端口号，实现了程序与程序的互连，可靠与不可靠的传输,流量控制差错校验</td>
+</tr>
+<tr>
+<td align="center">网络层</td>
+<td align="center">进行逻辑地址寻址，实现不同网络之间通信，定义了IP地址，为数据的传输选择最佳路径，路由器工作在网络层</td>
+</tr>
+<tr>
+<td align="center">数据链路层</td>
+<td align="center">建立逻辑链接，进行硬件地址寻址、通过MAC地址实现数据的通信，帧包装、帧传输、帧同步，交换机工作在数据链路层</td>
+</tr>
+<tr>
+<td align="center">物理层</td>
+<td align="center">建立、维护、断开物理连接，定义了接口及介质，实现了比特流的传输</td>
+</tr>
+</tbody></table>
+<h2 id="理解TCP-IP模型"><a href="#理解TCP-IP模型" class="headerlink" title="理解TCP&#x2F;IP模型"></a>理解TCP&#x2F;IP模型</h2><h3 id="OSI模型与TCP-IP模型"><a href="#OSI模型与TCP-IP模型" class="headerlink" title="OSI模型与TCP&#x2F;IP模型"></a>OSI模型与TCP&#x2F;IP模型</h3><ul>
+<li>OSI模型，仅仅是ISO 提出的一个”参考”标准</li>
+<li>实际的网络中更多使用TCP&#x2F;IP 5层模型，但是实现的功能是相同的</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.5.png" alt="3.1.5"></p>
+<h3 id="TCP-IP协议族的组成"><a href="#TCP-IP协议族的组成" class="headerlink" title="TCP&#x2F;IP协议族的组成"></a>TCP&#x2F;IP协议族的组成</h3><p><strong>TCP&#x2F;IP是一系列协议的集合，所以严格称呼应是TCP&#x2F;IP协议族</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.6.png" alt="3.1.6"></p>
+<p><strong>网络层常见协议：</strong> </p>
+<ul>
+<li><p>IP：互联网协议，定义了IP地址</p>
+</li>
+<li><p>ICMP：网络控制消息协议，验证和测试网络连通性</p>
+</li>
+<li><p>ARP：地址解析协议，将IP地址解析成MAC地址</p>
+</li>
+<li><p>OSPF：开放式最短路径优先，动态路由协议</p>
+</li>
+</ul>
+<p><strong>传输层常见协议：</strong></p>
+<ul>
+<li><p>TCP：传输控制协议—安全可靠，速度慢</p>
+</li>
+<li><p>UDP： 用户数据报协议—不可靠，速度快</p>
+</li>
+</ul>
+<p><strong>应用层常见协议：</strong></p>
+<ul>
+<li><p>HTTP：超文本传输协议—TCP 80端口</p>
+</li>
+<li><p>FTP：文件传输协议—TCP 20  和21</p>
+</li>
+<li><p>TFTP：简单文件传输协议—UDP  69</p>
+</li>
+<li><p>DHCP：动态主机配置协议—UDP 67  68</p>
+</li>
+<li><p>Telnet：远程管理协议—TCP 23</p>
+</li>
+<li><p>RDP：远程桌面协议—TCP 3389</p>
+</li>
+<li><p>DNS：域名解析—TCP或UDP 53</p>
+</li>
+<li><p>SMTP：简单邮件传输协议—TCP 25</p>
+</li>
+<li><p>SNMP：网络管理协议—UDP 161</p>
+</li>
+</ul>
+<h3 id="各层PDU"><a href="#各层PDU" class="headerlink" title="各层PDU"></a>各层PDU</h3><p><strong>PDU：Protocol Data Unit，协议数据单元，即协议的数据包</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.7.png" alt="3.1.7"></p>
+<ul>
+<li><p>传输层 数据段 segment</p>
+</li>
+<li><p>网络层 数据包 packet</p>
+</li>
+<li><p>数据链路层 数据帧 frame</p>
+</li>
+<li><p>物理层  比特流 bit</p>
+</li>
+</ul>
+<h3 id="设备与层的对应关系"><a href="#设备与层的对应关系" class="headerlink" title="设备与层的对应关系"></a>设备与层的对应关系</h3><p><img src="/../img/img_artical/net_sec/3.1.8.png" alt="3.1.8"></p>
+<h2 id="数据通信流程"><a href="#数据通信流程" class="headerlink" title="数据通信流程"></a>数据通信流程</h2><h3 id="数据通信"><a href="#数据通信" class="headerlink" title="数据通信"></a>数据通信</h3><p><strong>所谓的设备之间的通信，指的是设备之间能够互相传输数据</strong></p>
+<p><strong>产生数据</strong></p>
+<ul>
+<li>即数据封装，指的是数据通过应用层产生以后，发送到第一层，每经过一层都添加一个协议头部的过程</li>
+</ul>
+<p><strong>传输数据</strong></p>
+<ul>
+<li>即网络传输，数据在由不同的网络设备组成的互联网中传输的过程，主要是依靠交换机和路由器实现数据在不同设备之间的转发</li>
+</ul>
+<p><strong>接收数据</strong></p>
+<ul>
+<li>即数据解封装，指的是数据被设备通过网线接收以后形成数据帧，然后一层一层分析头部，然后传递给上一层处理，一直到应用层的过程</li>
+<li>也可以说是：不断的分析并删除每层的协议头部的过程</li>
+</ul>
+<p><strong>设备之间的数据传输，一定是双向的，每个方向都分为3个阶段</strong></p>
+<ul>
+<li>产生数据，也称之为”数据封装”</li>
+<li>传输数据，也称之为”网络传输”</li>
+<li>接收数据，也称之为”数据解封装”</li>
+</ul>
+<h3 id="数据封装过程"><a href="#数据封装过程" class="headerlink" title="数据封装过程"></a>数据封装过程</h3><p><strong>应用层在产生数据后，从应用层到物理层，每经过一层，都会加上每一层的头部信息，传输层封装TCP头部， 网络层封装IP头部，数据链路层封装MAC头部和尾部</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.9.png" alt="3.1.9"></p>
+<h3 id="数据解封装过程"><a href="#数据解封装过程" class="headerlink" title="数据解封装过程"></a>数据解封装过程</h3><p><strong>数据从下往上的过程，接收数据后，从物理层到应用层，每达到一层，会把相应的头部信息拆除，数据链路层拆除MAC头部和尾部，网络层拆除IP头部，传输层拆除TCP头部</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.10.png" alt="3.1.10"></p>
+<h2 id="物理层解析"><a href="#物理层解析" class="headerlink" title="物理层解析"></a>物理层解析</h2><h3 id="物理层概述"><a href="#物理层概述" class="headerlink" title="物理层概述"></a>物理层概述</h3><p><strong>物理层是TCP&#x2F;IP模型的最底层</strong></p>
+<p><strong>物理层为数据传输提供稳定的物理连接</strong></p>
+<h3 id="物理层功能"><a href="#物理层功能" class="headerlink" title="物理层功能"></a>物理层功能</h3><ul>
+<li>定义设备的物理连接的标准和特性，比如接口形状，大小</li>
+<li>定义电气特性，高低电压、传输速率和传输距离</li>
+<li>构建数据通道，通过物理接口和传输介质来进行数据传输</li>
+<li>物理层核心就是“信号和介质“</li>
+</ul>
+<h3 id="物理层传输介质"><a href="#物理层传输介质" class="headerlink" title="物理层传输介质"></a>物理层传输介质</h3><p><strong>有线介质</strong></p>
+<ul>
+<li>双绞线</li>
+<li>光纤</li>
+</ul>
+<p><strong>无线介质</strong></p>
+<ul>
+<li>微波</li>
+<li>激光</li>
+<li>红外线</li>
+</ul>
+<p><strong>超五类线缆</strong></p>
+<ul>
+<li>局域网环境，最常见线缆</li>
+<li>线缆外表有清晰“米标”</li>
+<li>适用于100Mbps网络</li>
+</ul>
+<p><strong>6类线缆</strong></p>
+<ul>
+<li>增加十字骨架，抗干扰</li>
+<li>适用于1000Mbps网络</li>
+</ul>
+<p><strong>7类和8类线缆</strong></p>
+<ul>
+<li>7类速率10Gbps</li>
+<li>8类速率40Gbps</li>
+</ul>
+<p><strong>水晶头</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.11.png" alt="3.1.11"></p>
+<p><strong>布线套装</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.12.png" alt="3.1.12"></p>
+<p><strong>光纤</strong></p>
+<ul>
+<li>光纤按光在其中的传输模式可分为单模和多模</li>
+</ul>
+<p><strong>单模光纤</strong></p>
+<ul>
+<li>可支持1G~40Gb&#x2F;100Gb，距离200KM</li>
+<li>适合用于长距离传输、可用于室内和室外</li>
+</ul>
+<p><strong>多模光纤</strong></p>
+<ul>
+<li>可支持1G~40Gb&#x2F;100Gb高速网络</li>
+<li>适合用于短距离传输，通常用于室内</li>
+</ul>
+<p><strong>布线套装</strong></p>
+<p><img src="/../img/img_artical/net_sec/3.1.13.png" alt="3.1.13"></p>
+<h2 id="网线制作"><a href="#网线制作" class="headerlink" title="网线制作"></a>网线制作</h2><h3 id="制作双绞线"><a href="#制作双绞线" class="headerlink" title="制作双绞线"></a>制作双绞线</h3><p><strong>剥线</strong></p>
+<ul>
+<li>将双绞线的一端插入网线的剥线口 (末端离刀口长度约3-5厘米)，握住网线缓慢旋转一圈，去掉外部的套层，可看到相互缠绕的8根芯线</li>
+<li>注意:不要割断金属芯线</li>
+</ul>
+<p><strong>理线</strong></p>
+<ul>
+<li>将裸露的8根双绞线分开，按照标准线序捋直排列好，并用网线钳将末端剪齐，保留1.2厘米左右</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.14.png" alt="3.1.14"></p>
+<p><strong>排列好的每条芯线分别对应RJ-45水晶头的1-8针脚</strong></p>
+<ul>
+<li>T568B(白橙、橙、白绿、蓝、白蓝、绿、白棕、棕)</li>
+<li>T568A(白绿、绿、白橙、蓝、白蓝、橙、白棕、棕)</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.15.png" alt="3.1.15"></p>
+<p><strong>压线头</strong></p>
+<ul>
+<li>将整理好的双绞线芯线平稳捏住 (末端保持整齐)，插入到RJ-45水晶接头中(塑料卡扣朝下，开口朝向网线)确保8根芯线都顶到最里端的铜触片位置</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.16.png" alt="3.1.16"></p>
+<p><strong>压线</strong></p>
+<ul>
+<li>将接好线的水晶头放到网线钳的压线口内 (注意要捏住网线，往里顶紧)，然后握住网线钳使劲压紧(线与线头不能有松动)，以确保水晶头的铜触片嵌入双绞线的芯线</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.17.png" alt="3.1.17"></p>
+<p><strong>制作双绞线的另一端</strong></p>
+<ul>
+<li>依次剥线、理线、压线头，操作与前面一样</li>
+<li>两端都压制好以后，一根网线就制作完工</li>
+</ul>
+<h3 id="测试双绞线"><a href="#测试双绞线" class="headerlink" title="测试双绞线"></a>测试双绞线</h3><p><strong>测试双绞线的连通性</strong></p>
+<ul>
+<li>将做好的双绞线两端分别插入测试仪的RJ-45接口，打开测试仪的电源开关，观察指示灯以判断网线连通性</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/3.1.18.png" alt="3.1.18"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/netexp1.html">https://www.nicopilot.online/posts/netexp1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86/">网络通信原理</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/3_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/netexp2.html" title="网络安全-网络通信原理2"><img class="cover" src="/img/cover/net_sec/3_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-网络通信原理2</div></div></a></div><div class="next-post pull-right"><a href="/posts/winsec6.html" title="网络安全-Windows系统安全6"><img class="cover" src="/img/cover/net_sec/2_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Windows系统安全6</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/netexp2.html" title="网络安全-网络通信原理2"><img class="cover" src="/img/cover/net_sec/3_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-06</div><div class="title">网络安全-网络通信原理2</div></div></a></div><div><a href="/posts/netexp3.html" title="网络安全-网络通信原理3"><img class="cover" src="/img/cover/net_sec/3_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-06</div><div class="title">网络安全-网络通信原理3</div></div></a></div><div><a href="/posts/netexp4.html" title="网络安全-网络通信原理4"><img class="cover" src="/img/cover/net_sec/3_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-06</div><div class="title">网络安全-网络通信原理4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">网络通信原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">协议分层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%8F%91%E5%B1%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">计算机网络发展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.2.</span> <span class="toc-text">计算机网络功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.3.</span> <span class="toc-text">什么是协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%88%86%E5%B1%82"><span class="toc-number">1.1.4.</span> <span class="toc-text">为什么分层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%82%AE%E5%B1%80%E5%AE%9E%E4%BE%8B%EF%BC%88%E4%BC%A0%E7%BB%9F%E9%80%9A%E4%BF%A1%EF%BC%89"><span class="toc-number">1.1.5.</span> <span class="toc-text">邮局实例（传统通信）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3OSI%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">理解OSI模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OSI%E5%8D%8F%E8%AE%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">OSI协议模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OSI%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">OSI七层模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OSI%E4%B8%83%E5%B1%82%E7%9A%84%E5%8A%9F%E8%83%BD%E7%AE%80%E4%BB%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">OSI七层的功能简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3TCP-IP%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">理解TCP&#x2F;IP模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OSI%E6%A8%A1%E5%9E%8B%E4%B8%8ETCP-IP%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.3.1.</span> <span class="toc-text">OSI模型与TCP&#x2F;IP模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP-IP%E5%8D%8F%E8%AE%AE%E6%97%8F%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">TCP&#x2F;IP协议族的组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E5%B1%82PDU"><span class="toc-number">1.3.3.</span> <span class="toc-text">各层PDU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E4%B8%8E%E5%B1%82%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="toc-number">1.3.4.</span> <span class="toc-text">设备与层的对应关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1%E6%B5%81%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">数据通信流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">数据通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">数据封装过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="toc-number">1.4.3.</span> <span class="toc-text">数据解封装过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E8%A7%A3%E6%9E%90"><span class="toc-number">1.5.</span> <span class="toc-text">物理层解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.1.</span> <span class="toc-text">物理层概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E5%8A%9F%E8%83%BD"><span class="toc-number">1.5.2.</span> <span class="toc-text">物理层功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8"><span class="toc-number">1.5.3.</span> <span class="toc-text">物理层传输介质</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BA%BF%E5%88%B6%E4%BD%9C"><span class="toc-number">1.6.</span> <span class="toc-text">网线制作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E5%8F%8C%E7%BB%9E%E7%BA%BF"><span class="toc-number">1.6.1.</span> <span class="toc-text">制作双绞线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%8F%8C%E7%BB%9E%E7%BA%BF"><span class="toc-number">1.6.2.</span> <span class="toc-text">测试双绞线</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">14</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><!-- hexo injector body_end end --></body></html>
