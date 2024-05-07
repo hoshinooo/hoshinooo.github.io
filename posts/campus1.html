@@ -1,0 +1,582 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-园区网实现与安全1 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述浮动路由、VRRP协议的原理和配置、监控上行接口的配置、掌握VRRP的负载分担配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-园区网实现与安全1">
+<meta property="og:url" content="https://www.nicopilot.online/posts/campus1.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述浮动路由、VRRP协议的原理和配置、监控上行接口的配置、掌握VRRP的负载分担配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/5_cover.png">
+<meta property="article:published_time" content="2024-05-07T05:26:46.000Z">
+<meta property="article:modified_time" content="2024-05-07T05:26:46.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="园区网实现与安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/5_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/campus1.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-园区网实现与安全1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-07 13:26:46'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/5_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-园区网实现与安全1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-07T05:26:46.000Z" title="发表于 2024-05-07 13:26:46">2024-05-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-07T05:26:46.000Z" title="更新于 2024-05-07 13:26:46">2024-05-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-园区网实现与安全1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="园区网实现与安全"><a href="#园区网实现与安全" class="headerlink" title="园区网实现与安全"></a>园区网实现与安全</h1><h2 id="浮动路由"><a href="#浮动路由" class="headerlink" title="浮动路由"></a>浮动路由</h2><h3 id="网络经典故障"><a href="#网络经典故障" class="headerlink" title="网络经典故障"></a>网络经典故障</h3><p><strong>单路径故障</strong></p>
+<ul>
+<li>通信终端之间仅仅存在一个转发路径</li>
+</ul>
+<p><strong>单路径风险</strong></p>
+<ul>
+<li>当这条唯一的路径出现故障，终端之间的通信都会彻底中断</li>
+</ul>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>冗余路径</strong></p>
+<ul>
+<li>在互联设备之间增加一条冗余路径，实现备份作用</li>
+</ul>
+<h3 id="技术实现"><a href="#技术实现" class="headerlink" title="技术实现"></a>技术实现</h3><p><strong>浮动路由</strong></p>
+<ul>
+<li><p>浮动路由又称为路由备份，由两条或多条链路组成浮动路由</p>
+</li>
+<li><p>浮动路由指配置两条静态路由，这两条静态路由的目的地址相同，但是下一跳不同</p>
+</li>
+<li><p>给这两条静态路由设置不同优先级，优先级高的那条静态路由作为主链路，优先级低的那条静态路由作为备份链路</p>
+</li>
+<li><p>也叫浮动静态路由，是一种特殊的静态路由，用于提供一种备份路径</p>
+</li>
+<li><p>当主路径出现故障时，备份路径就会启动，保持网络的连通性</p>
+</li>
+<li><p>配置完浮动路由后，备份链路不进入路由表，只有当主链路出现故障时，备份链路才进入路由表</p>
+</li>
+<li><p>当主链路故障恢复后，主链路进入路由表，承担数据转发任务，备份链路变为不可用状态，移出路由表</p>
+</li>
+</ul>
+<p><strong>浮动路由的作用</strong></p>
+<ul>
+<li>预防单路径故障，保持网络的不中断</li>
+</ul>
+<p><strong>浮动路由的特点</strong></p>
+<ul>
+<li>浮动路由在同一时刻，数据只会由一条路径进行转发</li>
+</ul>
+<p><strong>浮动路由优先级</strong></p>
+<ul>
+<li>当去往同一个目的地有多条路由时，为了判断最优路由，各路由协议（包括静态路由）都被赋予了一个优先级</li>
+<li>优先级高的路由会成为最优路由，路由器会将最优路由条目放入本地IP核心路由表中</li>
+<li>路由优先级：优先级用数值表示，数值越小优先级越高</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">路由类别</th>
+<th align="center">路由优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Direct：直连路由</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">Static：静态路由</td>
+<td align="center">60</td>
+</tr>
+</tbody></table>
+<h3 id="浮动路由配置命令"><a href="#浮动路由配置命令" class="headerlink" title="浮动路由配置命令"></a>浮动路由配置命令</h3><p><img src="/../img/img_artical/net_sec/5.1.1.png" alt="5.1.1"></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]ip</span> <span class="string">route-static 192.168.4.0 24 192.168.2.2</span></span><br><span class="line"><span class="attr">[R1]ip</span> <span class="string">route-static 192.168.4.0 24 192.168.3.2 preference 70</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="浮动路由实验"><a href="#浮动路由实验" class="headerlink" title="浮动路由实验"></a>浮动路由实验</h3><p><strong>拓扑</strong></p>
+<p><img src="/../img/img_artical/net_sec/5.1.2.png" alt="5.1.2"></p>
+<p><strong>需求：配置浮动路由，实现链路冗余</strong></p>
+<p><strong>步骤：</strong></p>
+<ul>
+<li><p>第一步：配置PC的IP地址，子网掩码，网关</p>
+</li>
+<li><p>第二步：交换机配置VLAN，接口加入指定VLAN</p>
+<ul>
+<li><p>SW1交换机创建VLAN10</p>
+</li>
+<li><p>SW1交换机的所有接口都设置为Access模式，并加入VLAN10</p>
+</li>
+<li><p>SW2交换机创建VLAN40</p>
+</li>
+<li><p>SW2交换机的所有接口都设置为Access模式，并加入VLAN40</p>
+</li>
+</ul>
+</li>
+<li><p>第三步：路由器配置接口IP地址</p>
+</li>
+<li><p>第四步：路由器配置浮动路由</p>
+<ul>
+<li><p>配置192.168.3.0&#x2F;24为备份链路，指定路由优先级为70</p>
+</li>
+<li><p>配置192.168.2.0&#x2F;24为主链路，静态路由默认优先级为60</p>
+</li>
+</ul>
+</li>
+<li><p>第五步：验证与测试</p>
+<ul>
+<li><p>验证是否主链路转发数据</p>
+</li>
+<li><p>验证是否主链路路由进入路由表</p>
+</li>
+<li><p>让主链路出现故障，验证备份路由是否起作用</p>
+</li>
+<li><p>恢复主链路，验证主链路是否重新取代备份链路进行工作</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">配置命令：</span></span><br><span class="line"><span class="attr">第一步：配置PC的IP地址，子网掩码，网关</span></span><br><span class="line"></span><br><span class="line"><span class="attr">第二步：交换机配置VLAN，接口加入指定VLAN</span></span><br><span class="line"><span class="attr">1）SW1交换机创建VLAN10</span></span><br><span class="line"><span class="attr">2）SW1交换机的所有接口都设置为Access模式，并加入VLAN10</span></span><br><span class="line"><span class="attr">3）SW2交换机创建VLAN40</span></span><br><span class="line"><span class="attr">4）SW2交换机的所有接口都设置为Access模式，并加入VLAN40</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[SW1]vlan</span> <span class="string">10</span></span><br><span class="line"><span class="attr">[SW1]quit</span></span><br><span class="line"><span class="attr">[SW1]port-group</span> <span class="string">proup-member GigabitEthernet0/0/1 to GigabitEthernet0/0/3</span></span><br><span class="line"><span class="attr">[SW1-port-group]port</span> <span class="string">link-type access</span></span><br><span class="line"><span class="attr">[SW1-port-group]port</span> <span class="string">default vlan 10</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[SW2]vlan</span> <span class="string">40</span></span><br><span class="line"><span class="attr">[SW2]quit</span></span><br><span class="line"><span class="attr">[SW2]port-group</span> <span class="string">proup-member GigabitEthernet0/0/1 to GigabitEthernet0/0/2</span></span><br><span class="line"><span class="attr">[SW2-port-group]port</span> <span class="string">link-type access</span></span><br><span class="line"><span class="attr">[SW2-port-group]port</span> <span class="string">default vlan 40</span></span><br><span class="line"></span><br><span class="line"><span class="attr">第三步：路由器配置接口IP地址</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.254 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]interface</span> <span class="string">GigabitEthernet0/0/1</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/1]ip</span> <span class="string">address 192.168.2.1 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/1]interface</span> <span class="string">GigabitEthernet0/0/2</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/2]ip</span> <span class="string">address 192.168.3.1 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.4.254 24</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]interface</span> <span class="string">GigabitEthernet0/0/1</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/1]ip</span> <span class="string">address 192.168.2.2 24</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/1]interface</span> <span class="string">GigabitEthernet0/0/2</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/2]ip</span> <span class="string">address 192.168.3.2 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">第四步：路由器配置浮动路由</span></span><br><span class="line"><span class="attr">1）配置192.168.3.0/24为备份链路，指定路由优先级为70</span></span><br><span class="line"><span class="attr">2）配置192.168.4.0/24为主链路，静态路由默认优先级为60</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]ip</span> <span class="string">route-static 192.168.4.0 24 192.168.3.2 preference 70</span></span><br><span class="line"><span class="attr">[R1]ip</span> <span class="string">route-static 192.168.4.0 24 192.168.2.2</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]ip</span> <span class="string">route-static 192.168.1.0 24 192.168.3.1 preference 70</span></span><br><span class="line"><span class="attr">[R2]ip</span> <span class="string">route-static 192.168.1.0 24 192.168.2.1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">第五步：验证与测试</span></span><br><span class="line"><span class="attr">1）验证是否主链路转发数据</span></span><br><span class="line"><span class="attr">2）验证是否主链路路由进入路由表</span></span><br><span class="line"><span class="attr">3）让主链路出现故障，验证备份路由是否起作用</span></span><br><span class="line"><span class="attr">4）恢复主链路，验证主链路是否重新取代备份链路进行工作</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]display</span> <span class="string">ip routing-table</span></span><br><span class="line"><span class="attr">[R1]display</span> <span class="string">ip routing-table 192.168.4.3</span></span><br><span class="line"></span><br><span class="line"><span class="attr">备注：shutdown掉R1的g0/0/1</span> <span class="string">让主链路故障</span></span><br><span class="line"><span class="attr">验证备份链路是否工作</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="VRRP基本概念"><a href="#VRRP基本概念" class="headerlink" title="VRRP基本概念"></a>VRRP基本概念</h2><h3 id="网络经典故障-1"><a href="#网络经典故障-1" class="headerlink" title="网络经典故障"></a>网络经典故障</h3><p><strong>单网关面临的问题</strong></p>
+<ul>
+<li>当网关故障后，网段中的主机无法上网</li>
+</ul>
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>通过部署多网关的方式实现网关备份</strong></p>
+<p><strong>存在的问题</strong></p>
+<ul>
+<li>如何定义主机的网关地址</li>
+</ul>
+<h3 id="技术实现-1"><a href="#技术实现-1" class="headerlink" title="技术实现"></a>技术实现</h3><p><strong>VRRP</strong></p>
+<ul>
+<li>把多台路由设备联合组成一台虚拟的路由器配置一个虚拟网关IP地址</li>
+<li>虚拟网关IP作为主机的网关，实现网关的备份</li>
+</ul>
+<h3 id="VRRP概述"><a href="#VRRP概述" class="headerlink" title="VRRP概述"></a>VRRP概述</h3><p><strong>VRRP协议</strong></p>
+<ul>
+<li>Virtual Router Redundancy Protocol，虚拟路由冗余协议</li>
+<li>由IETF标准RFC2338定义，是公有标准协议，任何厂商设备都支持</li>
+<li>VRRP协议位于OSI模型第三层，协议号为112</li>
+<li>VRRP发送报文的方式为组播，地址为224.0.0.18</li>
+</ul>
+<p><strong>VRRP 的作用</strong></p>
+<ul>
+<li>实现多个真实网关的冗余备份</li>
+<li>实现数据转发的负载均衡</li>
+</ul>
+<p><strong>VRRP组成员角色</strong></p>
+<ul>
+<li>主路由器：Master  →  负责承担数据报文转发任务</li>
+<li>备份路由器：Backup  →  负责监控主路由器状态</li>
+<li>虚拟路由器 ：Virtual → ⼜称 VRRP 备份组，虚拟路由器的 IP 地址作为局域网中主机的默认网关</li>
+</ul>
+<p><strong>VRRP主备角色选择原则</strong></p>
+<ul>
+<li>首先比较优先级，优先级大的为 master</li>
+<li>如果优先级⼀致，其次比较 IP 地址，IP 地址⼤的为 master （模拟器⽆法模拟）</li>
+</ul>
+<p><strong>VRRP须知</strong></p>
+<ul>
+<li>在⼀个 VRRP 备份组中，Master 设备有且仅有⼀个</li>
+<li>VRRP 协议包括两个版本：VRRPv2 和 VRRPv3</li>
+<li>VRRPv2 仅适用于 IPv4 网络，VRRPv3 适用于 IPv4 和 IPv6 两种网络</li>
+<li>VRRP 协议报文封装在 IP 报头的后面，协议号是 112</li>
+<li>VRRP 通告报⽂源地址为主路由器物理接⼝的 IP 地址（不是虚拟 IP 地址），⽬的地址是 224.0.0.18</li>
+</ul>
+<h3 id="VRRP基本概念-1"><a href="#VRRP基本概念-1" class="headerlink" title="VRRP基本概念"></a>VRRP基本概念</h3><p><strong>VRRP路由器</strong></p>
+<ul>
+<li>运行VRRP协议的路由器称为VRRP路由器</li>
+<li>VRRP是配置在路由器的接口上，而且也是基于接口工作的</li>
+</ul>
+<p><strong>VRID：Virtual Router Identifier（虚拟路由标识符）</strong></p>
+<ul>
+<li><p>又称备份组组号</p>
+</li>
+<li><p>一个VRRP组由多台路由器（的接口）组成，用相同的VRID进行表示</p>
+</li>
+<li><p>同一个VRRP组的路由器之间交互VRRP协议报文产生一台虚拟路由器</p>
+</li>
+<li><p>一个VRRP组中只能出现一台Master路由器</p>
+</li>
+</ul>
+<p><strong>虚拟路由器</strong></p>
+<ul>
+<li><p>又称VRRP备份组</p>
+</li>
+<li><p>每一个VRRP组中都产生一台虚拟路由器（Virture Router），该路由器并非真实存在的物理设备，而是由VRRP虚拟出来的逻辑设备</p>
+</li>
+<li><p>一个VRRP组只产生一台虚拟路由器</p>
+</li>
+</ul>
+<p><strong>虚拟IP地址及虚拟MAC地址</strong></p>
+<ul>
+<li><p>虚拟路由器拥有IP地址和MAC地址</p>
+</li>
+<li><p>其中IP地址由管理员配置VRRP时指定</p>
+</li>
+<li><p>虚拟IP地址通常作为用户主机的网关地址</p>
+</li>
+<li><p>虚拟MAC地址根据虚拟路由器 VRID 生成的，一个虚拟路由器拥有⼀个虚拟 MAC 地址</p>
+<p>如果 VRID 是 1： 虚拟 MAC 地址就是： 00-00-5E-00-01-01</p>
+<p>如果 VRID 是 5： 虚拟 MAC 地址就是： 00-00-5E-00-01-05</p>
+</li>
+</ul>
+<p><strong>Master路由器</strong></p>
+<ul>
+<li>也被称为主路由器</li>
+<li>负责转发用户上网数据</li>
+<li>Master路由器会周期性地发送VRRP报文，用于通知同一个VRRP组中的Backup路由器关于自己的存活状态</li>
+</ul>
+<p><strong>Backup路由器</strong></p>
+<ul>
+<li>也被称为备份路由器</li>
+<li>负责监控主路由器状态，事实监听Master路由器发出来的VRRP报文</li>
+<li>当Master路由器故障时，Backup路由器会接替Master路由器的工作，称为新的Master路由器，负责转发用户的上网数据</li>
+</ul>
+<p><strong>Priority</strong></p>
+<ul>
+<li>优先级值</li>
+<li>用来选举Master路由器</li>
+<li>数值越大越优先，默认100，取值范围为0~255</li>
+<li>如果优先级值相等则比较接口IP地址大小，IP地址越大越优先</li>
+</ul>
+<h3 id="VRRP协议报文"><a href="#VRRP协议报文" class="headerlink" title="VRRP协议报文"></a>VRRP协议报文</h3><p><strong>VRRP协议报文</strong></p>
+<ul>
+<li>VRRP协议报文基于组播方式发送，只能在同一个广播域传递</li>
+<li>VRRP协议报文的目的组播地址为224.0.0.18</li>
+<li>VRRP协议封装在IP报头后面，协议号为112</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.3.png" alt="5.1.3"></p>
+<h2 id="VRRP主备切换"><a href="#VRRP主备切换" class="headerlink" title="VRRP主备切换"></a>VRRP主备切换</h2><h3 id="VRRP主备选举"><a href="#VRRP主备选举" class="headerlink" title="VRRP主备选举"></a>VRRP主备选举</h3><p><strong>VRRP协议状态机</strong></p>
+<ul>
+<li>Initialize（初始状态）</li>
+<li>Master（活动状态）</li>
+<li>Backup（备份状态）</li>
+</ul>
+<h3 id="VRRP主备选举-1"><a href="#VRRP主备选举-1" class="headerlink" title="VRRP主备选举"></a>VRRP主备选举</h3><p><strong>VRRP主备选举</strong></p>
+<ul>
+<li>配置完VRRP的设备初始时默认Initialize状态</li>
+<li>若设备优先级小于255，则会先切换至Backup状态，然后再切换至Master状态</li>
+<li>R1和R2通过相互发送VRRP报文进行Master选举</li>
+<li>R1优先级为200，R2优先级为100，则R1被选为Master路由器</li>
+<li>R1被选举为Master路由器后，立即发送免费ARP报文将虚拟MAC地址通告给与它连接的设备和主机</li>
+</ul>
+<h3 id="VRRP主备切换-1"><a href="#VRRP主备切换-1" class="headerlink" title="VRRP主备切换"></a>VRRP主备切换</h3><p><strong>VRRP主备切换–R1主动退出VRRP组</strong></p>
+<ul>
+<li>R1主动退出VRRP组，如删除VRRP配置</li>
+<li>R1发送优先级为0的报文</li>
+<li>R2成为新的Master</li>
+<li>切换时间为偏移时间</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.4.png" alt="5.1.4"></p>
+<p><strong>VRRP主备切换–R1设备故障</strong></p>
+<ul>
+<li>R1设备故障，无法发送报文</li>
+<li>R2等待定时器超时</li>
+<li>R2称为新的Master</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.5.png" alt="5.1.5"></p>
+<p><strong>VRRP的两个定时器</strong></p>
+<ul>
+<li>ADVER_INTERVAL定时器：Master发送VRRP通告报文时间周期，默认1s</li>
+<li>MASTER_DOWN定时器：Backup设备监听该定时器超时后，成为Master设备</li>
+<li>MASTER_DOWN定时器计算公式如下</li>
+</ul>
+<p>​	MASTER_DOWN&#x3D;(3*ADVER_INTERVAL)+Skew_time（便宜时间）</p>
+<p>​	其中Skew_time&#x3D;（256-Priority）&#x2F;256</p>
+<h3 id="VRRP主备回切"><a href="#VRRP主备回切" class="headerlink" title="VRRP主备回切"></a>VRRP主备回切</h3><p><strong>VRRP主备回切</strong></p>
+<ul>
+<li>R1从故障恢复后，重新进行主备选举</li>
+<li>R1优先级为130大于R2</li>
+<li>且R1开启了抢占模式</li>
+<li>R1重新成为Master设备</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.6.png" alt="5.1.6"></p>
+<p><strong>VRRP抢占模式</strong></p>
+<ul>
+<li>抢占模式（默认开启）：如果Backup路由器开启了抢占功能，那么当他发现Master路由器的优先级比自己更低时，它将立即切换至Master状态，成为新的Master设备</li>
+<li>非抢占模式：如果Backup路由器没有开启抢占功能，那么即时他发现Master路由器的优先级比自己更低，也只能保持Backup状态</li>
+</ul>
+<h3 id="VRRP工作原理"><a href="#VRRP工作原理" class="headerlink" title="VRRP工作原理"></a>VRRP工作原理</h3><p><strong>VRRP工作过程</strong></p>
+<ul>
+<li><p>VRRP备份组中的设备根据优先级选举出Master-主路由器</p>
+</li>
+<li><p>主路由器发送免费ARP报文，将虚拟MAC地址通知给与它连接的设备，承担数据转发任务</p>
+</li>
+<li><p>主路由器，周期性发送VRRP通告报文（三层心跳报文）</p>
+</li>
+<li><p>通告报文发送周期时间：默认为1s</p>
+</li>
+<li><p>通告报文发送的目的地址是组播地址：224.0.0.18</p>
+</li>
+<li><p>备份路由器，监控主路由器状态，在3倍的发送周期后，如果无法收到主路由器发送的VRRP通告报文，备份路由器升级为主路由器承担流量发送任务，新的主路由器会立即发送免费 ARP 报文，刷新与它连接设备中的 MAC 表项，从而把⽤户流量引到新的 Master 设备上来</p>
+</li>
+<li><p>原主路由器故障恢复时，⾸先切换至 Backup 状态：</p>
+<p>如果原 Master 已开启抢占模式，并且对比优先级，发现⾃⼰的优先级⾼，则主动将自己切换成 Master。</p>
+<p>如果原 Master 没有开启抢占模式，即便优先级⾼，也不会进⾏抢占，依然保持 Backup 状态</p>
+</li>
+</ul>
+<h2 id="VRRP配置"><a href="#VRRP配置" class="headerlink" title="VRRP配置"></a>VRRP配置</h2><h3 id="VRRP配置命令"><a href="#VRRP配置命令" class="headerlink" title="VRRP配置命令"></a>VRRP配置命令</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.251 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 virtual-ip 192.168.1.254     //配置VRRP虚拟网关地址</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 priority 130                 //配置VRRP优先级</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.252 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 virtual-ip 192.168.1.254</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="VRRP监控上行接口"><a href="#VRRP监控上行接口" class="headerlink" title="VRRP监控上行接口"></a>VRRP监控上行接口</h2><h3 id="VRRP监视上行端口"><a href="#VRRP监视上行端口" class="headerlink" title="VRRP监视上行端口"></a>VRRP监视上行端口</h3><p><img src="/../img/img_artical/net_sec/5.1.7.png" alt="5.1.7"></p>
+<h3 id="VRRP监视上行端口配置"><a href="#VRRP监视上行端口配置" class="headerlink" title="VRRP监视上行端口配置"></a>VRRP监视上行端口配置</h3><p><strong>配置命令</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1-G0/0/0]vrrp</span> <span class="string">vrid 1 track interface GigabitEthernet0/0/1 reduced 50</span></span><br><span class="line"><span class="attr">//如果R1的g0/0/1接口状态为down那么VRRP的优先级就减去50</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="上行端口故障恢复"><a href="#上行端口故障恢复" class="headerlink" title="上行端口故障恢复"></a>上行端口故障恢复</h3><p><strong>主路由器故障链路或端口恢复</strong></p>
+<ul>
+<li>主路由器恢复优先级</li>
+<li>主路由器抢占回Master身份，继续转发用户流量</li>
+</ul>
+<p><strong>VRRP默认开启抢占功能</strong></p>
+<ul>
+<li>VRRP在主路由器设备上，必须开启</li>
+</ul>
+<h2 id="VRRP负载分担"><a href="#VRRP负载分担" class="headerlink" title="VRRP负载分担"></a>VRRP负载分担</h2><h3 id="VRRP单组缺陷"><a href="#VRRP单组缺陷" class="headerlink" title="VRRP单组缺陷"></a>VRRP单组缺陷</h3><p><strong>如果每个网段只有一个VRRP备份组</strong></p>
+<ul>
+<li>主路由器数据转发压力大</li>
+<li>备份路由器不转发任何数据</li>
+<li>网络设备利用率低</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.8.png" alt="5.1.8"></p>
+<h3 id="VRRP负载分担-1"><a href="#VRRP负载分担-1" class="headerlink" title="VRRP负载分担"></a>VRRP负载分担</h3><p><strong>VRRP负载分担</strong></p>
+<ul>
+<li>创建多个备份组</li>
+<li>每个备份组中都选举Master</li>
+<li>实现流量转发的负载分担</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.1.9.png" alt="5.1.9"></p>
+<h3 id="VRRP负载分担配置"><a href="#VRRP负载分担配置" class="headerlink" title="VRRP负载分担配置"></a>VRRP负载分担配置</h3><p><strong>配置VRRP备份组1</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.251 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 virtual-ip 192.168.1.254     //配置VRRP虚拟网关地址</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 priority 130                 //配置VRRP优先级</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 track int g0/0/1 reduced 50</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.252 24</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 1 virtual-ip 192.168.1.254</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置VRRP备份组2</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.251 24</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 2 virtual-ip 192.168.1.253</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]interface</span> <span class="string">GigabitEthernet0/0/0</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]ip</span> <span class="string">address 192.168.1.252 24</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 2 virtual-ip 192.168.1.253     //配置VRRP虚拟网关地址</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 2 priority 130                 //配置VRRP优先级</span></span><br><span class="line"><span class="attr">[R2-GigabitEthernet0/0/0]vrrp</span> <span class="string">vrid 2 track int g0/0/1 reduced 50</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/campus1.html">https://www.nicopilot.online/posts/campus1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%AE%9E%E7%8E%B0%E4%B8%8E%E5%AE%89%E5%85%A8/">园区网实现与安全</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/5_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/campus2.html" title="网络安全-园区网实现与安全2"><img class="cover" src="/img/cover/net_sec/5_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-园区网实现与安全2</div></div></a></div><div class="next-post pull-right"><a href="/posts/switching4.html" title="网络安全-弹性交换网络4"><img class="cover" src="/img/cover/net_sec/4_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-弹性交换网络4</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/campus2.html" title="网络安全-园区网实现与安全2"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全2</div></div></a></div><div><a href="/posts/campus3.html" title="网络安全-园区网实现与安全3"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全3</div></div></a></div><div><a href="/posts/campus4.html" title="网络安全-园区网实现与安全4"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全4</div></div></a></div><div><a href="/posts/campus5.html" title="网络安全-园区网实现与安全5"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%AE%9E%E7%8E%B0%E4%B8%8E%E5%AE%89%E5%85%A8"><span class="toc-number">1.</span> <span class="toc-text">园区网实现与安全</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1"><span class="toc-number">1.1.</span> <span class="toc-text">浮动路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%8F%E5%85%B8%E6%95%85%E9%9A%9C"><span class="toc-number">1.1.1.</span> <span class="toc-text">网络经典故障</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.1.2.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">技术实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.1.4.</span> <span class="toc-text">浮动路由配置命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.1.5.</span> <span class="toc-text">浮动路由实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VRRP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">VRRP基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%8F%E5%85%B8%E6%95%85%E9%9A%9C-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">网络经典故障</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">技术实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E6%A6%82%E8%BF%B0"><span class="toc-number">1.2.4.</span> <span class="toc-text">VRRP概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-1"><span class="toc-number">1.2.5.</span> <span class="toc-text">VRRP基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"><span class="toc-number">1.2.6.</span> <span class="toc-text">VRRP协议报文</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VRRP%E4%B8%BB%E5%A4%87%E5%88%87%E6%8D%A2"><span class="toc-number">1.3.</span> <span class="toc-text">VRRP主备切换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E4%B8%BB%E5%A4%87%E9%80%89%E4%B8%BE"><span class="toc-number">1.3.1.</span> <span class="toc-text">VRRP主备选举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E4%B8%BB%E5%A4%87%E9%80%89%E4%B8%BE-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">VRRP主备选举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E4%B8%BB%E5%A4%87%E5%88%87%E6%8D%A2-1"><span class="toc-number">1.3.3.</span> <span class="toc-text">VRRP主备切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E4%B8%BB%E5%A4%87%E5%9B%9E%E5%88%87"><span class="toc-number">1.3.4.</span> <span class="toc-text">VRRP主备回切</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.5.</span> <span class="toc-text">VRRP工作原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VRRP%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">VRRP配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.4.1.</span> <span class="toc-text">VRRP配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VRRP%E7%9B%91%E6%8E%A7%E4%B8%8A%E8%A1%8C%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.5.</span> <span class="toc-text">VRRP监控上行接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E7%9B%91%E8%A7%86%E4%B8%8A%E8%A1%8C%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.5.1.</span> <span class="toc-text">VRRP监视上行端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E7%9B%91%E8%A7%86%E4%B8%8A%E8%A1%8C%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.2.</span> <span class="toc-text">VRRP监视上行端口配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E8%A1%8C%E7%AB%AF%E5%8F%A3%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D"><span class="toc-number">1.5.3.</span> <span class="toc-text">上行端口故障恢复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VRRP%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85"><span class="toc-number">1.6.</span> <span class="toc-text">VRRP负载分担</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E5%8D%95%E7%BB%84%E7%BC%BA%E9%99%B7"><span class="toc-number">1.6.1.</span> <span class="toc-text">VRRP单组缺陷</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85-1"><span class="toc-number">1.6.2.</span> <span class="toc-text">VRRP负载分担</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VRRP%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85%E9%85%8D%E7%BD%AE"><span class="toc-number">1.6.3.</span> <span class="toc-text">VRRP负载分担配置</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">23</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

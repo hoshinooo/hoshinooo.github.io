@@ -1,0 +1,391 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-园区网实现与安全4 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述ACL的原理与作用、基本ACL的应用场景和配置、高级ACL的应用场景和配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-园区网实现与安全4">
+<meta property="og:url" content="https://www.nicopilot.online/posts/campus4.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述ACL的原理与作用、基本ACL的应用场景和配置、高级ACL的应用场景和配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/5_cover.png">
+<meta property="article:published_time" content="2024-05-07T06:03:06.000Z">
+<meta property="article:modified_time" content="2024-05-07T06:03:06.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="园区网实现与安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/5_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/campus4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-园区网实现与安全4',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-07 14:03:06'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/5_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-园区网实现与安全4</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-07T06:03:06.000Z" title="发表于 2024-05-07 14:03:06">2024-05-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-07T06:03:06.000Z" title="更新于 2024-05-07 14:03:06">2024-05-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-园区网实现与安全4"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="园区网实现与安全"><a href="#园区网实现与安全" class="headerlink" title="园区网实现与安全"></a>园区网实现与安全</h1><h2 id="ACL原理"><a href="#ACL原理" class="headerlink" title="ACL原理"></a>ACL原理</h2><h3 id="安全问题日益严峻"><a href="#安全问题日益严峻" class="headerlink" title="安全问题日益严峻"></a>安全问题日益严峻</h3><p><strong>随着网络的飞速发展，网络安全问题日益突出</strong></p>
+<ul>
+<li>企业重要服务器资源被随意访问，机密信息容易泄露，存在安全隐患</li>
+<li>Internet病毒肆意侵略企业内网，内网环境的安全性堪忧</li>
+<li>网络带宽被各类业务占用，导致重要的业务带宽得不到保障</li>
+</ul>
+<h3 id="ACL应用场景"><a href="#ACL应用场景" class="headerlink" title="ACL应用场景"></a>ACL应用场景</h3><p><strong>企业需求</strong></p>
+<ul>
+<li>为保证财务数据安全，禁止售后部门访问财务服务器，允许总裁办访问</li>
+<li>禁止PC1访问财务服务器，允许PC2访问财务服务器</li>
+</ul>
+<p><strong>解决方案</strong></p>
+<ul>
+<li>配置ACL，控制数据包转发</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.4.1.png" alt="5.4.1"></p>
+<h3 id="ACL概述"><a href="#ACL概述" class="headerlink" title="ACL概述"></a>ACL概述</h3><p><strong>ACL（Access Control List），访问控制列表</strong></p>
+<ul>
+<li>ACL是一个包含了多个规则的列表，不同规则通过”规则号”进行区分</li>
+<li>每条”规则”都包含：动作 + 条件两部分内容</li>
+<li>动作分为：允许（permit）和 拒绝（deny）</li>
+<li>条件分为：地址和端口等···</li>
+<li>主要用于在网络中的众多数据报文中，”抓取”感兴趣的数据</li>
+<li>ACL本质上是一种报文过滤器，可以根据规则对报文进行过滤，按照规则的动作选择允许报文通过和阻止报文通过</li>
+<li>ACL的作用是对数据报文进行访问控制，提高网络安全性</li>
+</ul>
+<h3 id="ACL作用"><a href="#ACL作用" class="headerlink" title="ACL作用"></a>ACL作用</h3><ul>
+<li><p>对网络中数据报文进行过滤，做访问控制，</p>
+</li>
+<li><p>提高内网安全性， 提高带宽利用率</p>
+</li>
+</ul>
+<h3 id="ACL命令解析"><a href="#ACL命令解析" class="headerlink" title="ACL命令解析"></a>ACL命令解析</h3><p><strong>ACL配置命令举例</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]acl</span> <span class="string">2000</span></span><br><span class="line"><span class="attr">[R1-acl-2000]rule</span> <span class="string">10 permit source 192.168.1.0 0.0.0.255</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>ACL命令解析</strong></p>
+<ul>
+<li>2000：表示的是”ACL的名字”，可以通过ID表示，也可以通过字符表示</li>
+<li>rule：表示的是”规则”</li>
+<li>10：表示的是”规则号”，取值范围是0-4294967294</li>
+<li>permit：表示的是动作 - 允许；（deny表示的是动作 - 拒绝）</li>
+<li>source：表示当前的”规则”检查的是数据包中的源地址</li>
+<li>192.168.1.0：表示的是源IP地址段</li>
+<li>0.0.0.255：表示的是与源IP地址段对应的通配符掩码</li>
+</ul>
+<h3 id="ACL类型"><a href="#ACL类型" class="headerlink" title="ACL类型"></a>ACL类型</h3><p><strong>基本ACL</strong></p>
+<ul>
+<li>只能匹配”源IP地址”</li>
+<li>匹配数据不精准</li>
+<li>ACL的ID取值范围是：2000 - 2999</li>
+</ul>
+<p><strong>高级ACL</strong></p>
+<ul>
+<li>可以匹配：源和目的IP地址、源和目的端口号、协议号等</li>
+<li>匹配的数据更加精准</li>
+<li>ACL的ID取值范围是：3000 - 3999</li>
+</ul>
+<h3 id="ACL组成"><a href="#ACL组成" class="headerlink" title="ACL组成"></a>ACL组成</h3><p>**ACL编号：用于标识ACL **</p>
+<ul>
+<li>基本：2000-2999</li>
+<li>高级：3000-3999</li>
+</ul>
+<p><strong>规则：即描述报文匹配条件的判断语句</strong></p>
+<ul>
+<li>规则编号：用于标识规则，范围： 0～4294967294，规则号越小越好， 规则号可以手动指定，也可以根据步长值自动分配</li>
+<li>动作：包括permit &#x2F; deny两种动作，表示允许 &#x2F; 拒绝</li>
+<li>匹配项：地址、端口、通配符····</li>
+</ul>
+<p><strong>IP地址通配符也是有0和1组成的</strong></p>
+<ul>
+<li>“0”表示”检查相应的位”，”1”表示”不检查相应的位”</li>
+<li>总结：检查0，忽略1</li>
+</ul>
+<h3 id="ACL配置机制"><a href="#ACL配置机制" class="headerlink" title="ACL配置机制"></a>ACL配置机制</h3><p><strong>ACL配置顺序</strong></p>
+<ul>
+<li>根据ACL规则编号从小到大匹配（编号越小越优先被匹配）</li>
+</ul>
+<p><strong>ACL匹配机制</strong></p>
+<ul>
+<li><p>匹配即停止</p>
+</li>
+<li><p>如果没有匹配到第一条规则，向下查找第二条规则，如果匹配，则按照第二条规则的动作去执行</p>
+</li>
+<li><p>如果所有规则都无法匹配，则执行隐含规则</p>
+<p>允许所有：只要使用traffic-filter调用ACL规则时默认规则是允许所有</p>
+<p>拒绝所有：只要不使用traffic-filter调用ACL就是拒绝所有</p>
+</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.4.2.png" alt="5.4.2"></p>
+<h2 id="基本ACL配置"><a href="#基本ACL配置" class="headerlink" title="基本ACL配置"></a>基本ACL配置</h2><h3 id="配置思路"><a href="#配置思路" class="headerlink" title="配置思路"></a>配置思路</h3><p><strong>企业需求：禁止PC1访问财务服务器，允许PC2访问</strong></p>
+<p><img src="/../img/img_artical/net_sec/5.4.3.png" alt="5.4.3"></p>
+<h3 id="基本ACL配置命令"><a href="#基本ACL配置命令" class="headerlink" title="基本ACL配置命令"></a>基本ACL配置命令</h3><p><strong>配置ACL</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]acl</span> <span class="string">2000                                                 //创建acl2000</span></span><br><span class="line"><span class="attr">[R1-acl-2000]rule</span> <span class="string">10 deny source 192.168.1.0 0.0.0.255       //配置acl规则</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R1-g0/0/0]traffic-filter</span> <span class="string">outbound acl 2000                  //在接口上调用acl2000</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="高级ACL配置"><a href="#高级ACL配置" class="headerlink" title="高级ACL配置"></a>高级ACL配置</h2><h3 id="实验需求"><a href="#实验需求" class="headerlink" title="实验需求"></a>实验需求</h3><p><strong>实验需求</strong></p>
+<ul>
+<li>售后部仅仅能访问Server1上的Web服务，不能访问其他服务</li>
+<li>售后部可以访问行政部的所有设备的任何服务</li>
+<li>除了上述权限外，售后部不能访问网络中的其他任何主机</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.4.4.png" alt="5.4.4"></p>
+<h3 id="高级ACL配置命令"><a href="#高级ACL配置命令" class="headerlink" title="高级ACL配置命令"></a>高级ACL配置命令</h3><p><strong>配置ACL</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]acl</span> <span class="string">3000                                                                                                 //创建acl3000</span></span><br><span class="line"><span class="attr">[R1-acl-3000]rule</span> <span class="string">10 permit tcp source 192.168.1.1 0 destination 192.168.3.1 0 destination-port eq 80        //配置acl规则</span></span><br><span class="line"><span class="attr">[R1-acl-3000]rule</span> <span class="string">20 permit ip source 192.168.1.1 0 destination 192.168.2.0 0.0.0.255                        //配置acl规则</span></span><br><span class="line"><span class="attr">[R1-acl-3000]rule</span> <span class="string">30 deny ip source 192.168.1.1 0 destination any                                            //配置acl规则</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">g0/0/2</span></span><br><span class="line"><span class="attr">[R1-g0/0/2]traffic-filter</span> <span class="string">outbound acl 3000                                                                  //在接口上调用acl3000</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="高级ACL之ICMP"><a href="#高级ACL之ICMP" class="headerlink" title="高级ACL之ICMP"></a>高级ACL之ICMP</h2><h3 id="实验需求-1"><a href="#实验需求-1" class="headerlink" title="实验需求"></a>实验需求</h3><p><strong>实验需求</strong></p>
+<ul>
+<li>售后部主机仅仅能 ping通Server1，不能访问Server1其他服务</li>
+<li>售后部主机可以访问行政部的所有设备的任何服务</li>
+<li>除了上述权限外，售后部不能访问网络中的其他任何主机</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.4.5.png" alt="5.4.5"></p>
+<h3 id="高级ACL配置命令-1"><a href="#高级ACL配置命令-1" class="headerlink" title="高级ACL配置命令"></a>高级ACL配置命令</h3><p><strong>配置ACL</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[R1]acl 3000                                                                           //创建acl3000</span><br><span class="line">[R1-acl-3000]rule 10 permit icmp source 192.168.1.1 0 destination 192.168.3.1 0        //配置acl规则</span><br><span class="line">[R1-acl-3000]rule 20 permit ip source 192.168.1.1 0 destination 192.168.2.0 0.0.0.255  //配置acl规则</span><br><span class="line">[R1-acl-3000]rule 30 deny ip source 192.168.1.1 0 destination any                      //配置acl规则</span><br><span class="line">[R1]interface g0/0/2</span><br><span class="line">[R1-g0/0/2]traffic-filter outbound acl 3000                                            //在接口上调用acl3000</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="基本ACL之Telnet"><a href="#基本ACL之Telnet" class="headerlink" title="基本ACL之Telnet"></a>基本ACL之Telnet</h2><h3 id="实验需求-2"><a href="#实验需求-2" class="headerlink" title="实验需求"></a>实验需求</h3><p><strong>实验需求</strong></p>
+<ul>
+<li>为了便于设备管理，为设备开启远程管理功能，登录密码:NTD</li>
+<li>仅仅允许R1的192.168.1.254 远程登录R2，其他设备不可以</li>
+<li>拒绝R1的任何IP地址远程登录 R3，其他设备都可以</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/5.4.6.png" alt="5.4.6"></p>
+<h3 id="配置远程访问功能"><a href="#配置远程访问功能" class="headerlink" title="配置远程访问功能"></a>配置远程访问功能</h3><p><strong>配置远程访问</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]user-interface</span> <span class="string">vty 0 4</span></span><br><span class="line"><span class="attr">[R2-ui-vty0-4]authentication-mode</span> <span class="string">password</span></span><br><span class="line"><span class="attr">please</span> <span class="string">configure the login password (maximum length 16):NTD</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R3]user-interface</span> <span class="string">vty 0 4</span></span><br><span class="line"><span class="attr">[R3]authentication-mode</span> <span class="string">password</span></span><br><span class="line"><span class="attr">please</span> <span class="string">configure the login password (maximum length 16):NTD</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="基本ACL配置命令-1"><a href="#基本ACL配置命令-1" class="headerlink" title="基本ACL配置命令"></a>基本ACL配置命令</h3><p><strong>配置ACL</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]acl</span> <span class="string">2000                                          //创建acl2000</span></span><br><span class="line"><span class="attr">[R2-acl-2000]rule</span> <span class="string">10 permit source 192.168.1.254 0    //配置acl规则</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]user-interface</span> <span class="string">vty 0 4</span></span><br><span class="line"><span class="attr">[R2-ui-vty0-4]acl</span> <span class="string">2000 inbound                        //在接口上调用acl2000</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R3]acl</span> <span class="string">2000                                          //创建acl2000</span></span><br><span class="line"><span class="attr">[R3-acl-2000]rule</span> <span class="string">10 deny source 192.168.1.254 0      //配置acl规则</span></span><br><span class="line"><span class="attr">[R3-acl-2000]rule</span> <span class="string">20 deny source 192.168.12.1 0       //配置acl规则</span></span><br><span class="line"><span class="attr">[R3-acl-2000]rule</span> <span class="string">30 permit source any                //配置acl规则</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R3]user-interface</span> <span class="string">vty 0 4</span></span><br><span class="line"><span class="attr">[R3-ui-vty0-4]acl</span> <span class="string">2000 inbound                        //在接口上调用acl2000</span></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/campus4.html">https://www.nicopilot.online/posts/campus4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%AE%9E%E7%8E%B0%E4%B8%8E%E5%AE%89%E5%85%A8/">园区网实现与安全</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/5_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/campus5.html" title="网络安全-园区网实现与安全5"><img class="cover" src="/img/cover/net_sec/5_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-园区网实现与安全5</div></div></a></div><div class="next-post pull-right"><a href="/posts/campus3.html" title="网络安全-园区网实现与安全3"><img class="cover" src="/img/cover/net_sec/5_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-园区网实现与安全3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/campus1.html" title="网络安全-园区网实现与安全1"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全1</div></div></a></div><div><a href="/posts/campus2.html" title="网络安全-园区网实现与安全2"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全2</div></div></a></div><div><a href="/posts/campus3.html" title="网络安全-园区网实现与安全3"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全3</div></div></a></div><div><a href="/posts/campus5.html" title="网络安全-园区网实现与安全5"><img class="cover" src="/img/cover/net_sec/5_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-园区网实现与安全5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%AE%9E%E7%8E%B0%E4%B8%8E%E5%AE%89%E5%85%A8"><span class="toc-number">1.</span> <span class="toc-text">园区网实现与安全</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ACL%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">ACL原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E6%97%A5%E7%9B%8A%E4%B8%A5%E5%B3%BB"><span class="toc-number">1.1.1.</span> <span class="toc-text">安全问题日益严峻</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.1.2.</span> <span class="toc-text">ACL应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">ACL概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.4.</span> <span class="toc-text">ACL作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90"><span class="toc-number">1.1.5.</span> <span class="toc-text">ACL命令解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.6.</span> <span class="toc-text">ACL类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E7%BB%84%E6%88%90"><span class="toc-number">1.1.7.</span> <span class="toc-text">ACL组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E9%85%8D%E7%BD%AE%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.8.</span> <span class="toc-text">ACL配置机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%ACACL%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">基本ACL配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.1.</span> <span class="toc-text">配置思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%ACACL%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.2.</span> <span class="toc-text">基本ACL配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7ACL%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.</span> <span class="toc-text">高级ACL配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E9%9C%80%E6%B1%82"><span class="toc-number">1.3.1.</span> <span class="toc-text">实验需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7ACL%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.2.</span> <span class="toc-text">高级ACL配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7ACL%E4%B9%8BICMP"><span class="toc-number">1.4.</span> <span class="toc-text">高级ACL之ICMP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E9%9C%80%E6%B1%82-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">实验需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7ACL%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="toc-number">1.4.2.</span> <span class="toc-text">高级ACL配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%ACACL%E4%B9%8BTelnet"><span class="toc-number">1.5.</span> <span class="toc-text">基本ACL之Telnet</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E9%9C%80%E6%B1%82-2"><span class="toc-number">1.5.1.</span> <span class="toc-text">实验需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%E5%8A%9F%E8%83%BD"><span class="toc-number">1.5.2.</span> <span class="toc-text">配置远程访问功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%ACACL%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="toc-number">1.5.3.</span> <span class="toc-text">基本ACL配置命令</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">23</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>
