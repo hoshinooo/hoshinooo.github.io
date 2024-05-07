@@ -1,0 +1,552 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-弹性交换网络2 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述环路的危害、STP协议作用及原理、MSTP的优势及MSTP负载均衡的配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-弹性交换网络2">
+<meta property="og:url" content="https://www.nicopilot.online/posts/switching2.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述环路的危害、STP协议作用及原理、MSTP的优势及MSTP负载均衡的配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/4_cover.png">
+<meta property="article:published_time" content="2024-05-07T01:05:52.000Z">
+<meta property="article:modified_time" content="2024-05-07T01:05:52.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="弹性交换网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/4_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/switching2.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-弹性交换网络2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-07 09:05:52'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/4_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-弹性交换网络2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-07T01:05:52.000Z" title="发表于 2024-05-07 09:05:52">2024-05-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-07T01:05:52.000Z" title="更新于 2024-05-07 09:05:52">2024-05-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-弹性交换网络2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="弹性交换网络"><a href="#弹性交换网络" class="headerlink" title="弹性交换网络"></a>弹性交换网络</h1><h2 id="STP协议概述"><a href="#STP协议概述" class="headerlink" title="STP协议概述"></a>STP协议概述</h2><h3 id="单点故障"><a href="#单点故障" class="headerlink" title="单点故障"></a>单点故障</h3><p><strong>PC之间的互通链路仅仅存在1个</strong></p>
+<ul>
+<li>任何一条链路出现问题，PC之间都会无法通信</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.1.png" alt="4.2.1"></p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>提高网络可靠性</strong></p>
+<ul>
+<li>增加冗余&#x2F;备份链路</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.2.png" alt="4.2.2"></p>
+<h3 id="产生新的问题"><a href="#产生新的问题" class="headerlink" title="产生新的问题"></a>产生新的问题</h3><p><strong>增加备份链路后交换网络上产生二层环路</strong></p>
+<ul>
+<li><p>PC1访问PC2，PC1知道PC2的IP地址，但是不知识PC2的MAC地址</p>
+</li>
+<li><p>PC1会发送ARP广播(目的MAC为全FFFF数据)</p>
+</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.3.png" alt="4.2.3"></p>
+<p><strong>环路导致广播风暴</strong></p>
+<ul>
+<li>交换机收到广播帧后，会从除接收端口外的其他所有接口广播</li>
+<li>广播帧在交换机之间一直循环下去，众多的广播帧最终形成广播风暴</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.4.png" alt="4.2.4"></p>
+<p><strong>广播风暴导致网络瘫痪</strong></p>
+<ul>
+<li>广播帧增多形成广播风暴，从而导致链路拥塞，并极大消耗设备资源，最终导致网络拥塞不可用，还会导致设备宕机不可用</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.5.png" alt="4.2.5"></p>
+<h3 id="STP概述"><a href="#STP概述" class="headerlink" title="STP概述"></a>STP概述</h3><p><strong>STP：生成树协议 （IEEE802.1d）</strong></p>
+<ul>
+<li>STP：Spanning Tree Protocol（生成树协议）</li>
+<li>通过阻塞某个接口在逻辑上断开环路，防止广播风暴，破除二层环路</li>
+<li>当主线路故障，阻塞接口被激活，主线路恢复，备份线路再次被阻塞</li>
+<li>交换机之间通过周期性的发送BPDU报文，来实现STP的功能</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.6.png" alt="4.2.6"></p>
+<p><strong>BPDU：桥协议数据单元</strong></p>
+<ul>
+<li>Bridge Protocol Data Unit ，桥协议数据单元，即STP协议的报文</li>
+<li>也称二层的”心跳报文”，周期性发送，默认每2秒发送1次</li>
+<li>组播发送，组播MAC地址为：01-80-C2-00-00-00</li>
+</ul>
+<h2 id="STP工作原理"><a href="#STP工作原理" class="headerlink" title="STP工作原理"></a>STP工作原理</h2><h3 id="STP工作原理-1"><a href="#STP工作原理-1" class="headerlink" title="STP工作原理"></a>STP工作原理</h3><ul>
+<li><p>步骤一：选举根交换机</p>
+</li>
+<li><p>步骤二：在每个非根交换机上选举一个根端口</p>
+</li>
+<li><p>步骤三：在每条链路上选举一个指定端口</p>
+</li>
+<li><p>步骤四：阻塞非根端口、非指定端口</p>
+</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.7.png" alt="4.2.7"></p>
+<h3 id="选举根交换机"><a href="#选举根交换机" class="headerlink" title="选举根交换机"></a>选举根交换机</h3><p><strong>根网桥（根交换机）</strong></p>
+<ul>
+<li>STP引入了根桥（Root Bridge）概念</li>
+<li>在一个STP网络中，根桥只有一个</li>
+<li>STP初始化时，所有的交换机都认为自己是”根交换机”</li>
+<li>交换机之间通过比较BID的来确定根交换机，BID值小的为根交换机</li>
+</ul>
+<p><strong>网桥ID（BID）</strong></p>
+<ul>
+<li>STP协议为交换机取的名字，用于在交换网络中唯一标识该设备</li>
+<li>BID是优先级与MAC地址组成，BID值越小越优先</li>
+<li>BID优先级取值范围：0~61440、默认值是:32768</li>
+<li>BID优先级步长值：4096 (0或4096的倍数)</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.8.png" alt="4.2.8"></p>
+<p><strong>通常根据BID优先级，选择根交换机</strong></p>
+<ul>
+<li>BID值小的为根交换机，首先比较优先级，优先级小的为根交换机</li>
+<li>如果优先级一致，则MAC地址小的为根交换机</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.9.png" alt="4.2.9"></p>
+<h3 id="STP配置命令"><a href="#STP配置命令" class="headerlink" title="STP配置命令"></a>STP配置命令</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">1.启动或关闭交换机的STP功能，默认情况下交换机的STP功能处于开启状态</span></span><br><span class="line"><span class="attr">[Huawei]stp</span> <span class="string">&#123;enable | disable&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">2.选择交换机的STP运行模式，默认情况下交换机的STP运行模式为MSTP</span></span><br><span class="line"><span class="attr">[Huawei]stp</span> <span class="string">mode &#123;stp | rstp | mstp&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">3.修改交换机的STP优先级，设置根交换机</span></span><br><span class="line"><span class="attr">[Huawei]stp</span> <span class="string">priority 4096</span></span><br><span class="line"></span><br><span class="line"><span class="attr">4.查看生成树状态信息</span></span><br><span class="line"><span class="attr">[Huawei]display</span> <span class="string">stp</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="选举根端口和指定端口"><a href="#选举根端口和指定端口" class="headerlink" title="选举根端口和指定端口"></a>选举根端口和指定端口</h2><h3 id="选举根端口"><a href="#选举根端口" class="headerlink" title="选举根端口"></a>选举根端口</h3><p><strong>根端口定律</strong></p>
+<ul>
+<li>非根交换机中有且只有一个根端口</li>
+</ul>
+<p><strong>选举根端口原则</strong></p>
+<ul>
+<li>非根交换机到根交换机的根路径开销值最小的端口（此端口到根的路径成本之和最低）如果根路径开销值相同，则比较对端交换机的BID，越小越优</li>
+<li>如果对端BID也相同，则比较对端的PID，越小越优（PID由端口优先级和端口号组成优先级取值范围：0~240、步长值为16、端口优先级默认为128，所以端口号小PID就小）</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.10.png" alt="4.2.10"></p>
+<p><strong>路径开销（路径成本）：Cost</strong></p>
+<ul>
+<li>交换机的每一个端口都有一个路径开销-Cost值</li>
+<li>交换机端口Cost值和端口带宽有关，带宽越高，Cost值越小</li>
+<li>默认情况下千兆端口开销为20000</li>
+<li>默认情况下百兆端口开销为200000</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.11.png" alt="4.2.11"></p>
+<p><strong>在非根网桥SW2&#x2F;SW3上，选择一个根端口（RP）</strong></p>
+<ul>
+<li>到根交换机的根路径开销值最小的端口，即根端口</li>
+<li>SW2&#x2F;SW3的根端口为G0&#x2F;0&#x2F;1</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.12.png" alt="4.2.12"></p>
+<h3 id="选举指定端口"><a href="#选举指定端口" class="headerlink" title="选举指定端口"></a>选举指定端口</h3><p><strong>指定端口定律</strong></p>
+<ul>
+<li>在每条链路上选择一个指定端口</li>
+<li>根交换机的接口全是指定端口</li>
+</ul>
+<p><strong>选举指定端口原则</strong></p>
+<ul>
+<li>一条链路上，到根交换机的根路径开销值最小的端口，即指定端口</li>
+<li>如果根路径开销相同，则比较接口所在交换机的BID，越小越优</li>
+<li>如果交换机的BID也相同，则比较PID，越小越优</li>
+</ul>
+<h2 id="BPDU"><a href="#BPDU" class="headerlink" title="BPDU"></a>BPDU</h2><h3 id="BPDU-1"><a href="#BPDU-1" class="headerlink" title="BPDU"></a>BPDU</h3><p><strong>BPDU的4个关键字段，用于选举交换机角色和端口角色</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">BPDU报文字段</th>
+<th align="center">字段作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">协议ID</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">协议版本号</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">报文类型</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">拓扑变化标志</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><font color="#ff0000"><strong>根网桥ID</strong></font></td>
+<td align="center"><font color="#ff0000"><strong>当前根桥的BID</strong></font></td>
+</tr>
+<tr>
+<td align="center"><font color="#ff0000"><strong>根路径开销</strong></font></td>
+<td align="center"><font color="#ff0000"><strong>本端口累计到根桥的开销值（Cost）</strong></font></td>
+</tr>
+<tr>
+<td align="center"><font color="#ff0000"><strong>发送网桥ID</strong></font></td>
+<td align="center"><font color="#ff0000"><strong>本交换设备的BID</strong></font></td>
+</tr>
+<tr>
+<td align="center"><font color="#ff0000"><strong>端口ID</strong></font></td>
+<td align="center"><font color="#ff0000"><strong>发送该BPDU报文的端口ID（PID）</strong></font></td>
+</tr>
+<tr>
+<td align="center">报文老化时间</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">消息老化时间</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">发送报文间隔时间</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">转发延迟时间</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h3 id="BPDU类型"><a href="#BPDU类型" class="headerlink" title="BPDU类型"></a>BPDU类型</h3><ul>
+<li>配置 BPDU</li>
+<li>拓扑变更BPDU</li>
+</ul>
+<h3 id="STP的收敛"><a href="#STP的收敛" class="headerlink" title="STP的收敛"></a>STP的收敛</h3><p><strong>STP端口的5种状态</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>禁用（Disabled）</td>
+<td>强制关闭，没有启用STP协议</td>
+</tr>
+<tr>
+<td>阻塞（Blocking）</td>
+<td>只接收BPDU，不能发送BPDU</td>
+</tr>
+<tr>
+<td>侦听（Listening）</td>
+<td>比较BPDU，确定交换机角色和端口角色</td>
+</tr>
+<tr>
+<td>学习（Learning）</td>
+<td>基于端口上收到的数据帧，学习MAC地址表</td>
+</tr>
+<tr>
+<td>转发（Forwarding）</td>
+<td>端口的最终完美状态，发送和接收用户数据</td>
+</tr>
+</tbody></table>
+<p><strong>STP的3种计时器，用于维护STP</strong></p>
+<ul>
+<li>Hello时间：端口发送BPDU报文的时间间隔，默认是2s</li>
+<li>转发延迟（Forward delay）：端口从侦听到学习状态，分别停留的时间，15s</li>
+<li>最大老化时间（Max Age）：一个端口最大的”没有接收BPDU”的时间间隔，20s</li>
+</ul>
+<p><strong>STP的收敛时间为：30~50s，非常慢</strong></p>
+<ul>
+<li>根交换机故障，STP的收敛时间约50秒</li>
+<li>链路故障：STP的收敛时间约30~50秒</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.13.png" alt="4.2.13"></p>
+<h2 id="MSTP工作原理及配置"><a href="#MSTP工作原理及配置" class="headerlink" title="MSTP工作原理及配置"></a>MSTP工作原理及配置</h2><h3 id="STP回顾"><a href="#STP回顾" class="headerlink" title="STP回顾"></a>STP回顾</h3><p><strong>弊端</strong></p>
+<ul>
+<li>收敛时间慢：30s~50s</li>
+<li>设备利用率低</li>
+</ul>
+<p><strong>方案</strong></p>
+<ul>
+<li>RSTP，快速生成树协议</li>
+<li>MSTP，多生成树协议</li>
+</ul>
+<h3 id="RSTP概述"><a href="#RSTP概述" class="headerlink" title="RSTP概述"></a>RSTP概述</h3><p><strong>RSTP：快速生成树协议</strong></p>
+<ul>
+<li>公有协议：IEEE802.1w</li>
+<li>STP的基础上优化而来</li>
+<li>实现网络的快速收敛，降低网络故障时间，提高数据转发的效率</li>
+</ul>
+<p><strong>RSTP对STP的改进</strong></p>
+<ul>
+<li>增加了2种端口角色（AP和BP）<ul>
+<li>Backup Port（备份端口）主要是由于Designated Port的故障而触发的。当Designated Port发生故障时，Backup Port会立即开始转发数据</li>
+<li>Alternate Port（备用端口）网络拓扑发生变化时触发状态转换，并转变为指定（designated）端口或根（root）端口，从而提供冗余路径</li>
+</ul>
+</li>
+<li>减少了3个端口状态（阻塞、学习、转发合为一种）</li>
+<li>引入了让指定端口尽快进入转发状态的机制（P&#x2F;A机制）</li>
+</ul>
+<p><strong>RSTP的不足</strong></p>
+<ul>
+<li>RSTP和STP有一个共同缺陷：局域网内所有的VLAN共享一颗生成树</li>
+<li>所有的VLAN的数据转发路径是相同的</li>
+<li>交换机之间的多个链路，只能实现备份的作用，永远只会使用其中的主链路转发数据，无法实现VLAN数据流的负载均衡，从而无法提高设备利用率，还有可能造成部分VLAN的数据流无法转发。</li>
+</ul>
+<h3 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h3><p><strong>MSTP，即Multiple STP，多生成树协议</strong></p>
+<ul>
+<li>RSTP的基础上优化而来</li>
+<li>MSTP网络中，引入了域的概念，称为MST域</li>
+<li>每个MST域中包含一个或多个”生成树”称之为”实例”</li>
+<li>引入了实例”instance”的概念，实现VLAN数据流的负载均衡</li>
+<li>默认情况下，所有的VLAN都属于同一个默认的实例 –  instance 0</li>
+<li>可以基于需求，将不同的VLAN分配到不同的实例中</li>
+<li>不同的实例，就是不同的生成树，就对应着多个不同的根桥</li>
+</ul>
+<h3 id="配置思路"><a href="#配置思路" class="headerlink" title="配置思路"></a>配置思路</h3><p><strong>每个交换机创建相同的VLAN</strong></p>
+<p><strong>交换机之间的链路配置为 Trunk，允许所有的VLAN通过</strong></p>
+<p><strong>交换机启用STP协议，配置模式为MSTP</strong></p>
+<p><strong>交换机指定MST域的域名、实例和vlan的对应关系</strong></p>
+<p><strong>交换机上激活MST域的配置</strong></p>
+<p><strong>验证与测试MST域的配置</strong></p>
+<p><strong>同一个MST域的交换机配置特点：</strong></p>
+<ul>
+<li>都启动了MSTP</li>
+<li>域名配置相同</li>
+<li>实例配置相同</li>
+</ul>
+<h2 id="MSTP负载均衡"><a href="#MSTP负载均衡" class="headerlink" title="MSTP负载均衡"></a>MSTP负载均衡</h2><h3 id="MSTP负载均衡-1"><a href="#MSTP负载均衡-1" class="headerlink" title="MSTP负载均衡"></a>MSTP负载均衡</h3><p><strong>STP&#x2F;RSTP的弊端</strong></p>
+<ul>
+<li>所有的VLAN共用一个”生成树”，防止环路的同时只能确保一半的设备得到利用，另外一半的设备仅仅用作”备份”，无法提高设备的利用率</li>
+</ul>
+<p><strong>MSTP负载均衡</strong></p>
+<ul>
+<li>不同的VLAN关联到不同的实例</li>
+<li>不同的实例的根交换机放置在不同的交换机上</li>
+<li>不同的VLAN通过不同的根交换机进行数据的转发，从而确保提高设备的利用率，同时设备之间还能实现备份</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/4.2.14.png" alt="4.2.14"></p>
+<p><strong>需求描述</strong></p>
+<ul>
+<li><p>PC1属于VLAN10，IP地址为192.168.10.1&#x2F;24，网关为192.168.10.254</p>
+</li>
+<li><p>PC2属于VLAN20，IP地址为192.168.20.1&#x2F;24，网关为192.168.20.254</p>
+</li>
+<li><p>确保PC1与PC2互通</p>
+</li>
+<li><p>合理配置MSTP，确保PC1与PC2之间的互通路径是最优的</p>
+</li>
+<li><p>配置命令</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">1.S1、S2、S3创建vlan并配置连接交换机的端口为trunk</span></span><br><span class="line"><span class="attr">[S1]VLAN</span> <span class="string">batch 10 20</span></span><br><span class="line"><span class="attr">[S1]port-group</span> <span class="string">1</span></span><br><span class="line"><span class="attr">[S1-port-group-1]group-member</span> <span class="string">G0/0/3 G0/0/10</span></span><br><span class="line"><span class="attr">[S1-port-group-1]port</span> <span class="string">link-type trunk </span></span><br><span class="line"><span class="attr">[S1-port-group-1]port</span> <span class="string">trunk allow-pass vlan ALL</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[S2]VLAN</span> <span class="string">batch 10 20</span></span><br><span class="line"><span class="attr">[S2]port-group</span> <span class="string">1</span></span><br><span class="line"><span class="attr">[S2-port-group-1]group-member</span> <span class="string">G0/0/4 G0/0/10</span></span><br><span class="line"><span class="attr">[S2-port-group-1]port</span> <span class="string">link-type trunk </span></span><br><span class="line"><span class="attr">[S2-port-group-1]port</span> <span class="string">trunk allow-pass vlan ALL</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[S3]VLAN</span> <span class="string">batch 10 20</span></span><br><span class="line"><span class="attr">[S3]port-group</span> <span class="string">1</span></span><br><span class="line"><span class="attr">[S3-port-group-1]group-member</span> <span class="string">G0/0/5 G0/0/6</span></span><br><span class="line"><span class="attr">[S3-port-group-1]port</span> <span class="string">link-type trunk </span></span><br><span class="line"><span class="attr">[S3-port-group-1]port</span> <span class="string">trunk allow-pass vlan ALL</span></span><br><span class="line"></span><br><span class="line"><span class="attr">2.S1、S2、S3配置MSTP区域并激活</span></span><br><span class="line"><span class="attr">[S1]stp</span> <span class="string">mode mstp 启用MSTP协议</span></span><br><span class="line"><span class="attr">[S1]stp</span> <span class="string">region-configuration 创建区域</span></span><br><span class="line"><span class="attr">[S1-mst-region]region-name</span> <span class="string">ntd 定义区域名为ntd</span></span><br><span class="line"><span class="attr">[S1-mst-region]instance</span> <span class="string">1 vlan 10 指定vlan与实例的对应关系</span></span><br><span class="line"><span class="attr">[S1-mst-region]instance</span> <span class="string">2 vlan 20</span></span><br><span class="line"><span class="attr">[S1-mst-region]active</span> <span class="string">region-configuration 激活区域配置</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">[S2]stp</span> <span class="string">mode mstp 启用MSTP协议</span></span><br><span class="line"><span class="attr">[S2]stp</span> <span class="string">region-configuration 创建区域</span></span><br><span class="line"><span class="attr">[S2-mst-region]region-name</span> <span class="string">ntd 定义区域名为ntd</span></span><br><span class="line"><span class="attr">[S2-mst-region]instance</span> <span class="string">1 vlan 10 指定vlan与实例的对应关系</span></span><br><span class="line"><span class="attr">[S2-mst-region]instance</span> <span class="string">2 vlan 20</span></span><br><span class="line"><span class="attr">[S2-mst-region]active</span> <span class="string">region-configuration 激活区域配置</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[S3]stp</span> <span class="string">mode mstp 启用MSTP协议</span></span><br><span class="line"><span class="attr">[S3]stp</span> <span class="string">region-configuration 创建区域</span></span><br><span class="line"><span class="attr">[S3-mst-region]region-name</span> <span class="string">ntd 定义区域名为ntd</span></span><br><span class="line"><span class="attr">[S3-mst-region]instance</span> <span class="string">1 vlan 10 指定vlan与实例的对应关系</span></span><br><span class="line"><span class="attr">[S3-mst-region]instance</span> <span class="string">2 vlan 20</span></span><br><span class="line"><span class="attr">[S3-mst-region]active</span> <span class="string">region-configuration 激活区域配置</span></span><br><span class="line"></span><br><span class="line"><span class="attr">3.配置S1为vlan10的主根、vlan20的次根网桥并查看配置</span></span><br><span class="line"><span class="attr">[S1]stp</span> <span class="string">instance 1 priority 4096</span></span><br><span class="line"><span class="attr">[S1]stp</span> <span class="string">instance 2 priority 8192</span></span><br><span class="line"></span><br><span class="line"><span class="attr">4.配置S2为vlan20的主根、vlan10的次根根网桥并查看配置</span></span><br><span class="line"><span class="attr">[S2]stp</span> <span class="string">instance2 priority 4096</span></span><br><span class="line"><span class="attr">[S2]stp</span> <span class="string">instance 1 priority 8192</span></span><br><span class="line"></span><br><span class="line"><span class="attr">5.配置PC1加入vlan10、PC2加入vlan20</span></span><br><span class="line"><span class="attr">[S3]interface</span> <span class="string">GigabitEthernet 0/0/1</span></span><br><span class="line"><span class="attr">[S3-GigabitEthernet0/0/1]port</span> <span class="string">link-type access </span></span><br><span class="line"><span class="attr">[S3-GigabitEthernet0/0/1]port</span> <span class="string">default vlan 10</span></span><br><span class="line"><span class="attr">[S3]interface</span> <span class="string">GigabitEthernet 0/0/2</span></span><br><span class="line"><span class="attr">[S3-GigabitEthernet0/0/2]port</span> <span class="string">link-type access </span></span><br><span class="line"><span class="attr">[S3-GigabitEthernet0/0/2]port</span> <span class="string">default vlan 20</span></span><br><span class="line"></span><br><span class="line"><span class="attr">6.配置S1与路由相连的接口加入vlan10</span></span><br><span class="line"><span class="attr">[S1]interface</span> <span class="string">GigabitEthernet 0/0/1</span></span><br><span class="line"><span class="attr">[S1-GigabitEthernet0/0/1]port</span> <span class="string">link-type access </span></span><br><span class="line"><span class="attr">[S1-GigabitEthernet0/0/1]port</span> <span class="string">default vlan 10</span></span><br><span class="line"></span><br><span class="line"><span class="attr">7.配置S2与路由相连的接口加入</span> <span class="string">vlan20</span></span><br><span class="line"><span class="attr">[S2]interface</span> <span class="string">GigabitEthernet 0/0/2</span></span><br><span class="line"><span class="attr">[S2-GigabitEthernet0/0/2]port</span> <span class="string">link-type access </span></span><br><span class="line"><span class="attr">[S2-GigabitEthernet0/0/2]port</span> <span class="string">default vlan 20</span></span><br><span class="line"></span><br><span class="line"><span class="attr">8.配置路由器接口IP</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet 0/0/1</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/1]ip</span> <span class="string">address 192.168.10.254 24</span></span><br><span class="line"><span class="attr">[R1]interface</span> <span class="string">GigabitEthernet 0/0/2</span></span><br><span class="line"><span class="attr">[R1-GigabitEthernet0/0/2]ip</span> <span class="string">address 192.168.20.254 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">9.测试与验证</span></span><br><span class="line"><span class="attr">pc1</span> <span class="string">ping  pc2  通</span></span><br><span class="line"></span><br><span class="line"><span class="attr">10.查看验证</span></span><br><span class="line"> <span class="attr">&lt;SW3&gt;display</span> <span class="string">stp brief </span></span><br><span class="line"><span class="attr">查看S1的instance</span> <span class="string">1 g0/0/3 g0/0/10都是指定接口</span></span><br><span class="line"><span class="attr">查看S2的instance</span> <span class="string">2 g0/0/4 g0/0/10都是指定接口  </span></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/switching2.html">https://www.nicopilot.online/posts/switching2.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%B9%E6%80%A7%E4%BA%A4%E6%8D%A2%E7%BD%91%E7%BB%9C/">弹性交换网络</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/4_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/switching3.html" title="网络安全-弹性交换网络3"><img class="cover" src="/img/cover/net_sec/4_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-弹性交换网络3</div></div></a></div><div class="next-post pull-right"><a href="/posts/switching1.html" title="网络安全-弹性交换网络1"><img class="cover" src="/img/cover/net_sec/4_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-弹性交换网络1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/switching1.html" title="网络安全-弹性交换网络1"><img class="cover" src="/img/cover/net_sec/4_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-弹性交换网络1</div></div></a></div><div><a href="/posts/switching3.html" title="网络安全-弹性交换网络3"><img class="cover" src="/img/cover/net_sec/4_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-弹性交换网络3</div></div></a></div><div><a href="/posts/switching4.html" title="网络安全-弹性交换网络4"><img class="cover" src="/img/cover/net_sec/4_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-07</div><div class="title">网络安全-弹性交换网络4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%B9%E6%80%A7%E4%BA%A4%E6%8D%A2%E7%BD%91%E7%BB%9C"><span class="toc-number">1.</span> <span class="toc-text">弹性交换网络</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#STP%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">STP协议概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C"><span class="toc-number">1.1.1.</span> <span class="toc-text">单点故障</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.1.2.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.3.</span> <span class="toc-text">产生新的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#STP%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.4.</span> <span class="toc-text">STP概述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#STP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">STP工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">STP工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%BE%E6%A0%B9%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">1.2.2.</span> <span class="toc-text">选举根交换机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#STP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">STP配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E4%B8%BE%E6%A0%B9%E7%AB%AF%E5%8F%A3%E5%92%8C%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text">选举根端口和指定端口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%BE%E6%A0%B9%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.3.1.</span> <span class="toc-text">选举根端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%BE%E6%8C%87%E5%AE%9A%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.3.2.</span> <span class="toc-text">选举指定端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BPDU"><span class="toc-number">1.4.</span> <span class="toc-text">BPDU</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BPDU-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">BPDU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BPDU%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">BPDU类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#STP%E7%9A%84%E6%94%B6%E6%95%9B"><span class="toc-number">1.4.3.</span> <span class="toc-text">STP的收敛</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSTP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">MSTP工作原理及配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STP%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.5.1.</span> <span class="toc-text">STP回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSTP%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.2.</span> <span class="toc-text">RSTP概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MSTP%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.3.</span> <span class="toc-text">MSTP概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%80%9D%E8%B7%AF"><span class="toc-number">1.5.4.</span> <span class="toc-text">配置思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSTP%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">1.6.</span> <span class="toc-text">MSTP负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MSTP%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1-1"><span class="toc-number">1.6.1.</span> <span class="toc-text">MSTP负载均衡</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">18</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>
