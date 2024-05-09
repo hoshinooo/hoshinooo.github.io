@@ -1,0 +1,375 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-骨干网与WLAN2 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述BGP通告原则、路由反射器反射原则、如何利用环回接口建立IBGP邻居、更新检测源机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-骨干网与WLAN2">
+<meta property="og:url" content="https://www.nicopilot.online/posts/backbone2.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述BGP通告原则、路由反射器反射原则、如何利用环回接口建立IBGP邻居、更新检测源机制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/7_cover.png">
+<meta property="article:published_time" content="2024-05-09T02:21:02.000Z">
+<meta property="article:modified_time" content="2024-05-09T02:21:02.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="骨干网与WLAN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/7_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/backbone2.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-骨干网与WLAN2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-09 10:21:02'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/7_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-骨干网与WLAN2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-09T02:21:02.000Z" title="发表于 2024-05-09 10:21:02">2024-05-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-09T02:21:02.000Z" title="更新于 2024-05-09 10:21:02">2024-05-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-骨干网与WLAN2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="骨干网与WLAN"><a href="#骨干网与WLAN" class="headerlink" title="骨干网与WLAN"></a>骨干网与WLAN</h1><h2 id="BGP通告原则"><a href="#BGP通告原则" class="headerlink" title="BGP通告原则"></a>BGP通告原则</h2><h3 id="BGP通告原则-1"><a href="#BGP通告原则-1" class="headerlink" title="BGP通告原则"></a>BGP通告原则</h3><p><strong>BGP传递给路由时需要遵循以下原则</strong></p>
+<ul>
+<li>第一条原则：只发布最优且有效（即下一跳地址可达）的路由</li>
+<li>第二条原则：从EBGP邻居获取的路由，会发布给所有邻居</li>
+<li>第三条原则：从IBGP邻居获取的路由，不会再发送给其他IBGP邻居（IBGP水平分割）</li>
+</ul>
+<h2 id="IBGP水平分割"><a href="#IBGP水平分割" class="headerlink" title="IBGP水平分割"></a>IBGP水平分割</h2><h3 id="IBGP水平分割-1"><a href="#IBGP水平分割-1" class="headerlink" title="IBGP水平分割"></a>IBGP水平分割</h3><p><strong>BGP通告原则三</strong></p>
+<ul>
+<li>从IBGP邻居学习到的BGP路由，不会再发送给其他IBGP邻居</li>
+<li>该条原则也被称为”IBGP水平分割”</li>
+<li>IBGP水平分割的作用：防止AS内部路由环路</li>
+</ul>
+<p><strong>IBGP水平分割的不足</strong></p>
+<ul>
+<li>导致域间路由无法传递</li>
+</ul>
+<p><strong>如何突破IBGP水平分割的限制</strong></p>
+<ul>
+<li>静态路由</li>
+<li>在OSPF中引入BGP</li>
+<li>IBGP全互联</li>
+<li>路由反射器</li>
+</ul>
+<h2 id="路由反射器"><a href="#路由反射器" class="headerlink" title="路由反射器"></a>路由反射器</h2><h3 id="IBGP水平分割-2"><a href="#IBGP水平分割-2" class="headerlink" title="IBGP水平分割"></a>IBGP水平分割</h3><p><strong>IBGP水平分割</strong></p>
+<ul>
+<li>作用：用于防止AS内部出现环路</li>
+<li>存在问题：BGP路由在AS内部无法传递</li>
+<li>解决方案：IBGP邻居全互联，路由反射器</li>
+</ul>
+<h3 id="IBGP全互联的不足"><a href="#IBGP全互联的不足" class="headerlink" title="IBGP全互联的不足"></a>IBGP全互联的不足</h3><ul>
+<li><p>邻居数量多：一个AS内有n台设备，需建立的邻居数为n（n-1）&#x2F;2</p>
+</li>
+<li><p>当设备数目很多时，设备配置十分复杂、路由维护十分复杂</p>
+</li>
+<li><p>当设备数目很多时，网络资源和设备资源的消耗都非常大</p>
+</li>
+</ul>
+<h3 id="路由反射器-1"><a href="#路由反射器-1" class="headerlink" title="路由反射器"></a>路由反射器</h3><p><strong>反射器角色</strong></p>
+<ul>
+<li>路由反射器：RR（Route Reflector）</li>
+<li>客户机</li>
+<li>非客户机</li>
+</ul>
+<p><strong>反射器原理</strong></p>
+<ul>
+<li>客户机只需与RR之间建立IBGP连接，不需要与其他客户机建立IBGP连接，从而减少了IBGP连接数量</li>
+<li>RR会将学习的路由反射出去，从而使得IBGP路由在AS内传播无需建立IBGP全互联，路由器反射器突破了IBGP水平分割限制</li>
+<li>反射器通过命令指定自己的客户机，客户机不知道谁是反射器，只有反射器知道谁是客户机，没有指定为客户机的路由器，就是非客户机</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/7.2.1.png" alt="7.2.1"></p>
+<h3 id="反射规则"><a href="#反射规则" class="headerlink" title="反射规则"></a>反射规则</h3><p><strong>反射规则</strong></p>
+<ul>
+<li>RR从非客户机收到的路由会反射给客户机，会发布给EBGP邻居</li>
+<li>RR从非客户机收到的路由不会反射给非客户机</li>
+<li>RR从客户机收到的路由会反射给客户机和非客户机，会发布给EBGP邻居</li>
+<li>RR从EBGP邻居收到的路由，会反射给所有的客户机、非客户机</li>
+</ul>
+<p>注意此处<strong>反射</strong>和<strong>发送</strong>的区别。<strong>发送</strong>指的是传统情况下（相当于RR不存在的场景下）的BGP路由传递行为，而<strong>反射</strong>指的是遵循路由反射规则的情况下，RR执行的路由传递动作，被反射出去的路由会被RR插入特殊的路径属性</p>
+<h3 id="配置命令"><a href="#配置命令" class="headerlink" title="配置命令"></a>配置命令</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]bgp</span> <span class="string">200</span></span><br><span class="line"><span class="attr">[R2-bgp]router-id</span> <span class="string">2.2.2.2</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">192.168.12.1 as-number 200</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">192.168.12.1 reflect-client         //指定192.168.12.1为客户机</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="路由反射器防止环路"><a href="#路由反射器防止环路" class="headerlink" title="路由反射器防止环路"></a>路由反射器防止环路</h3><p><strong>路由反射器突破水平分割限制可能导致环路发生</strong></p>
+<ul>
+<li>RR的设定使得IBGP水平分割原则失效，这就可能导致环路的产生，为此RR会为BGP路由添加两个特殊的路径属性来避免出现环路</li>
+<li>Originator_ID：始发者ID属性，属性用于防止集群内产生路由环路</li>
+<li>Cluster_List：簇列表属性，属性用于防止集群间产生路由环路</li>
+<li>Originator_ID、Cluster_List属性都属于可选非过渡类型</li>
+</ul>
+<p><strong>Originator ID属性</strong></p>
+<ul>
+<li>RR将一条BGP路由进行反射时会在反射出去的路由中增加Originator_ID，其值为本地AS中通告该路由的BGP路由器Router ID</li>
+<li>若AS内存在多个RR，则Originator_ID属性由第一个RR创建，并且不被后续的RR所更改。</li>
+<li>当BGP路由器收到一条携带Originator_ID属性的IBGP路由，并且Originator_ID属性值与自身的Router ID相同，则它不会学习该路由</li>
+</ul>
+<p><strong>路由反射簇（Cluster）</strong></p>
+<ul>
+<li><p>路由反射簇包括反射器RR及其Client。一个AS内允许存在多个路由反射簇（如下图）。</p>
+</li>
+<li><p>每一个簇都有唯一的簇ID（Cluster_ID，默认为RR的BGP Router ID ）。</p>
+</li>
+<li><p>当一条路由被反射器反射后，该RR（该簇）的Cluster_ID就会被添加至路由的Cluster_list属性中。</p>
+</li>
+<li><p>当RR收到一条携带Cluster_list属性的BGP路由，且该属性值中包含该簇的Cluster_ID时，RR认为该条路由存在环路，因此将忽略关于该条路由的更新</p>
+</li>
+</ul>
+<h2 id="环回口建立IBGP邻居"><a href="#环回口建立IBGP邻居" class="headerlink" title="环回口建立IBGP邻居"></a>环回口建立IBGP邻居</h2><h3 id="BGP的稳定性"><a href="#BGP的稳定性" class="headerlink" title="BGP的稳定性"></a>BGP的稳定性</h3><p><strong>IBGP：</strong></p>
+<ul>
+<li>一般使用环回口建立IBGP邻居，从而提高稳定性</li>
+<li>指定建立IBGP邻居的源地址为loopback地址</li>
+</ul>
+<p><strong>Loopback接口：</strong></p>
+<ul>
+<li>用loopback接口建立邻居更加稳定和可靠</li>
+<li>使用物理接口的IP地址建立邻居，当物理接口和物理链路发送故障，BGP邻居就会down掉</li>
+<li>而使用loopback接口IP地址建立邻居，假设两台设备之间有3条物理链路，即便坏掉其中2条物理链路，即便只有1条物理链路互通，就可以保证BGP邻居的正常</li>
+</ul>
+<h3 id="配置命令-1"><a href="#配置命令-1" class="headerlink" title="配置命令"></a>配置命令</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]bgp</span> <span class="string">200</span></span><br><span class="line"><span class="attr">[R2-bgp]router-id</span> <span class="string">2.2.2.2</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">10.10.1.1 as-number 200</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">10.10.1.1 connect-interface LoopBack()</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="更新源检测机制"><a href="#更新源检测机制" class="headerlink" title="更新源检测机制"></a>更新源检测机制</h2><h3 id="更新源检测机制-1"><a href="#更新源检测机制-1" class="headerlink" title="更新源检测机制"></a>更新源检测机制</h3><p><strong>TCP连接源地址</strong></p>
+<ul>
+<li>缺省情况下，BGP使用报文出接口作为TCP连接的本地接口</li>
+<li>在部署IBGP对等体关系时，建议使用LoopBack地址作为更新源地址</li>
+<li>Loopback接口非常稳定，可以借助AS内的冗余链路来保证可靠性</li>
+<li>在部署EBGP对等体关系时，通常使用直连接口的IP地址作为源地址，如若使用Loopback接口建立EBGP对等体关系，则应注意EBGP多跳问题</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/7.2.2.png" alt="7.2.2"></p>
+<h3 id="EBGP之间为何不能使用Loopback接口建立对等体"><a href="#EBGP之间为何不能使用Loopback接口建立对等体" class="headerlink" title="EBGP之间为何不能使用Loopback接口建立对等体"></a>EBGP之间为何不能使用Loopback接口建立对等体</h3><ul>
+<li>BGP有直连检测机制</li>
+<li>BGP要求，凡是建立EBGP邻居的路由器，必须使用直连网段，使用物理接口的IP地址，建立邻居</li>
+<li>原因：因为EBGP要求稳定性和可靠性，  使用直连网段，使用物理接口建立邻居，BGP路由器能够感知到链路故障， 能够及时作出调整，如果用非直连网段建立EBGP邻居，路由器无法实时且有效的感知到网络故障</li>
+<li>原理：EBGP报文中TTL值为1，</li>
+<li>当经过一台路由器转发的时候，TTL值减去1，当TTL值为0的时候，报文被丢弃，所以无法建立BGP邻居关系</li>
+<li>解决方法：突破直连检测机制</li>
+</ul>
+<p><strong>配置命令</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">peer</span> <span class="string">10.10.1.1 ebgp-max-hop  100   //修改bgp报文最大TTL为100  </span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/backbone2.html">https://www.nicopilot.online/posts/backbone2.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%AA%A8%E5%B9%B2%E7%BD%91%E4%B8%8EWLAN/">骨干网与WLAN</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/7_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/backbone1.html" title="网络安全-骨干网与WLAN1"><img class="cover" src="/img/cover/net_sec/7_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-骨干网与WLAN1</div></div></a></div><div class="next-post pull-right"><a href="/posts/routing4.html" title="网络安全-园区网路由4"><img class="cover" src="/img/cover/net_sec/6_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-园区网路由4</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/backbone1.html" title="网络安全-骨干网与WLAN1"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN1</div></div></a></div><div><a href="/posts/backbone3.html" title="网络安全-骨干网与WLAN3"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN3</div></div></a></div><div><a href="/posts/backbone4.html" title="网络安全-骨干网与WLAN4"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN4</div></div></a></div><div><a href="/posts/backbone5.html" title="网络安全-骨干网与WLAN5"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AA%A8%E5%B9%B2%E7%BD%91%E4%B8%8EWLAN"><span class="toc-number">1.</span> <span class="toc-text">骨干网与WLAN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BGP%E9%80%9A%E5%91%8A%E5%8E%9F%E5%88%99"><span class="toc-number">1.1.</span> <span class="toc-text">BGP通告原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E9%80%9A%E5%91%8A%E5%8E%9F%E5%88%99-1"><span class="toc-number">1.1.1.</span> <span class="toc-text">BGP通告原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IBGP%E6%B0%B4%E5%B9%B3%E5%88%86%E5%89%B2"><span class="toc-number">1.2.</span> <span class="toc-text">IBGP水平分割</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IBGP%E6%B0%B4%E5%B9%B3%E5%88%86%E5%89%B2-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">IBGP水平分割</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8"><span class="toc-number">1.3.</span> <span class="toc-text">路由反射器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IBGP%E6%B0%B4%E5%B9%B3%E5%88%86%E5%89%B2-2"><span class="toc-number">1.3.1.</span> <span class="toc-text">IBGP水平分割</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IBGP%E5%85%A8%E4%BA%92%E8%81%94%E7%9A%84%E4%B8%8D%E8%B6%B3"><span class="toc-number">1.3.2.</span> <span class="toc-text">IBGP全互联的不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8-1"><span class="toc-number">1.3.3.</span> <span class="toc-text">路由反射器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E8%A7%84%E5%88%99"><span class="toc-number">1.3.4.</span> <span class="toc-text">反射规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.5.</span> <span class="toc-text">配置命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8%E9%98%B2%E6%AD%A2%E7%8E%AF%E8%B7%AF"><span class="toc-number">1.3.6.</span> <span class="toc-text">路由反射器防止环路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%9B%9E%E5%8F%A3%E5%BB%BA%E7%AB%8BIBGP%E9%82%BB%E5%B1%85"><span class="toc-number">1.4.</span> <span class="toc-text">环回口建立IBGP邻居</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E7%9A%84%E7%A8%B3%E5%AE%9A%E6%80%A7"><span class="toc-number">1.4.1.</span> <span class="toc-text">BGP的稳定性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="toc-number">1.4.2.</span> <span class="toc-text">配置命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E6%BA%90%E6%A3%80%E6%B5%8B%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.</span> <span class="toc-text">更新源检测机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E6%BA%90%E6%A3%80%E6%B5%8B%E6%9C%BA%E5%88%B6-1"><span class="toc-number">1.5.1.</span> <span class="toc-text">更新源检测机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EBGP%E4%B9%8B%E9%97%B4%E4%B8%BA%E4%BD%95%E4%B8%8D%E8%83%BD%E4%BD%BF%E7%94%A8Loopback%E6%8E%A5%E5%8F%A3%E5%BB%BA%E7%AB%8B%E5%AF%B9%E7%AD%89%E4%BD%93"><span class="toc-number">1.5.2.</span> <span class="toc-text">EBGP之间为何不能使用Loopback接口建立对等体</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">32</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><!-- hexo injector body_end end --></body></html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-骨干网与WLAN1 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述BGP的作用、报文、注入路由的方式、邻居表、路由表，Next_Hop，IBGP全互联">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-骨干网与WLAN1">
+<meta property="og:url" content="https://www.nicopilot.online/posts/backbone1.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述BGP的作用、报文、注入路由的方式、邻居表、路由表，Next_Hop，IBGP全互联">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/7_cover.png">
+<meta property="article:published_time" content="2024-05-09T02:21:02.000Z">
+<meta property="article:modified_time" content="2024-05-09T02:21:02.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="骨干网与WLAN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/7_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/backbone1.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-骨干网与WLAN1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-09 10:21:02'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/7_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-骨干网与WLAN1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-09T02:21:02.000Z" title="发表于 2024-05-09 10:21:02">2024-05-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-09T02:21:02.000Z" title="更新于 2024-05-09 10:21:02">2024-05-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-骨干网与WLAN1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="骨干网与WLAN"><a href="#骨干网与WLAN" class="headerlink" title="骨干网与WLAN"></a>骨干网与WLAN</h1><h2 id="BGP概述"><a href="#BGP概述" class="headerlink" title="BGP概述"></a>BGP概述</h2><h3 id="动态路由分类"><a href="#动态路由分类" class="headerlink" title="动态路由分类"></a>动态路由分类</h3><p><strong>IGP：内部网关协议</strong></p>
+<ul>
+<li>AS内部使用IGP来计算和发现路由，如OSPF</li>
+</ul>
+<p><strong>EGP：外部网关协议</strong></p>
+<ul>
+<li>AS与AS之间使用BGP来传递和控制路由</li>
+</ul>
+<h3 id="AS"><a href="#AS" class="headerlink" title="AS"></a>AS</h3><p><strong>AS：自治系统</strong></p>
+<ul>
+<li>AS：Autonomous System 自治系统，指由一组网络和路由器组成的网络</li>
+<li>每个自治系统都有唯一的一个编号，即AS号</li>
+<li>AS号可以帮助互联网中的路由器找到要到达目的地的IP地址的最短路径</li>
+<li>AS号由互联网分配机构IANA（互联网分配号码管理局）分配</li>
+<li>AS号的范围被划分为两类：公共AS号和私有AS号</li>
+<li>公共AS号是指由IANA分配的AS号，可用于在全球范围内标识自治系统</li>
+<li>私有AS号是指由互联网注册机构（IR）分配的AS号，用于在私有互联网中标识自治系统</li>
+</ul>
+<p><strong>2字节AS号范围是0~65535</strong></p>
+<ul>
+<li>1<del>64511为公有AS，64512</del>65535为私有AS</li>
+</ul>
+<p><strong>4字节AS号范围是0~4294967295</strong></p>
+<ul>
+<li>4200000000~4294967294为私有AS号</li>
+</ul>
+<p><strong>网络规模扩大，路由数量不断增长，IGP已无法管理，AS的概念诞生</strong></p>
+<p><strong>AS与AS之间通信需要使用哪种路由协议？</strong></p>
+<ul>
+<li>在AS之间使用BGP协议进行路由传递</li>
+</ul>
+<h3 id="BGP发展历史"><a href="#BGP发展历史" class="headerlink" title="BGP发展历史"></a>BGP发展历史</h3><p><img src="/../img/img_artical/net_sec/7.1.1.png" alt="7.1.1"></p>
+<h3 id="BGP在企业中的应用"><a href="#BGP在企业中的应用" class="headerlink" title="BGP在企业中的应用"></a>BGP在企业中的应用</h3><p><img src="/../img/img_artical/net_sec/7.1.2.png" alt="7.1.2"></p>
+<p><strong>场景一：遍布全国大型政企单位之间，或大型数据中心</strong></p>
+<p><strong>场景二：运营商骨干网</strong></p>
+<h3 id="BGP概述-1"><a href="#BGP概述-1" class="headerlink" title="BGP概述"></a>BGP概述</h3><p><strong>BGP：Border Gateway Protocol 边界网关协议</strong></p>
+<ul>
+<li>作用：实现在AS与AS之间动态交换路由信息</li>
+<li>稳定：BGP是基于TCP协议建立的，使用端口号TCP179，非常稳定</li>
+<li>BGP是公有协议，任何厂商的设备都支持BGP</li>
+<li>BGP位于OSI的第7层 (应用层)</li>
+<li>2006年之后单播IPv4网络使用的版本是BGP-4</li>
+<li>IPv6使用的版本是MP-BGP</li>
+</ul>
+<h3 id="BGP特点"><a href="#BGP特点" class="headerlink" title="BGP特点"></a>BGP特点</h3><ul>
+<li>稳定性非常高</li>
+<li>传递大量路由</li>
+<li>丰富的路由传递策略</li>
+</ul>
+<h2 id="BGP基本概念"><a href="#BGP基本概念" class="headerlink" title="BGP基本概念"></a>BGP基本概念</h2><h3 id="BGP特征"><a href="#BGP特征" class="headerlink" title="BGP特征"></a>BGP特征</h3><ul>
+<li>路由器之间的BGP会话基于TCP连接而建立</li>
+<li>运行BGP的路由器被称为BGP发言者（BGP Speaker），或BGP路由器</li>
+<li>两个建立BGP会话的路由器互为对等体（Peer），BGP对等体之间交换BGP路由表</li>
+<li>BGP路由器只发送增量的BGP路由更新，或进行触发式更新（不会周期性更新）</li>
+<li>BGP能够传递大批量的路由，可在大规模网络中应用</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/7.1.3.png" alt="7.1.3"></p>
+<h3 id="BGP邻居类型"><a href="#BGP邻居类型" class="headerlink" title="BGP邻居类型"></a>BGP邻居类型</h3><p><strong>BGP邻居类型</strong></p>
+<ul>
+<li>EBGP：运行于不同AS之间，默认优先级255</li>
+<li>IBGP：运行于同一AS内部，默认优先级255</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/7.1.4.png" alt="7.1.4"></p>
+<h3 id="BGP报文"><a href="#BGP报文" class="headerlink" title="BGP报文"></a>BGP报文</h3><p>BGP邻居的建立过程主要有5种报文</p>
+<table>
+<thead>
+<tr>
+<th align="left">报文</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Open报文</td>
+<td align="left">用于建立BGP邻居</td>
+</tr>
+<tr>
+<td align="left">Update报文</td>
+<td align="left">用于在邻居之间传递路由信息和撤销路由</td>
+</tr>
+<tr>
+<td align="left">Keepalive报文</td>
+<td align="left">用于维护邻居关系，保持BGP连接，周期性发送，60秒发一次</td>
+</tr>
+<tr>
+<td align="left">notification报文</td>
+<td align="left">通知报文，用于通知BGP邻居之间的报错信息，用于断开BGP连接</td>
+</tr>
+<tr>
+<td align="left">Route-refresh报文</td>
+<td align="left">策略更改后，让邻居重新发送路由信息</td>
+</tr>
+</tbody></table>
+<h3 id="BGP邻居关系建立"><a href="#BGP邻居关系建立" class="headerlink" title="BGP邻居关系建立"></a>BGP邻居关系建立</h3><p><img src="/../img/img_artical/net_sec/7.1.5.png" alt="7.1.5"></p>
+<h3 id="BGP状态机"><a href="#BGP状态机" class="headerlink" title="BGP状态机"></a>BGP状态机</h3><table>
+<thead>
+<tr>
+<th align="left">Peer状态名称</th>
+<th align="left">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Idle</td>
+<td align="left">初始化状态，tcp未连接状态，邻居的状态为idle ,  当bgp设备和邻居进行tcp 连接时，会从当前的状态转为connect 状态</td>
+</tr>
+<tr>
+<td align="left">Connect</td>
+<td align="left">正在进行TCP连接，如果TCP连接建立失败则进入Active状态，反复尝试连接，如果tcp 建立连接成功，bgp 设备会向邻居发送open报文，状态也会转为OpenSent  状态</td>
+</tr>
+<tr>
+<td align="left">Active</td>
+<td align="left">TCP连接没建立成功，反复尝试TCP连接，如果成功，状态依然可以转为opensent 状态，如果重传计时器超时，依然没有收到邻居回应，bgp设备会返回上一个状态，上一个是connect  状态</td>
+</tr>
+<tr>
+<td align="left">OpenSent</td>
+<td align="left">TCP连接已经建立成功，开始发送Open报文，协商邻居的建立，如果bgp设备给邻居发送open报文后，如果收到来自邻居的回复，并且回复的报文是正确的，bgp 设备会继续发送keep alive 报文，状态转为  Open Comfirm 状态，如果bgp设备给邻居发送open报文后，如果收到来自邻居的回复，但是回复的报文有错误，bgp 设备会向邻居发送notification 报文（用于断开bgp连接状态），断开后会跳转到最初的idle 状态</td>
+</tr>
+<tr>
+<td align="left">OpenConfirm</td>
+<td align="left">协商成功，自己发送Keepalive报文，等待对方的Keepalive报文，如果收到邻居发来的keep alive 报文，状态会转为established  建立状态，如果收到邻居发来的notification 报文，状态会跳转为 idle 状态</td>
+</tr>
+<tr>
+<td align="left">Established</td>
+<td align="left">已经收到对方的Keepalive报文，开始使用Update通告路由信息，如果收到邻居发来的错误的update 报文或者keepalive 报文，bgp设备会发送notification 报文，通知邻居断开连接，会回到idle 初始化状态</td>
+</tr>
+</tbody></table>
+<p><img src="/../img/img_artical/net_sec/7.1.6.png" alt="7.1.6"></p>
+<h2 id="EBGP配置"><a href="#EBGP配置" class="headerlink" title="EBGP配置"></a>EBGP配置</h2><h3 id="EBGP配置-1"><a href="#EBGP配置-1" class="headerlink" title="EBGP配置"></a>EBGP配置</h3><p><strong>配置EBGP邻居关系</strong></p>
+<p><img src="/../img/img_artical/net_sec/7.1.7.png" alt="7.1.7"></p>
+<h3 id="配置命令"><a href="#配置命令" class="headerlink" title="配置命令"></a>配置命令</h3><p><strong>配置R1</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]bgp</span> <span class="string">100                                //启动BGP进程，指定AS号</span></span><br><span class="line"><span class="attr">[R1-bgp]router-id</span> <span class="string">1.1.1.1                  //配置BGP的router-id</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.2 as-number 200    //指定邻居地址和AS号</span></span><br><span class="line"><span class="attr">[R1-bgp]network</span> <span class="string">192.168.1.0 24             //注入路由</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置R2</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]bgp</span> <span class="string">200                                //启动BGP进程，指定AS号</span></span><br><span class="line"><span class="attr">[R1-bgp]router-id</span> <span class="string">2.2.2.2                  //配置BGP的router-id</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.1 as-number 100    //指定邻居地址和AS号</span></span><br><span class="line"><span class="attr">[R1-bgp]network</span> <span class="string">192.168.2.0 24             //注入路由</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="BGP路由的生成"><a href="#BGP路由的生成" class="headerlink" title="BGP路由的生成"></a>BGP路由的生成</h3><p><strong>如何产生路由</strong></p>
+<ul>
+<li>不同于IGP路由协议，BGP并不会发现并计算产生路由</li>
+<li>BGP只会将IGP路由表中已存在的路由“搬”到BGP路由表中，称为注入路由</li>
+<li>BGP将注入的路由通过Update报文“传递”给BGP邻居</li>
+</ul>
+<p><strong>BGP注入路由的方式有两种</strong></p>
+<ul>
+<li>network</li>
+<li>import-route</li>
+</ul>
+<h3 id="BGP注入路由方式"><a href="#BGP注入路由方式" class="headerlink" title="BGP注入路由方式"></a>BGP注入路由方式</h3><p><strong>Network</strong></p>
+<ul>
+<li>Network只会注入IP路由表中已经存在的路由条目</li>
+<li>Network优势是精准注入，不足是只能逐条注入路由，配置繁琐</li>
+</ul>
+<p><strong>import-route</strong></p>
+<ul>
+<li>import-route可以批量注入路由，可以将其他协议的路由注入BGP路由表</li>
+<li>注入直连路由</li>
+<li>注入静态路由</li>
+<li>注入OSPF路由</li>
+<li>……</li>
+</ul>
+<h2 id="邻居表和路由表"><a href="#邻居表和路由表" class="headerlink" title="邻居表和路由表"></a>邻居表和路由表</h2><h3 id="BGP邻居表"><a href="#BGP邻居表" class="headerlink" title="BGP邻居表"></a>BGP邻居表</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;R1&gt;display</span> <span class="string">bgp peer </span></span><br><span class="line"></span><br><span class="line"> <span class="attr">BGP</span> <span class="string">local router ID : 1.1.1.1</span></span><br><span class="line"> <span class="attr">Local</span> <span class="string">AS number : 100</span></span><br><span class="line"> <span class="attr">Total</span> <span class="string">number of peers : 1      Peers in established state : 1</span></span><br><span class="line"></span><br><span class="line"> <span class="attr">Peer</span>          <span class="string">V   AS  MsgRcvd  MsgSent  OutQ  Up/Down     State       PrefRcv</span></span><br><span class="line"></span><br><span class="line"> <span class="attr">192.168.12.2</span>  <span class="string">4   200   45       46      0    00:42:35  Established     1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="BGP路由表"><a href="#BGP路由表" class="headerlink" title="BGP路由表"></a>BGP路由表</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&lt;R1&gt;display</span> <span class="string">bgp routing-table </span></span><br><span class="line"></span><br><span class="line"> <span class="attr">BGP</span> <span class="string">Local router ID is 1.1.1.1 </span></span><br><span class="line"> <span class="attr">Status</span> <span class="string">codes: * - valid, &gt; - best, d - damped,</span></span><br><span class="line">               <span class="attr">h</span> <span class="string">- history,  i - internal, s - suppressed, S - Stale</span></span><br><span class="line">               <span class="attr">Origin</span> : <span class="string">i - IGP, e - EGP, ? - incomplete</span></span><br><span class="line"></span><br><span class="line"> <span class="attr">Total</span> <span class="string">Number of Routes: 2</span></span><br><span class="line">      <span class="attr">Network</span>            <span class="string">NextHop        MED        LocPrf    PrefVal Path/Ogn</span></span><br><span class="line"></span><br><span class="line"> <span class="attr">*&gt;</span>   <span class="string">192.168.1.0        0.0.0.0         0                     0      i</span></span><br><span class="line"> <span class="attr">*&gt;</span>   <span class="string">192.168.2.0        192.168.12.2    0                     0      200i</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="IBGP全互联"><a href="#IBGP全互联" class="headerlink" title="IBGP全互联"></a>IBGP全互联</h2><h3 id="Next-Hop"><a href="#Next-Hop" class="headerlink" title="Next_Hop"></a>Next_Hop</h3><p><strong>BGP路由中的Next_Hop属性设置规则</strong></p>
+<ul>
+<li><p>BGP路由器在向EBGP邻居发布路由时，会把该路由的下一跳设置为本地与对端建立的BGP邻居关系的接口地址</p>
+</li>
+<li><p>BGP路由器将本地始发路由发布给IBGP邻居时，会把该路由的下一跳设置为本地与对端建立的BGP邻居关系的接口地址</p>
+</li>
+<li><p>路由器在收到EBGP邻居发布的路由后，在将路由传递给自己的IBGP邻居时，默认不修改路由的下一跳地址</p>
+</li>
+</ul>
+<h3 id="Next-Hop的缺省操作"><a href="#Next-Hop的缺省操作" class="headerlink" title="Next_Hop的缺省操作"></a>Next_Hop的缺省操作</h3><p><strong>使用peer next-hop-local命令可以在设置向IBGP对等体通告路由时，把下一跳设为本地与对端建立BGP邻居关系的接口地址</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]bgp</span> <span class="string">200</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.2 as-number 200</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.2 next-hop-local</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="IBGP全互联-1"><a href="#IBGP全互联-1" class="headerlink" title="IBGP全互联"></a>IBGP全互联</h3><p><strong>实现AS100内R4的10.10.4.4 和 AS300内R5的10.10.5.5互通</strong></p>
+<p><img src="/../img/img_artical/net_sec/7.1.8.png" alt="7.1.8"></p>
+<h3 id="IBGP配置步骤"><a href="#IBGP配置步骤" class="headerlink" title="IBGP配置步骤"></a>IBGP配置步骤</h3><p><strong>配置步骤</strong></p>
+<ul>
+<li>R4和R1建立EBGP邻居关系</li>
+<li>AS200内部R1&#x2F;R2&#x2F;R3部署OSPF</li>
+<li>R1&#x2F;R2&#x2F;R3建立IBGP全互联</li>
+<li>R3和R5建立EBGP邻居关系</li>
+<li>R4和R5中使用network注入路由</li>
+</ul>
+<h3 id="配置命令-1"><a href="#配置命令-1" class="headerlink" title="配置命令"></a>配置命令</h3><p><strong>配置R4</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R4]int</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R4-G0/0/0]ip</span> <span class="string">add 192.168.14.4 24</span></span><br><span class="line"><span class="attr">[R4-G0/0/0]int</span> <span class="string">lo0</span></span><br><span class="line"><span class="attr">[R4-LoopBack0]ip</span> <span class="string">add 10.10.4.4 32</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R4]bgp</span> <span class="string">100</span></span><br><span class="line"><span class="attr">[R4-bgp]router-id</span> <span class="string">4.4.4.4</span></span><br><span class="line"><span class="attr">[R4-bgp]peer</span> <span class="string">192.168.14.1 as 200    //和R1建立外部邻居</span></span><br><span class="line"><span class="attr">[R4-bgp]network</span> <span class="string">10.10.4.4 32        //注入路由</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置R1</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R1]int</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R1-G0/0/0]ip</span> <span class="string">add 192.168.12.1 24</span></span><br><span class="line"><span class="attr">[R1-G0/0/0]int</span> <span class="string">g0/0/1</span></span><br><span class="line"><span class="attr">[R1-G0/0/1]ip</span> <span class="string">add 192.168.14.1 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]ospf</span> <span class="string">1 router-id 1.1.1.1</span></span><br><span class="line"><span class="attr">[R1-ospf-1]area</span> <span class="string">0</span></span><br><span class="line"><span class="attr">[R1-ospf-1-area-0.0.0.0]network</span> <span class="string">192.168.12.0 0.0.0.255</span></span><br><span class="line"><span class="attr">[R1-ospf-1-area-0.0.0.0]quit</span></span><br><span class="line"><span class="attr">[R1-ospf-1]quit</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R1]bgp</span> <span class="string">200  //开启BGP，配置AS200</span></span><br><span class="line"><span class="attr">[R1-bgp]router-id</span> <span class="string">1.1.1.1</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.14.4 as 100      //和R4建立外部邻居</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.23.3 as 200      //和R3建立内部邻居</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.23.3 next-hop-local  //修改下一跳 </span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.2 as 200          //和R2建立内部邻居</span></span><br><span class="line"><span class="attr">[R1-bgp]peer</span> <span class="string">192.168.12.2 next-hop-local  //修改下一跳</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置R2</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R2]int</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R2-G0/0/0]ip</span> <span class="string">add 192.168.12.2 24</span></span><br><span class="line"><span class="attr">[R2-G0/0/0]int</span> <span class="string">g0/0/1</span></span><br><span class="line"><span class="attr">[R2-G0/0/1]ip</span> <span class="string">add 192.168.23.2 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]ospf</span> <span class="string">1 router-id 2.2.2.2</span></span><br><span class="line"><span class="attr">[R2-ospf-1]area</span> <span class="string">0</span></span><br><span class="line"><span class="attr">[R2-ospf-1-area-0.0.0.0]network</span> <span class="string">192.168.12.0 0.0.0.255</span></span><br><span class="line"><span class="attr">[R2-ospf-1-area-0.0.0.0]network</span> <span class="string">192.168.23.0 0.0.0.255</span></span><br><span class="line"><span class="attr">[R2-ospf-1-area-0.0.0.0]quit</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R2]bgp</span> <span class="string">200</span></span><br><span class="line"><span class="attr">[R2-bgp]router-id</span> <span class="string">2.2.2.2</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">192.168.12.1 as 200</span></span><br><span class="line"><span class="attr">[R2-bgp]peer</span> <span class="string">192.168.23.3 as 200</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置R3</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R3]int</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R3-G0/0/0]ip</span> <span class="string">add 192.168.23.3 24</span></span><br><span class="line"><span class="attr">[R3-G0/0/0]int</span> <span class="string">g0/0/1</span></span><br><span class="line"><span class="attr">[R3-G0/0/1]ip</span> <span class="string">add 192.168.35.3 24</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R3]ospf</span> <span class="string">1 router-id 3.3.3.3</span></span><br><span class="line"><span class="attr">[R3-ospf-1]area</span> <span class="string">0</span></span><br><span class="line"><span class="attr">[R3-ospf-1-area-0.0.0.0]network</span> <span class="string">192.168.23.0 0.0.0.255</span></span><br><span class="line"><span class="attr">[R3-ospf-1-area-0.0.0.0]quit</span></span><br><span class="line"><span class="attr">[R3-ospf-1]quit</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R3]bgp</span> <span class="string">200</span></span><br><span class="line"><span class="attr">[R3-bgp]router-id</span> <span class="string">3.3.3.3</span></span><br><span class="line"><span class="attr">[R3-bgp]peer</span> <span class="string">192.168.12.1 as 200    //和R1建立内部邻居</span></span><br><span class="line"><span class="attr">[R3-bgp]peer</span> <span class="string">192.168.12.1 next-hop-local  //修改下一跳</span></span><br><span class="line"><span class="attr">[R3-bgp]peer</span> <span class="string">192.168.23.2 as 200    //和R2建立内部邻居</span></span><br><span class="line"><span class="attr">[R3-bgp]peer</span> <span class="string">192.168.23.2 next-hop-local  //修改下一跳</span></span><br><span class="line"><span class="attr">[R3-bgp]peer</span> <span class="string">192.168.35.5 as 300    //和R5建立外部邻居</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置R5</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[R5]int</span> <span class="string">g0/0/0</span></span><br><span class="line"><span class="attr">[R5-G0/0/0]ip</span> <span class="string">add 192.168.35.5 24</span></span><br><span class="line"><span class="attr">[R5-G0/0/0]int</span> <span class="string">lo0</span></span><br><span class="line"><span class="attr">[R5-LoopBack0]ip</span> <span class="string">add 10.10.5.5 32</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[R5]bgp</span> <span class="string">300</span></span><br><span class="line"><span class="attr">[R5-bgp]router-id</span> <span class="string">5.5.5.5</span></span><br><span class="line"><span class="attr">[R5-bgp]peer</span> <span class="string">192.168.35.3 as 200   //和R3建立外部邻居</span></span><br><span class="line"><span class="attr">[R5-bgp]network</span> <span class="string">10.10.5.5 32       //注入路由</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/backbone1.html">https://www.nicopilot.online/posts/backbone1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%AA%A8%E5%B9%B2%E7%BD%91%E4%B8%8EWLAN/">骨干网与WLAN</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/7_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/backbone3.html" title="网络安全-骨干网与WLAN3"><img class="cover" src="/img/cover/net_sec/7_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-骨干网与WLAN3</div></div></a></div><div class="next-post pull-right"><a href="/posts/backbone2.html" title="网络安全-骨干网与WLAN2"><img class="cover" src="/img/cover/net_sec/7_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-骨干网与WLAN2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/backbone2.html" title="网络安全-骨干网与WLAN2"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN2</div></div></a></div><div><a href="/posts/backbone3.html" title="网络安全-骨干网与WLAN3"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN3</div></div></a></div><div><a href="/posts/backbone4.html" title="网络安全-骨干网与WLAN4"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN4</div></div></a></div><div><a href="/posts/backbone5.html" title="网络安全-骨干网与WLAN5"><img class="cover" src="/img/cover/net_sec/7_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-09</div><div class="title">网络安全-骨干网与WLAN5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AA%A8%E5%B9%B2%E7%BD%91%E4%B8%8EWLAN"><span class="toc-number">1.</span> <span class="toc-text">骨干网与WLAN</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BGP%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">BGP概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%88%86%E7%B1%BB"><span class="toc-number">1.1.1.</span> <span class="toc-text">动态路由分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AS"><span class="toc-number">1.1.2.</span> <span class="toc-text">AS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2"><span class="toc-number">1.1.3.</span> <span class="toc-text">BGP发展历史</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E5%9C%A8%E4%BC%81%E4%B8%9A%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.1.4.</span> <span class="toc-text">BGP在企业中的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E6%A6%82%E8%BF%B0-1"><span class="toc-number">1.1.5.</span> <span class="toc-text">BGP概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E7%89%B9%E7%82%B9"><span class="toc-number">1.1.6.</span> <span class="toc-text">BGP特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BGP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">BGP基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E7%89%B9%E5%BE%81"><span class="toc-number">1.2.1.</span> <span class="toc-text">BGP特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E9%82%BB%E5%B1%85%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">BGP邻居类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E6%8A%A5%E6%96%87"><span class="toc-number">1.2.3.</span> <span class="toc-text">BGP报文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E9%82%BB%E5%B1%85%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">BGP邻居关系建立</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">1.2.5.</span> <span class="toc-text">BGP状态机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EBGP%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.</span> <span class="toc-text">EBGP配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#EBGP%E9%85%8D%E7%BD%AE-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">EBGP配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.2.</span> <span class="toc-text">配置命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E8%B7%AF%E7%94%B1%E7%9A%84%E7%94%9F%E6%88%90"><span class="toc-number">1.3.3.</span> <span class="toc-text">BGP路由的生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E6%B3%A8%E5%85%A5%E8%B7%AF%E7%94%B1%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.4.</span> <span class="toc-text">BGP注入路由方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%BB%E5%B1%85%E8%A1%A8%E5%92%8C%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">邻居表和路由表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E9%82%BB%E5%B1%85%E8%A1%A8"><span class="toc-number">1.4.1.</span> <span class="toc-text">BGP邻居表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BGP%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">BGP路由表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IBGP%E5%85%A8%E4%BA%92%E8%81%94"><span class="toc-number">1.5.</span> <span class="toc-text">IBGP全互联</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Next-Hop"><span class="toc-number">1.5.1.</span> <span class="toc-text">Next_Hop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Next-Hop%E7%9A%84%E7%BC%BA%E7%9C%81%E6%93%8D%E4%BD%9C"><span class="toc-number">1.5.2.</span> <span class="toc-text">Next_Hop的缺省操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IBGP%E5%85%A8%E4%BA%92%E8%81%94-1"><span class="toc-number">1.5.3.</span> <span class="toc-text">IBGP全互联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IBGP%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.5.4.</span> <span class="toc-text">IBGP配置步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="toc-number">1.5.5.</span> <span class="toc-text">配置命令</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">32</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><!-- hexo injector body_end end --></body></html>
