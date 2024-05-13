@@ -1,0 +1,499 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Web应用基础5 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述PHP编程、基本语法、流程控制、函数和对象 - Web应用基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Web应用基础5">
+<meta property="og:url" content="https://www.nicopilot.online/posts/webbase5.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述PHP编程、基本语法、流程控制、函数和对象 - Web应用基础">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/12_cover.png">
+<meta property="article:published_time" content="2024-05-11T07:04:50.000Z">
+<meta property="article:modified_time" content="2024-05-11T07:04:50.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="游戏">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/12_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/webbase5.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Web应用基础5',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-11 15:04:50'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/12_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Web应用基础5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-11T07:04:50.000Z" title="发表于 2024-05-11 15:04:50">2024-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-11T07:04:50.000Z" title="更新于 2024-05-11 15:04:50">2024-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Web应用基础5"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Web应用基础"><a href="#Web应用基础" class="headerlink" title="Web应用基础"></a>Web应用基础</h1><h2 id="走进PHP编程世界"><a href="#走进PHP编程世界" class="headerlink" title="走进PHP编程世界"></a>走进PHP编程世界</h2><h3 id="PHP简介"><a href="#PHP简介" class="headerlink" title="PHP简介"></a>PHP简介</h3><p><strong>PHP全称是Hypertext Preprocessor，超文本预处理器</strong></p>
+<ul>
+<li>PHP是一种创建动态交互性站点的开源语言</li>
+<li>在服务器上执行</li>
+<li>网络安全最常用方案以PHP为范本</li>
+</ul>
+<h3 id="PHP文件"><a href="#PHP文件" class="headerlink" title="PHP文件"></a>PHP文件</h3><p><strong>PHP文件是什么？</strong></p>
+<ul>
+<li>PHP文件可包含文本、HTML、JavaScript代码和PHP代码</li>
+<li>PHP代码在服务器上执行，结果以纯HTML形式返回给浏览器</li>
+<li>PHP文件的默认文件扩展名是”.php”</li>
+</ul>
+<h3 id="第一个PHP程序"><a href="#第一个PHP程序" class="headerlink" title="第一个PHP程序"></a>第一个PHP程序</h3><p><strong>在浏览器上输出文本”Hello World”</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Hello World!&quot;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>必须把PHP代码放置在<?php和?>标签之间</li>
+<li>PHP中的每个代码行都必须以分号结束</li>
+<li>在浏览器输出文本的指令：echo 和print</li>
+<li>大小写敏感</li>
+</ul>
+<p><strong>注释</strong></p>
+<ul>
+<li>单行：&#x2F;&#x2F;</li>
+<li>多行：&#x2F;*   *&#x2F;</li>
+</ul>
+<h2 id="PHP语法"><a href="#PHP语法" class="headerlink" title="PHP语法"></a>PHP语法</h2><h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p><strong>PHP 没有声明变量的命令，变量在第一次赋值时被创建</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$num</span> = <span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>变量创建时不需要指定数据类型，以赋值为准</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$num</span> = <span class="number">100</span>;</span><br><span class="line"><span class="variable">$name</span> = <span class="string">&quot;张三&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>变量的命名规则</strong></p>
+<ul>
+<li>变量以$符号开始，后面跟着变量的名称</li>
+<li>变量名必须以字母或者下划线字符开始</li>
+<li>变量名只能包含字母、数字以及下划线 (A-Z、0-9 和_)</li>
+<li>变量名不能包含空格</li>
+<li>变量名是区分大小写的($y和$Y是两个不同的变量)</li>
+</ul>
+<h3 id="PHP输出"><a href="#PHP输出" class="headerlink" title="PHP输出"></a>PHP输出</h3><p><strong>PHP ehco语句</strong></p>
+<ul>
+<li>echo是一个语言结构，使用的时候可以不用加括号，也可以加上括号：echo或echo()</li>
+</ul>
+<p><strong>PHP print 语句</strong></p>
+<ul>
+<li>print同样是一个语言结构，可以使用括号，也可以不使用括号：print或 print()</li>
+</ul>
+<p><strong>PHP echo 和print语句的区别</strong></p>
+<ul>
+<li>echo - 可以输出一个或多个字符串</li>
+<li>print - 只允许输出一个字符串</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p><strong>PHP常见数据类型</strong></p>
+<p><strong>基本类型</strong></p>
+<ul>
+<li>String (字符串)，Integer (整型) ，Float (浮点型) ，Boolean (布尔型)</li>
+</ul>
+<p><strong>复合类型</strong></p>
+<ul>
+<li>Array (数组)，Object (对象)</li>
+</ul>
+<p><strong>字符串类型</strong></p>
+<ul>
+<li>在PHP中，只有一个字符串运算符</li>
+<li>并置运算符(.)用于把两个字符串值连接起来</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$txt1</span> = <span class="string">&quot;Hello world!&quot;</span>;</span><br><span class="line">    <span class="variable">$txt2</span> = <span class="string">&quot;Arknights&quot;</span>;</span><br><span class="line">	<span class="keyword">echo</span> <span class="variable">$txt1</span>.<span class="variable">$txt2</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>整型和浮点型</strong></p>
+<ul>
+<li>var_dump()函数用于返回变量的数据类型和值</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$x</span> = <span class="number">100</span>;</span><br><span class="line">	<span class="title function_ invoke__">var_dump</span>(<span class="variable">$x</span>);</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">	<span class="variable">$x</span> = <span class="number">10.365</span>;</span><br><span class="line">	<span class="title function_ invoke__">var_dump</span>(<span class="variable">$x</span>);</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>布尔类型</strong></p>
+<ul>
+<li>只能true或false</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="variable">$x</span> = <span class="literal">true</span>;</span><br><span class="line">	<span class="variable">$y</span> = <span class="literal">false</span>;</span><br><span class="line">	<span class="title function_ invoke__">var_dump</span>(<span class="variable">$x</span>);</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">	<span class="title function_ invoke__">var_dump</span>(<span class="variable">$y</span>);</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><p><strong>PHP常用的运算符包括</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">运算符</th>
+<th align="center">值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">赋值运算符</td>
+<td align="center">&#x3D;</td>
+</tr>
+<tr>
+<td align="center">算术运算符</td>
+<td align="center">+、-、*、&#x2F;、%<br />+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、%&#x3D;</td>
+</tr>
+<tr>
+<td align="center">自增自减运算符</td>
+<td align="center">++、–</td>
+</tr>
+<tr>
+<td align="center">关系运算符</td>
+<td align="center">&gt;、&lt;、&gt;&#x3D;、&lt;&#x3D;、<br />&#x3D;&#x3D;（相等）  !&#x3D;（不相等）<br />&#x3D;&#x3D;&#x3D;（全等）  !&#x3D;&#x3D;（不全等）</td>
+</tr>
+<tr>
+<td align="center">逻辑运算符</td>
+<td align="center">&amp;&amp;、||、！<br />注意：除零值以外，所有值都为真</td>
+</tr>
+</tbody></table>
+<p><strong>相等和全等案例</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$x</span> = <span class="number">100</span>;</span><br><span class="line">    &amp;y = <span class="string">&quot;100&quot;</span>;</span><br><span class="line">    <span class="title function_ invoke__">var_dump</span>(<span class="variable">$x</span> == <span class="variable">$y</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    <span class="title function_ invoke__">var_dump</span>(<span class="variable">$x</span> === <span class="variable">$y</span>)</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PHP流程控制"><a href="#PHP流程控制" class="headerlink" title="PHP流程控制"></a>PHP流程控制</h2><h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><p><strong>大多数计算机语言的流程都可以分为三种</strong></p>
+<ul>
+<li>顺序结构</li>
+<li>选择结构</li>
+<li>循环结构</li>
+</ul>
+<p><strong>顺序结构</strong></p>
+<ul>
+<li>代码的执行由上而下依次执行</li>
+</ul>
+<p><strong>选择结构</strong></p>
+<ul>
+<li>代码的执行根据不同的条件，执行不同的语句。根据条件的数量不同，分以下三种：if语句、if  else语句和if  elseif语句</li>
+</ul>
+<h3 id="选择结构"><a href="#选择结构" class="headerlink" title="选择结构"></a>选择结构</h3><p><strong>if语句</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(条件表达式)&#123;</span><br><span class="line">	语句块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>if else语句</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(条件表达式)&#123;</span><br><span class="line">	语句块<span class="number">1</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	语句块<span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>if else if语句</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(条件表达式<span class="number">1</span>)&#123;</span><br><span class="line">	语句块<span class="number">1</span>;</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(条件表达式<span class="number">2</span>)&#123;</span><br><span class="line">	语句块<span class="number">2</span>;</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(条件表达式<span class="number">3</span>)&#123;</span><br><span class="line">	语句块<span class="number">3</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	其他语句块;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>选择结构案例</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&quot;content-type:text/html;charset=utf-8&quot;</span>);</span><br><span class="line">    <span class="comment">// if</span></span><br><span class="line">    <span class="variable">$age</span> = <span class="number">16</span>;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$age</span> &lt; <span class="number">18</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;禁止访问&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// else if</span></span><br><span class="line">    <span class="variable">$a</span> = <span class="number">10</span>;</span><br><span class="line">    <span class="variable">$b</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$a</span> &gt; <span class="variable">$b</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$a</span>.<span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$b</span>.<span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="循环结构"><a href="#循环结构" class="headerlink" title="循环结构"></a>循环结构</h3><ul>
+<li><p>重复执行的动作</p>
+</li>
+<li><p>PHP支持for、while、do-while、foreach等不同类型的循环</p>
+</li>
+<li><p>其中foreach主要用于遍历可迭代对象</p>
+</li>
+</ul>
+<p><strong>for语句</strong></p>
+<ul>
+<li>语法</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(表达式<span class="number">1</span>;表达式<span class="number">2</span>;表达式<span class="number">3</span>)&#123;</span><br><span class="line">	语句序列;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../img/img_artical/net_sec/12.5.1.png" alt="12.5.1"></p>
+<p><strong>while语句</strong></p>
+<ul>
+<li>语法</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(条件表达式)&#123;</span><br><span class="line">	语句序列;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../img/img_artical/net_sec/12.5.2.png" alt="12.5.2"></p>
+<p><strong>do-while语句</strong></p>
+<ul>
+<li>语法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">do&#123;</span><br><span class="line">	语句序列</span><br><span class="line">&#125;while(条件表达式);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../img/img_artical/net_sec/12.5.3.png" alt="12.5.3"></p>
+<p><strong>break和continue语句</strong></p>
+<ul>
+<li>break用于跳出循环</li>
+<li>continue用于结束一次循环，继续执行下一次循环</li>
+</ul>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><ul>
+<li><p>数组是一个能在单个变量中存储多个值的特殊变量</p>
+</li>
+<li><p>在PHP中，array()函数用于创建数组</p>
+</li>
+</ul>
+<p><strong>在PHP中，常用的有两种类型的数组：</strong></p>
+<ul>
+<li><p>数值数组-带有数字ID键的数组</p>
+</li>
+<li><p>关联数组- 带有指定的键的数组，每个键关联一个值</p>
+</li>
+<li><p>数值数组</p>
+</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$users</span> = <span class="keyword">array</span>();</span><br><span class="line">    <span class="comment">// 手动分配键</span></span><br><span class="line">    <span class="variable">$users</span>[<span class="number">0</span>] = <span class="string">&quot;tedu&quot;</span>;</span><br><span class="line">    <span class="variable">$users</span>[<span class="number">1</span>] = <span class="string">&quot;tedu2&quot;</span>;</span><br><span class="line">    <span class="variable">$users</span>[<span class="number">2</span>] = <span class="string">&quot;tedu3&quot;</span>;</span><br><span class="line">    <span class="comment">// 自动分配ID键</span></span><br><span class="line">    <span class="variable">$users</span> = <span class="keyword">array</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;admin2&quot;</span>,<span class="string">&quot;admin3&quot;</span>);</span><br><span class="line">    <span class="comment">// 计算数组长度</span></span><br><span class="line">    <span class="variable">$arrlength</span> = <span class="title function_ invoke__">count</span>(<span class="variable">$users</span>);</span><br><span class="line">    <span class="comment">// 打印数组元素</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span> ; <span class="variable">$i</span> &lt; <span class="variable">$arrlength</span> ; <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$users</span>[<span class="variable">$i</span>].<span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>关联数组</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$ages</span> = <span class="keyword">array</span>();</span><br><span class="line">    <span class="comment">// $ages[&#x27;zhangsan&#x27;] = 18;</span></span><br><span class="line">    <span class="comment">// $ages[&#x27;lisi&#x27;] = 19;</span></span><br><span class="line">    <span class="comment">// $ages[&#x27;wangwu&#x27;] = 20;</span></span><br><span class="line">    <span class="variable">$ages</span> = <span class="keyword">array</span>(<span class="string">&quot;zhangsan&quot;</span> =&gt; <span class="number">18</span> , <span class="string">&quot;lisi&quot;</span> =&gt; <span class="number">19</span> , <span class="string">&quot;wangwu&quot;</span> =&gt; <span class="number">20</span>);</span><br><span class="line">    <span class="variable">$arrlength</span> = <span class="title function_ invoke__">count</span>(<span class="variable">$ages</span>);</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="variable">$ages</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;key:  &quot;</span>.<span class="variable">$key</span>.<span class="string">&quot;   value:  &quot;</span>.<span class="variable">$value</span>.<span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PHP函数和对象"><a href="#PHP函数和对象" class="headerlink" title="PHP函数和对象"></a>PHP函数和对象</h2><h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>函数的作用就是封装和重用。</li>
+<li>函数中的代码，只有在调用时，才会被执行。</li>
+<li>语法</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数定义</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">funName</span>(<span class="params">形参</span>)</span>&#123;</span><br><span class="line">	语句块;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数调用</span></span><br><span class="line"><span class="title function_ invoke__">funName</span>(实参);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数使用案例</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">myMax</span>(<span class="params"><span class="variable">$a</span> , <span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$a</span> &gt; <span class="variable">$b</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$a</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$b</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$max</span> = <span class="title function_ invoke__">myMax</span>(<span class="number">100</span> , <span class="number">20</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$max</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="类和对象"><a href="#类和对象" class="headerlink" title="类和对象"></a>类和对象</h3><p><strong>面向对象概念</strong></p>
+<ul>
+<li><p>类定义了一件事物的抽象特点。类的定义包含了数据的形式以及对数据的操作</p>
+</li>
+<li><p>对象是类的实例</p>
+</li>
+<li><p>成员变量是定义在类内部的变量。在类被实例化为对象后，该变量即可称为对象的属性</p>
+</li>
+<li><p>成员函数是定义在类的内部，可用于访问对象的数据</p>
+</li>
+</ul>
+<p><strong>定义类</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">// 解决中文乱码问题</span></span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&quot;content-type:text/html;charset=utf-8&quot;</span>);</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">phpClass</span></span>&#123;</span><br><span class="line">        <span class="comment">// 成员变量</span></span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$var1</span>;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$var2</span> = <span class="string">&quot;constant string&quot;</span>;</span><br><span class="line">        <span class="comment">// 成员函数</span></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">myFunc</span>(<span class="params"><span class="variable">$arg1</span> , <span class="variable">$arg2</span></span>)</span>&#123;</span><br><span class="line">            代码</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>定义类的语法解析：</strong></p>
+<ul>
+<li>类使用class关键字后加上类名定义</li>
+<li>类名后的一对大括号({})内可以定义变量和方法</li>
+<li>类的变量使用var 来声明,变量也可以初始化值</li>
+<li>函数定义类似PHP函数的定义，但函数只能通过该类及其实例化的对象访问</li>
+<li>变量$this代表自身的对象。</li>
+</ul>
+<p><strong>类定义案例</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&quot;content-type:text/html;charset=utf-8&quot;</span>);</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Teacher</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$age</span>;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">show</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;姓名：&#x27;</span>,<span class="variable language_">$this</span> =&gt; name,<span class="string">&#x27;年龄：&#x27;</span>,<span class="variable language_">$this</span> =&gt; age,<span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用类实例化对象</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&quot;content-type:text/html;charset=utf-8&quot;</span>);</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Teacher</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">var</span> <span class="variable">$age</span>;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">show</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;姓名：&#x27;</span>,<span class="variable language_">$this</span> -&gt; name,<span class="string">&#x27;年龄：&#x27;</span>,<span class="variable language_">$this</span> -&gt; age,<span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$t1</span> = <span class="keyword">new</span> <span class="title class_">Teacher</span>;</span><br><span class="line">    <span class="variable">$t1</span> -&gt; name = <span class="string">&#x27;张飞&#x27;</span>;</span><br><span class="line">    <span class="variable">$t1</span> -&gt; age = <span class="number">30</span>;</span><br><span class="line">    <span class="variable">$t1</span> -&gt; <span class="title function_ invoke__">show</span>();</span><br><span class="line"></span><br><span class="line">    <span class="variable">$t2</span> = <span class="keyword">new</span> <span class="title class_">Teacher</span>;</span><br><span class="line">    <span class="variable">$t2</span> -&gt; name = <span class="string">&#x27;赵云&#x27;</span>;</span><br><span class="line">    <span class="variable">$t2</span> -&gt; age = <span class="number">27</span>;</span><br><span class="line">    <span class="variable">$t2</span> -&gt; <span class="title function_ invoke__">show</span>();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/webbase5.html">https://www.nicopilot.online/posts/webbase5.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/12_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/webbase6.html" title="网络安全-Web应用基础6"><img class="cover" src="/img/cover/net_sec/12_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-Web应用基础6</div></div></a></div><div class="next-post pull-right"><a href="/posts/webbase4.html" title="网络安全-Web应用基础4"><img class="cover" src="/img/cover/net_sec/12_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Web应用基础4</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Web%E5%BA%94%E7%94%A8%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">Web应用基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%B0%E8%BF%9BPHP%E7%BC%96%E7%A8%8B%E4%B8%96%E7%95%8C"><span class="toc-number">1.1.</span> <span class="toc-text">走进PHP编程世界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text">PHP简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.2.</span> <span class="toc-text">PHP文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AAPHP%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text">第一个PHP程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E8%AF%AD%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">PHP语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP%E8%BE%93%E5%87%BA"><span class="toc-number">1.2.2.</span> <span class="toc-text">PHP输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">1.2.4.</span> <span class="toc-text">运算符</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">1.3.</span> <span class="toc-text">PHP流程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">1.3.1.</span> <span class="toc-text">流程控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.2.</span> <span class="toc-text">选择结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.3.</span> <span class="toc-text">循环结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E7%BB%84"><span class="toc-number">1.3.4.</span> <span class="toc-text">数组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E5%87%BD%E6%95%B0%E5%92%8C%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.</span> <span class="toc-text">PHP函数和对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.2.</span> <span class="toc-text">类和对象</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">61</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

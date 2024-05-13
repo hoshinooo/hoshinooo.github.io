@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-网络安全防御1 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述挂载的概念、如何访问光盘&#x2F;U盘等存储设备、如何配置软件源并使用yum管理应用软件、如何快速部署LAMP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-网络安全防御1">
+<meta property="og:url" content="https://www.nicopilot.online/posts/secdef1.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述挂载的概念、如何访问光盘&#x2F;U盘等存储设备、如何配置软件源并使用yum管理应用软件、如何快速部署LAMP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/11_cover.png">
+<meta property="article:published_time" content="2024-05-11T04:45:26.000Z">
+<meta property="article:modified_time" content="2024-05-11T04:45:26.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="网络安全防御">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/11_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/secdef1.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-网络安全防御1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-11 12:45:26'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/11_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-网络安全防御1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-11T04:45:26.000Z" title="发表于 2024-05-11 12:45:26">2024-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-11T04:45:26.000Z" title="更新于 2024-05-11 12:45:26">2024-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-网络安全防御1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="网络安全防御"><a href="#网络安全防御" class="headerlink" title="网络安全防御"></a>网络安全防御</h1><h2 id="访问存储设备"><a href="#访问存储设备" class="headerlink" title="访问存储设备"></a>访问存储设备</h2><h3 id="什么是挂载"><a href="#什么是挂载" class="headerlink" title="什么是挂载"></a>什么是挂载</h3><p><strong>挂载，装载</strong></p>
+<ul>
+<li>将光盘&#x2F;U盘&#x2F;分区&#x2F;网络存储等设备装到某个Linux目录</li>
+<li>通过访问这个目录来操作设备上的文档</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.1.png" alt="11.1.1"></p>
+<h3 id="挂载设备"><a href="#挂载设备" class="headerlink" title="挂载设备"></a>挂载设备</h3><p><strong>关于分区&#x2F;U盘&#x2F;光盘设备文件</strong></p>
+<ul>
+<li><p>分区，一般是&#x2F;dev&#x2F;sda1、&#x2F;dev&#x2F;sda2等等</p>
+</li>
+<li><p>U盘，一般是&#x2F;dev&#x2F;sdb1</p>
+</li>
+<li><p>光盘，一般是&#x2F;dev&#x2F;cdrom，指向&#x2F;dev&#x2F;sr0等设备</p>
+</li>
+<li><p>示例：挂载openEuler光盘</p>
+<ul>
+<li>插入openEuler光盘（虚拟机连ISO文件）</li>
+<li>准备挂载点</li>
+<li>挂载光盘（mount）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mkdir /mnt/dvd               //创建目录（挂载点）</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mount /dev/cdrom /mnt/dvd/   //进行挂载</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="访问设备内的文档"><a href="#访问设备内的文档" class="headerlink" title="访问设备内的文档"></a>访问设备内的文档</h3><p><strong>挂载成功后，通过挂载点即可访问光盘内文档</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /mnt/dvd/              //列出光盘目录内容</span></span><br><span class="line"><span class="attr">docs</span>  <span class="string">EFI  images  isolinux  ks  Packages  repodata  RPM-GPG-KEY-openEuler  TRANS.TBL</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="卸载设备"><a href="#卸载设备" class="headerlink" title="卸载设备"></a>卸载设备</h3><p><strong>卸载已挂载的openEuler光盘</strong></p>
+<ul>
+<li>卸载完毕后，挂载点与对应设备无任何关系</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# umount /mnt/dvd        //卸载设备</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /mnt/dvd/           //挂载点已为空</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="认识-etc-fstab配置"><a href="#认识-etc-fstab配置" class="headerlink" title="认识&#x2F;etc&#x2F;fstab配置"></a>认识&#x2F;etc&#x2F;fstab配置</h3><p><strong>开机挂载解析</strong></p>
+<ul>
+<li>在&#x2F;etc&#x2F;fstab文件中添加设备记录</li>
+<li>文件系统类型：iso9660、xfs、swap、ext4</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.2.png" alt="11.1.2"></p>
+<h3 id="配置开机挂载"><a href="#配置开机挂载" class="headerlink" title="配置开机挂载"></a>配置开机挂载</h3><p><strong>建挂载点  –&gt;  配置stab  –&gt;  检查配置  –&gt;  重启验证</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mkdir -p /repos/openEuler         //创建自动挂载点</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# vim /etc/fstab                    //编辑开机自动挂载配置</span></span><br><span class="line"></span><br><span class="line"><span class="attr">/dev/cdrom</span> <span class="string">/repos/openEuler iso9660 ro 0 0</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mount -a                          //检查开机挂载配置（无报错）</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重启系统，检查开机挂载效果</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# reboot</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /repos/openEuler/</span></span><br><span class="line"><span class="attr">docs</span>  <span class="string">images    ks        repodata               TRANS.TBL</span></span><br><span class="line"><span class="attr">EFI</span>   <span class="string">isolinux  Packages  RPM-GPG-KEY-openEuler</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置yum源"><a href="#配置yum源" class="headerlink" title="配置yum源"></a>配置yum源</h2><h3 id="yum工作机制"><a href="#yum工作机制" class="headerlink" title="yum工作机制"></a>yum工作机制</h3><p><strong>YUM，Yellowdog Updater Modified，黄狗升级器</strong></p>
+<ul>
+<li>软件仓库：集中分发.rpm 软件包资源，并解决软件之间的依赖关系</li>
+<li>客户机：使用yum或dnf 查询&#x2F;安装&#x2F;卸载软件</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.3.png" alt="11.1.3"></p>
+<h3 id="软件仓库提供方式"><a href="#软件仓库提供方式" class="headerlink" title="软件仓库提供方式"></a>软件仓库提供方式</h3><p><strong>软件资源哪里来</strong></p>
+<p><img src="/../img/img_artical/net_sec/11.1.4.png" alt="11.1.4"></p>
+<h3 id="准备软件仓库目录"><a href="#准备软件仓库目录" class="headerlink" title="准备软件仓库目录"></a>准备软件仓库目录</h3><p><strong>openEuler安装盘已预先配置成软件仓库，可以直接使用</strong></p>
+<ul>
+<li>比如，已挂载了openEuler光盘的&#x2F;repos&#x2F;openEuler目录</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.5.png" alt="11.1.5"></p>
+<h3 id="禁用无效源"><a href="#禁用无效源" class="headerlink" title="禁用无效源"></a>禁用无效源</h3><p><strong>对于用不到&#x2F;不能用的源（比如官方源），可以直接删除</strong></p>
+<ul>
+<li>配置位置: &#x2F;etc&#x2F;yum.repos.d&#x2F;*.repo</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# rm -rf /etc/yum.repos.d/*               //删除所有旧的软件源</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="设置有效源"><a href="#设置有效源" class="headerlink" title="设置有效源"></a>设置有效源</h3><p><strong>通过辅助配置工具快速设置指定的软件源</strong></p>
+<ul>
+<li>用法：yum-config-manager –add-repo  软件源URL地址</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum-config-manager --add https://mirrors.aliyun.com/centos-stream/9-stream/BaseOS/x86_64/os</span></span><br><span class="line"><span class="attr">//阿里的基础软件源</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum-config-manager --add https://mirrors.aliyun.com/centos-stream/9-stream/AppStream/x86_64/os</span></span><br><span class="line"><span class="attr">//阿里的应用软件源</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /etc/yum.repos.d/      //确认结果配置</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="关闭软件来源检查"><a href="#关闭软件来源检查" class="headerlink" title="关闭软件来源检查"></a>关闭软件来源检查</h3><p><strong>系统对软件来源合法性的检查</strong></p>
+<ul>
+<li>默认只建议安装官方来源的应用软件</li>
+<li>但是需要提供发布者的秘钥</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# vim /etc/yum.conf</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[main]</span></span><br><span class="line"><span class="attr">gpgcheck</span>=<span class="string">0           //将1改为0可以关闭检查</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="结果验证"><a href="#结果验证" class="headerlink" title="结果验证"></a>结果验证</h3><p><strong>重新获取源数据，确保有可用仓库</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum repolist -v       //检查仓库列表</span></span><br><span class="line"> </span><br><span class="line"><span class="attr">Total</span> <span class="string">packages: 20,176            //软件源，显示提供包的数量</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="使用yum管理软件"><a href="#使用yum管理软件" class="headerlink" title="使用yum管理软件"></a>使用yum管理软件</h2><h3 id="list列出软件"><a href="#list列出软件" class="headerlink" title="list列出软件"></a>list列出软件</h3><p><strong>用来获知xx软件是否已安装&#x2F;版本&#x2F;来源</strong></p>
+<ul>
+<li>格式：yum list[软件名]</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum list httpd</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Available</span> <span class="string">Packages</span></span><br><span class="line"><span class="attr">httpd.x86_64</span>      <span class="string">2.4.57-5.el9      mirrors.aliyun.com_centos-stream_9-stream_AppStream_x86_64_os</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="install-安装软件"><a href="#install-安装软件" class="headerlink" title="install 安装软件"></a>install 安装软件</h3><p><strong>安装软件</strong></p>
+<ul>
+<li>格式：yum [-y] install  软件名|文件名</li>
+<li>软件名（yum仓库），文件名（离线安装包）</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum -y install httpd</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Installing</span>:<span class="string"></span></span><br><span class="line"> <span class="attr">httpd</span> <span class="string">x86_64 2.4.57-5.el9   mirrors.aliyun.com_centos-stream_9-stream_AppStream_x86_64_os  47 k</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="remove-卸载软件"><a href="#remove-卸载软件" class="headerlink" title="remove 卸载软件"></a>remove 卸载软件</h3><p><strong>卸载软件</strong></p>
+<ul>
+<li>格式：yum [-y] remove 软件名</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum -y remove httpd</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LAMP部署及测试"><a href="#LAMP部署及测试" class="headerlink" title="LAMP部署及测试"></a>LAMP部署及测试</h2><h3 id="B-S服务架构"><a href="#B-S服务架构" class="headerlink" title="B&#x2F;S服务架构"></a>B&#x2F;S服务架构</h3><p><strong>基于Browser&#x2F;Server架构的网页资源通信</strong></p>
+<ul>
+<li>服务端：支持HTTP协议的网页提供程序</li>
+<li>浏览器&#x2F;客户端：下载并按标记规范显示网页的浏览器程序</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.6.png" alt="11.1.6"></p>
+<h3 id="如何获取网站资源"><a href="#如何获取网站资源" class="headerlink" title="如何获取网站资源"></a>如何获取网站资源</h3><p><strong>URL网址</strong></p>
+<ul>
+<li>Uniform Resource Locator，统一资源定位器</li>
+<li>资源类别：&#x2F;&#x2F;服务器地址&#x2F;目录路径&#x2F;文件名</li>
+</ul>
+<h3 id="静态网站与动态网站"><a href="#静态网站与动态网站" class="headerlink" title="静态网站与动态网站"></a>静态网站与动态网站</h3><p><strong>静态网站（只读）</strong></p>
+<ul>
+<li>访问同一个网址时，看到的网页资源是固定不变的</li>
+<li>比如index.html、.txt、 .targz、 .png、 .jpg、.gif</li>
+</ul>
+<p><strong>动态网站（可交互）</strong></p>
+<ul>
+<li>访问同一个网址(网页程序) 时，看到的网页资源是变化的…..</li>
+<li>比如.php、.jsp、.wsgi 、.asp、</li>
+</ul>
+<h3 id="什么是LAMP"><a href="#什么是LAMP" class="headerlink" title="什么是LAMP"></a>什么是LAMP</h3><p><strong>一种成熟的动态企业网站服务器模式</strong></p>
+<ul>
+<li>Apache在最前端，负责处理来自浏览器的Web访问请求</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.7.png" alt="11.1.7"></p>
+<h3 id="快速安装LAMP平台"><a href="#快速安装LAMP平台" class="headerlink" title="快速安装LAMP平台"></a>快速安装LAMP平台</h3><p><strong>离线安装</strong></p>
+<ul>
+<li>预先准备离线素材，上传到&#x2F;root&#x2F;目录下</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum -y remove openEuler-logos            //卸载冲突包</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /root/lamp80/                         //查看是否上传成功</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum -y install /root/lamp80/*.rmp        //安装</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>确认安装结果，不要有遗漏</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# yum list httpd mariadb-server php-fpm php-mysqlnd</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Installed</span> <span class="string">Packages          //已安装的软件包</span></span><br><span class="line"><span class="attr">httpd.x86_64</span>                     <span class="string">2.4.53-7.el9                  @@commandline</span></span><br><span class="line"><span class="attr">mariadb-server.x86_64</span>            <span class="string">3:10.5.16-2.el9               @@commandline</span></span><br><span class="line"><span class="attr">php-fpm.x86_64</span>                   <span class="string">8.0.20-3.el9                  @@commandline</span></span><br><span class="line"><span class="attr">php-mysqlnd.x86_64</span>               <span class="string">8.0.20-3.el9                  @@commandline</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="启动LAMP平台"><a href="#启动LAMP平台" class="headerlink" title="启动LAMP平台"></a>启动LAMP平台</h3><p><strong>openEuler中默认提供三个服务</strong></p>
+<ul>
+<li>httpd网站</li>
+<li>mariadb数据库</li>
+<li>php-fpm编程语言</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# systemctl  enable --now httpd mariadb php-fpm</span></span><br><span class="line"><span class="attr">//设置服务开机自启</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# setenforce 0</span></span><br><span class="line"><span class="attr">//关闭SELinux</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>允许80端口通过防火墙</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# firewall-cmd --zone=public --add-port=80/tcp --permanent      //允许TCP80端口通过防火墙</span></span><br><span class="line"><span class="attr">success</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# systemctl restart firewalld            //重启防火墙</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>从浏览器访问</strong></p>
+<ul>
+<li>http:&#x2F;&#x2F;虚拟机的IP地址&#x2F;</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/11.1.8.png" alt="11.1.8"></p>
+<h3 id="检查PHP环境"><a href="#检查PHP环境" class="headerlink" title="检查PHP环境"></a>检查PHP环境</h3><p><strong>在网站根目录下创建PHP环境测试文件</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /<span class="keyword">var</span>/www/html/t1.php</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">phpinfo</span>();            <span class="comment">//显示PHP版本等信息</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="检查PHP网页访问数据库"><a href="#检查PHP网页访问数据库" class="headerlink" title="检查PHP网页访问数据库"></a>检查PHP网页访问数据库</h3><p><strong>在网站根目录下建立数据库测试文件</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@ntd ~]<span class="comment"># mysqladmin -uroot password &#x27;db@1234&#x27;</span></span><br><span class="line">[root@ntd ~]<span class="comment"># vim /var/www/html/t2.php</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"> <span class="variable">$mysqli</span>=<span class="keyword">new</span> <span class="title function_ invoke__">mysqli</span>(<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;db@1234&#x27;</span>);</span><br><span class="line"> <span class="keyword">if</span> (<span class="title function_ invoke__">mysqli_connect_errno</span>())&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;连接数据库失败&#x27;</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">echo</span> <span class="string">&#x27;连接数据库成功&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="mysql-secure-installation安全加固"><a href="#mysql-secure-installation安全加固" class="headerlink" title="mysql_secure_installation安全加固"></a>mysql_secure_installation安全加固</h3><p><strong>默认设置很方便，也很不安全</strong></p>
+<ul>
+<li>需要为MariaDB&#x2F;MySQL的test库、空密码等默认设置填坑(除密码设置外，一路回车)</li>
+<li>注意：生产环境建议运行此脚本，并仔细完成所有安全优化操作</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mysql_secure_installation</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="做快照"><a href="#做快照" class="headerlink" title="做快照"></a>做快照</h3><p><strong>做快照，记录LAMP状态</strong></p>
+<p><img src="/../img/img_artical/net_sec/11.1.9.png" alt="11.1.9"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/secdef1.html">https://www.nicopilot.online/posts/secdef1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%98%B2%E5%BE%A1/">网络安全防御</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/11_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/secdef2.html" title="网络安全-网络安全防御2"><img class="cover" src="/img/cover/net_sec/11_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-网络安全防御2</div></div></a></div><div class="next-post pull-right"><a href="/posts/lnxpte5.html" title="网络安全-Linux渗透测试5"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Linux渗透测试5</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/secdef2.html" title="网络安全-网络安全防御2"><img class="cover" src="/img/cover/net_sec/11_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-网络安全防御2</div></div></a></div><div><a href="/posts/secdef4.html" title="网络安全-网络安全防御4"><img class="cover" src="/img/cover/net_sec/11_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-网络安全防御4</div></div></a></div><div><a href="/posts/secdef3.html" title="网络安全-网络安全防御3"><img class="cover" src="/img/cover/net_sec/11_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-网络安全防御3</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%98%B2%E5%BE%A1"><span class="toc-number">1.</span> <span class="toc-text">网络安全防御</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="toc-number">1.1.</span> <span class="toc-text">访问存储设备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8C%82%E8%BD%BD"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是挂载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%82%E8%BD%BD%E8%AE%BE%E5%A4%87"><span class="toc-number">1.1.2.</span> <span class="toc-text">挂载设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E8%AE%BE%E5%A4%87%E5%86%85%E7%9A%84%E6%96%87%E6%A1%A3"><span class="toc-number">1.1.3.</span> <span class="toc-text">访问设备内的文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD%E8%AE%BE%E5%A4%87"><span class="toc-number">1.1.4.</span> <span class="toc-text">卸载设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A4%E8%AF%86-etc-fstab%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.5.</span> <span class="toc-text">认识&#x2F;etc&#x2F;fstab配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%BC%80%E6%9C%BA%E6%8C%82%E8%BD%BD"><span class="toc-number">1.1.6.</span> <span class="toc-text">配置开机挂载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEyum%E6%BA%90"><span class="toc-number">1.2.</span> <span class="toc-text">配置yum源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#yum%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">yum工作机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E6%8F%90%E4%BE%9B%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">软件仓库提供方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%9B%AE%E5%BD%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">准备软件仓库目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E7%94%A8%E6%97%A0%E6%95%88%E6%BA%90"><span class="toc-number">1.2.4.</span> <span class="toc-text">禁用无效源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%9C%89%E6%95%88%E6%BA%90"><span class="toc-number">1.2.5.</span> <span class="toc-text">设置有效源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E8%BD%AF%E4%BB%B6%E6%9D%A5%E6%BA%90%E6%A3%80%E6%9F%A5"><span class="toc-number">1.2.6.</span> <span class="toc-text">关闭软件来源检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E9%AA%8C%E8%AF%81"><span class="toc-number">1.2.7.</span> <span class="toc-text">结果验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8yum%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">使用yum管理软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#list%E5%88%97%E5%87%BA%E8%BD%AF%E4%BB%B6"><span class="toc-number">1.3.1.</span> <span class="toc-text">list列出软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6"><span class="toc-number">1.3.2.</span> <span class="toc-text">install 安装软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#remove-%E5%8D%B8%E8%BD%BD%E8%BD%AF%E4%BB%B6"><span class="toc-number">1.3.3.</span> <span class="toc-text">remove 卸载软件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LAMP%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">LAMP部署及测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#B-S%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">B&#x2F;S服务架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E8%B5%84%E6%BA%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">如何获取网站资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E7%BD%91%E7%AB%99%E4%B8%8E%E5%8A%A8%E6%80%81%E7%BD%91%E7%AB%99"><span class="toc-number">1.4.3.</span> <span class="toc-text">静态网站与动态网站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLAMP"><span class="toc-number">1.4.4.</span> <span class="toc-text">什么是LAMP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85LAMP%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.4.5.</span> <span class="toc-text">快速安装LAMP平台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8LAMP%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.4.6.</span> <span class="toc-text">启动LAMP平台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5PHP%E7%8E%AF%E5%A2%83"><span class="toc-number">1.4.7.</span> <span class="toc-text">检查PHP环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5PHP%E7%BD%91%E9%A1%B5%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.4.8.</span> <span class="toc-text">检查PHP网页访问数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql-secure-installation%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA"><span class="toc-number">1.4.9.</span> <span class="toc-text">mysql_secure_installation安全加固</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9A%E5%BF%AB%E7%85%A7"><span class="toc-number">1.4.10.</span> <span class="toc-text">做快照</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">61</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

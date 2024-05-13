@@ -1,0 +1,415 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Linux渗透测试2 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述通过命令行管理Linux目录和文件、学会管理Linux用户&#x2F;组账号">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Linux渗透测试2">
+<meta property="og:url" content="https://www.nicopilot.online/posts/lnxpte2.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述通过命令行管理Linux目录和文件、学会管理Linux用户&#x2F;组账号">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png">
+<meta property="article:published_time" content="2024-05-11T01:20:22.000Z">
+<meta property="article:modified_time" content="2024-05-11T01:20:22.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="Linux渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/lnxpte2.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Linux渗透测试2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-11 09:20:22'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/10_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Linux渗透测试2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-11T01:20:22.000Z" title="发表于 2024-05-11 09:20:22">2024-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-11T01:20:22.000Z" title="更新于 2024-05-11 09:20:22">2024-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Linux渗透测试2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux渗透测试"><a href="#Linux渗透测试" class="headerlink" title="Linux渗透测试"></a>Linux渗透测试</h1><h2 id="目录-文件基本管理"><a href="#目录-文件基本管理" class="headerlink" title="目录&#x2F;文件基本管理"></a>目录&#x2F;文件基本管理</h2><h3 id="查看目录、查看文件"><a href="#查看目录、查看文件" class="headerlink" title="查看目录、查看文件"></a>查看目录、查看文件</h3><p><strong>ls列目录及文档属性</strong></p>
+<p>**ls **</p>
+<ul>
+<li>格式：ls [选项] … [目录或文件路径]</li>
+</ul>
+<p><strong>常用命令选项</strong></p>
+<ul>
+<li>-A：列出目录内文档（包含.开头的隐藏文档）</li>
+<li>-a：列出目录内所有文档（包含隐藏文档及.和..）</li>
+<li>-l：以长格式显示（详细信息）</li>
+<li>-h：带容量单位（一般与-l一起使用）</li>
+<li>-d：如果目标是目录，只列出目录本身（不包含目录下内容）</li>
+</ul>
+<p><strong>cat&#x2F;less 查看文件内容</strong></p>
+<p><strong>cat：显示文件的全部内容</strong></p>
+<ul>
+<li>格式：cat [文件路径] …</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# cat /etc/services</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>less：分页显示</strong></p>
+<ul>
+<li>按PgUp&#x2F;PgDn翻页、按q键退出</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# less /etc/services</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="创建目录、空文件"><a href="#创建目录、空文件" class="headerlink" title="创建目录、空文件"></a>创建目录、空文件</h3><p><strong>mkdir创建目录</strong></p>
+<p><strong>mkdir（make directory）</strong></p>
+<ul>
+<li>格式：mkdir [-p] [&#x2F;路径&#x2F;] 目录名…</li>
+<li>-p：创建目录时连同父目录一起创建</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mkdir -p /ntd/pentest</span></span><br><span class="line"><span class="attr">//因为pentest的父目录ntd不存在，所以使用-p一起创建</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls /ntd</span></span><br><span class="line"><span class="attr">pentest</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>touch创建文件</strong></p>
+<p><strong>touch：创建指定的空文件，一般仅用作测试</strong></p>
+<ul>
+<li>格式：touch 文件名</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# cd /ntd/pentest               //切换到/ntd/pentest目录</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">pentest]# touch password.txt      //创建password.txt文件</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">pentest]# ls -lh                  //查看当前目录下的所有文档详细信息</span></span><br><span class="line"><span class="attr">-rW-r--r--</span> <span class="string">1 root root 0 11月 2 09:55 password.txt</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="目录-文件进阶操作"><a href="#目录-文件进阶操作" class="headerlink" title="目录&#x2F;文件进阶操作"></a>目录&#x2F;文件进阶操作</h2><h3 id="复制、移动、删除"><a href="#复制、移动、删除" class="headerlink" title="复制、移动、删除"></a>复制、移动、删除</h3><p><strong>cp复制文档</strong></p>
+<p><strong>cp（copy）</strong></p>
+<ul>
+<li>格式：cp [选项] 原文件 目标路径</li>
+</ul>
+<p><strong>常用命令选项</strong></p>
+<ul>
+<li>-r：递归，复制目录时必须有此选项</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# cp -r /boot/grub2/ /ntd</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -l ntd</span></span><br><span class="line"><span class="attr">drwx------</span> <span class="string">5 root root 4096 11月 2 11:31 grub2</span></span><br><span class="line"><span class="attr">drwxr-xr-x</span> <span class="string">2 root root 4096 11月 20 9:55 pentst</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>mv移动&#x2F;改名文档</strong></p>
+<p><strong>mv（move）</strong></p>
+<ul>
+<li>格式：mv [选项] 原文档 目标路径&#x2F;[新文档名]</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mkdir /backup</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mv /ntd/pentest/password.txt /backup/pass.txt</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@svr223~]#</span> <span class="string">ls /backup/</span></span><br><span class="line"><span class="attr">pass.txt</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>rm删除文档</strong></p>
+<p><strong>rm（remove）</strong></p>
+<ul>
+<li>格式：rm [选项] 文件或目录</li>
+</ul>
+<p><strong>常用命令选项</strong></p>
+<ul>
+<li>-r：递归删除（含目录）</li>
+<li>-f：强制删除</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# rm -rf /backup                //制递归删除，并且不进行删除询问</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="vim文本编辑"><a href="#vim文本编辑" class="headerlink" title="vim文本编辑"></a>vim文本编辑</h3><p><strong>vi与vim</strong></p>
+<ul>
+<li>vi，Virsual Interface – Linux&#x2F;Unix默认编辑器</li>
+<li>vim，Vi Improved – vi编辑器的增强版</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.2.1.png" alt="10.2.1"></p>
+<p><strong>vim编辑器的工作模式</strong></p>
+<ul>
+<li>三种“变身”状态</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.1.2.png" alt="10.1.2"></p>
+<h2 id="用户账号管理"><a href="#用户账号管理" class="headerlink" title="用户账号管理"></a>用户账号管理</h2><h3 id="关于用户账号"><a href="#关于用户账号" class="headerlink" title="关于用户账号"></a>关于用户账号</h3><p><strong>用户的作用</strong></p>
+<ul>
+<li>作为登录系统的凭据</li>
+<li>作为访问文档、进程等资源的身份凭据</li>
+</ul>
+<p><strong>用户类型</strong></p>
+<ul>
+<li>超级用户（ID为0）</li>
+<li>系统用户（不能登录，ID为1-999）</li>
+<li>普通用户（ID为1000~60000）</li>
+</ul>
+<p><strong>普通用户的主要属性</strong></p>
+<ul>
+<li>登录名、密码、家目录（&#x2F;home&#x2F;用户名）</li>
+</ul>
+<h3 id="添加新用户"><a href="#添加新用户" class="headerlink" title="添加新用户"></a>添加新用户</h3><p><strong>useradd 命令</strong></p>
+<ul>
+<li>格式：useradd   用户名</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# useradd nvshen</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# id nvshen     //检查用户ID信息</span></span><br><span class="line"><span class="attr">uid</span>=<span class="string">1004(nvshen)gid=1004(nvshen)组=1004(nvshen)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="为用户设置密码"><a href="#为用户设置密码" class="headerlink" title="为用户设置密码"></a>为用户设置密码</h3><p><strong>passwd命令</strong></p>
+<ul>
+<li>格式：passwd [用户名]</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# passwd nvshen             //管理员才有权改其他用户密码</span></span><br><span class="line"><span class="attr">更改用户nvshen的密码。</span></span><br><span class="line"><span class="attr">新的密码：</span></span><br><span class="line"><span class="attr">重新输入新的密码：</span></span><br><span class="line"><span class="attr">passwd</span>:<span class="string">所有的身份验证令牌已经成功更新</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h3><p><strong>userdel命令</strong></p>
+<ul>
+<li>格式：userdel [-r] 用户名</li>
+<li>添加 -r 选项时，可以将宿主目录&#x2F;用户邮箱也一并删除</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# userdel -r nvshen             //删除用户</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# id nvshen</span></span><br><span class="line"><span class="attr">id</span>: <span class="string">nvshen: no such user                    //再次查询，提示没有这个用户</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="组账号管理"><a href="#组账号管理" class="headerlink" title="组账号管理"></a>组账号管理</h2><h3 id="添加组"><a href="#添加组" class="headerlink" title="添加组"></a>添加组</h3><p><strong>组的作用</strong></p>
+<ul>
+<li>用来批量授权</li>
+<li>作为访问文档、进程等资源的身份凭据组</li>
+</ul>
+<p><strong>账号的主要属性</strong></p>
+<ul>
+<li>组名、成员用户列表</li>
+</ul>
+<p><strong>groupadd命令</strong></p>
+<ul>
+<li>格式：groupadd 组名</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# groupadd gaibang             //创建gaibang用户组</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# cat /etc/group               //查看用户组信息</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="为组添加-删除成员用户"><a href="#为组添加-删除成员用户" class="headerlink" title="为组添加&#x2F;删除成员用户"></a>为组添加&#x2F;删除成员用户</h3><p><strong>gpasswd命令</strong></p>
+<ul>
+<li>格式：gpasswd [-a|-d 用户名] 组名</li>
+<li>-a（add）：添加</li>
+<li>-d（delete）：删除</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# useradd nvshen                   //重新添加nvshen用户</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# gpasswd -a nvshen gaibang        //将nvshen添加到gaibang组</span></span><br><span class="line"><span class="attr">正在将用户“nvshen”加入到“gaibang”组中</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# id nvshen                        //确认结果</span></span><br><span class="line"><span class="attr">uid</span>=<span class="string">1004(nvshen) gid=1004(nvshen) 组=1004(nvshen),1005(gaibang)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="删除组"><a href="#删除组" class="headerlink" title="删除组"></a>删除组</h3><p><strong>groupdel命令</strong></p>
+<ul>
+<li>格式： groupdel 组名</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# groupdel gaibang       //删除gaibang用户组</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# id nvshen              //原有组成员自动被解散</span></span><br><span class="line"><span class="attr">uid</span>=<span class="string">1004(nvshen) gid=1004(nvshen) 组=1004(nvshen)</span></span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/lnxpte2.html">https://www.nicopilot.online/posts/lnxpte2.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">Linux渗透测试</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/10_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/lnxpte3.html" title="网络安全-Linux渗透测试3"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-Linux渗透测试3</div></div></a></div><div class="next-post pull-right"><a href="/posts/lnxpte1.html" title="网络安全-Linux渗透测试1"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Linux渗透测试1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/lnxpte4.html" title="网络安全-Linux渗透测试4"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试4</div></div></a></div><div><a href="/posts/lnxpte1.html" title="网络安全-Linux渗透测试1"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试1</div></div></a></div><div><a href="/posts/lnxpte3.html" title="网络安全-Linux渗透测试3"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试3</div></div></a></div><div><a href="/posts/lnxpte5.html" title="网络安全-Linux渗透测试5"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Linux渗透测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95-%E6%96%87%E4%BB%B6%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">目录&#x2F;文件基本管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%9B%AE%E5%BD%95%E3%80%81%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.1.</span> <span class="toc-text">查看目录、查看文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95%E3%80%81%E7%A9%BA%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.2.</span> <span class="toc-text">创建目录、空文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95-%E6%96%87%E4%BB%B6%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.</span> <span class="toc-text">目录&#x2F;文件进阶操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E3%80%81%E7%A7%BB%E5%8A%A8%E3%80%81%E5%88%A0%E9%99%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">复制、移动、删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vim%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91"><span class="toc-number">1.2.2.</span> <span class="toc-text">vim文本编辑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">用户账号管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7"><span class="toc-number">1.3.1.</span> <span class="toc-text">关于用户账号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%94%A8%E6%88%B7"><span class="toc-number">1.3.2.</span> <span class="toc-text">添加新用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E7%94%A8%E6%88%B7%E8%AE%BE%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">为用户设置密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7"><span class="toc-number">1.3.4.</span> <span class="toc-text">删除用户</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">组账号管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%BB%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">添加组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E7%BB%84%E6%B7%BB%E5%8A%A0-%E5%88%A0%E9%99%A4%E6%88%90%E5%91%98%E7%94%A8%E6%88%B7"><span class="toc-number">1.4.2.</span> <span class="toc-text">为组添加&#x2F;删除成员用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%BB%84"><span class="toc-number">1.4.3.</span> <span class="toc-text">删除组</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">61</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

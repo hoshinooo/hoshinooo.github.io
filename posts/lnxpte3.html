@@ -1,0 +1,468 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Linux渗透测试3 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述权限与归属操作、按需查找文件、从文件中查找内容、管控Linux主机运行的进程、ACL访问控制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Linux渗透测试3">
+<meta property="og:url" content="https://www.nicopilot.online/posts/lnxpte3.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述权限与归属操作、按需查找文件、从文件中查找内容、管控Linux主机运行的进程、ACL访问控制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png">
+<meta property="article:published_time" content="2024-05-11T01:30:49.000Z">
+<meta property="article:modified_time" content="2024-05-11T01:30:49.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="Linux渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/lnxpte3.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Linux渗透测试3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-11 09:30:49'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/10_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Linux渗透测试3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-11T01:30:49.000Z" title="发表于 2024-05-11 09:30:49">2024-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-11T01:30:49.000Z" title="更新于 2024-05-11 09:30:49">2024-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Linux渗透测试3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux渗透测试"><a href="#Linux渗透测试" class="headerlink" title="Linux渗透测试"></a>Linux渗透测试</h1><h2 id="归属控制"><a href="#归属控制" class="headerlink" title="归属控制"></a>归属控制</h2><h3 id="访问控制概述"><a href="#访问控制概述" class="headerlink" title="访问控制概述"></a>访问控制概述</h3><p><strong>文档归属（是谁的？）</strong></p>
+<ul>
+<li>属主：拥有此文件&#x2F;目录的用户  - user</li>
+<li>属组：拥有此文件&#x2F;目录的组  - group</li>
+<li>其他用户：除所有者、所属组以外的用户  - other</li>
+</ul>
+<p><strong>访问权限 （能被怎么用？）</strong></p>
+<ul>
+<li>读取：允许查看内容  - read</li>
+<li>写入：允许修改内容  - write</li>
+<li>可执行：允许运行和切换  - execute</li>
+</ul>
+<h3 id="查看Linux文档的归属"><a href="#查看Linux文档的归属" class="headerlink" title="查看Linux文档的归属"></a>查看Linux文档的归属</h3><p><strong>执行ls -l命令查看</strong></p>
+<ul>
+<li>输出信息包括7个字段</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -l</span></span><br><span class="line"><span class="attr">总用量</span> <span class="string">8</span></span><br><span class="line"><span class="attr">-rw-------.</span>    <span class="string">1        root  root 1179 12月 28 11:06 anaconda-ks.cfg</span></span><br><span class="line">   <span class="attr">权限位</span>     <span class="string">硬连接数     属主   属组 大小   最后修改时间    文件/目录名称</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="更改文档归属"><a href="#更改文档归属" class="headerlink" title="更改文档归属"></a>更改文档归属</h3><p><strong>chown命令</strong></p>
+<ul>
+<li>格式：chown  属主  文档</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# useradd zhangsan         //创建用户</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# useradd lisi</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -ldh /home/zhangsan              //查看目录归属</span></span><br><span class="line"><span class="attr">drwx------.</span> <span class="string">2 zhangsan zhangsan 4.0K  1月  2 09:49 /home/zhangsan</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# chown lisi /home/zhangsan       //修改目录属主为lisi</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -ldh /home/zhangsan          //再次查看目录归属</span></span><br><span class="line"><span class="attr">drwx------.</span> <span class="string">2 lisi zhangsan 4.0K  1月  2 09:49 /home/zhangsan</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>chown命令</strong></p>
+<ul>
+<li>格式：chown  属主:属组  文档</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# chown :lisi /home/zhangsan         //修改目录属组为lisi</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -ldh /home/zhangsan             //查看目录信息</span></span><br><span class="line"><span class="attr">drwx------.</span> <span class="string">2 lisi lisi 4.0K  1月  2 09:49 /home/zhangsan</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@tedu</span> <span class="string">~]# chown zhangsan:zhangsan /home/zhangsan          //恢复原状</span></span><br><span class="line"><span class="attr">[root@tedu</span> <span class="string">~]# ls -ldh /home/zhangsan/</span></span><br><span class="line"><span class="attr">drwx------.</span> <span class="string">2 zhangsan zhangsan 4.0K  1月  2 09:49 /home/zhangsan/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h2><h3 id="rwx权限的作用"><a href="#rwx权限的作用" class="headerlink" title="rwx权限的作用"></a>rwx权限的作用</h3><table>
+<thead>
+<tr>
+<th align="center">权限</th>
+<th align="center">文件</th>
+<th align="center">目录</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">r（read）</td>
+<td align="center">查看文件内容</td>
+<td align="center">查看目录下的文件与目录名称</td>
+</tr>
+<tr>
+<td align="center">w（write）</td>
+<td align="center">修改文件内容</td>
+<td align="center">在目录下增删文档，对文档复制移动改名<br />（一般需要w和x权限）</td>
+</tr>
+<tr>
+<td align="center">x（execute）</td>
+<td align="center">可以执行文件<br />（文件一般为可执行文件）</td>
+<td align="center">可以使用cd命令切换进此目录</td>
+</tr>
+</tbody></table>
+<h3 id="更改访问权限"><a href="#更改访问权限" class="headerlink" title="更改访问权限"></a>更改访问权限</h3><p><strong>chmod命令</strong></p>
+<ul>
+<li>格式：chomod  [ugo]  [+-&#x3D;]  [rwx]  文档路径</li>
+<li>ugo<ul>
+<li>u：属主权限</li>
+<li>g：属组权限</li>
+<li>o：其他用户权限</li>
+</ul>
+</li>
+<li>+-&#x3D;<ul>
+<li>+：加权限</li>
+<li>-：减权限</li>
+<li>&#x3D;：赋予权限</li>
+</ul>
+</li>
+<li>rwx<ul>
+<li>r：读权限</li>
+<li>w：写权限</li>
+<li>x：执行权限</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# mkdir public</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# chown :lisi public</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# chmod g+rwx,o-rx public</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ll public/</span></span><br><span class="line"><span class="attr">总用量</span> <span class="string">0</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ls -ldh public/</span></span><br><span class="line"><span class="attr">drwxrwx---.</span> <span class="string">2 root lisi 4.0K  1月  2 10:06 public/</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>chmod命令</strong></p>
+<ul>
+<li>简化格式：chmod  [000~777]  文档路径</li>
+<li>000~777：每位数分别代表属主、属组、其他用户</li>
+<li>数字转化为二进制，1为有权限，0为无权限，三位分别代表rwx</li>
+<li>例如：777代表111&#x2F;111&#x2F;111，赋予所有权限，770代表111&#x2F;111&#x2F;000，赋予属主和属组所有权限，其他用户不赋予权限</li>
+</ul>
+<h2 id="文件查找"><a href="#文件查找" class="headerlink" title="文件查找"></a>文件查找</h2><h3 id="find按条件查找文件"><a href="#find按条件查找文件" class="headerlink" title="find按条件查找文件"></a>find按条件查找文件</h3><p><strong>用法：find  [目录]  [条件]</strong></p>
+<ul>
+<li>在指定目录下查找符合特定条件的文档</li>
+</ul>
+<p><strong>条件如何表示</strong></p>
+<ul>
+<li>-name  文件名：指定文档名称，允许使用通配符*</li>
+<li>-size  +|-  大小：指定文档大小（带单位kMG），+|-号表示超过|低于</li>
+<li>-type  类型：指定文档类型，f普通文档、d目录、l链接文件</li>
+<li>-mtime  +|-  天数：指定最近修改日期，+|-号表示超过|低于</li>
+<li>-user  用户名：指定文档属主</li>
+<li>-perm  [-ufo] &#x3D; [rwx]：指定权限</li>
+<li>-a：用于连接多个条件，表示并且（-a可省略）</li>
+<li>-o：用于连接多个条件，表示或者</li>
+</ul>
+<h3 id="find应用示例"><a href="#find应用示例" class="headerlink" title="find应用示例"></a>find应用示例</h3><p><strong>查找系统根目录下名为vim的文件</strong></p>
+<ul>
+<li>find  &#x2F;  -name  vim  -type  f</li>
+</ul>
+<p><strong>查找系统根目录下以.conf结尾的所有文件</strong></p>
+<ul>
+<li>find  &#x2F;  -name  *.conf  -type  f</li>
+</ul>
+<p><strong>查找&#x2F;boot&#x2F;目录下大小超过10M的文件</strong></p>
+<ul>
+<li>find  &#x2F;boot  -size  +10M  -type  f</li>
+</ul>
+<p><strong>查找&#x2F;var&#x2F;log目录下超过30天都没有改动过的文件</strong></p>
+<ul>
+<li>find  &#x2F;var&#x2F;log&#x2F;  -mtime  +30  -type  f</li>
+</ul>
+<p><strong>查找系统根目录下属主为zhangsan的文档</strong></p>
+<ul>
+<li>find  &#x2F;  -user  zhangsan</li>
+</ul>
+<p><strong>查找系统根目录下其他用户具有执行权限的文件</strong></p>
+<ul>
+<li>find  &#x2F;  -perm  -o&#x3D;x  -type  f</li>
+</ul>
+<p><strong>查找&#x2F;boot&#x2F;目录下大小超过10M或者小于1M的文件</strong></p>
+<ul>
+<li>find  &#x2F;boot  -size  +10M  -o  -size  -1M  -type  f</li>
+</ul>
+<h2 id="文本过滤"><a href="#文本过滤" class="headerlink" title="文本过滤"></a>文本过滤</h2><h3 id="管道操作"><a href="#管道操作" class="headerlink" title="管道操作"></a>管道操作</h3><p><strong>命令行的管道操作</strong></p>
+<p><strong>用法：命令1|命令2</strong></p>
+<ul>
+<li>把命令1的正常显示结果先交给命令2，等命令2处理后再显示</li>
+<li>命令2必须能接收并处理文本（比如less、grep、wc等），否则没有意义</li>
+<li>who：显示正在登录的用户</li>
+<li>wc  -l：统计内容的行数</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# find / | less             //查找根下所有文档并分页显示</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# who | wc -l          //统计当前已登录的用户数</span></span><br><span class="line"><span class="attr">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="grep文本过滤"><a href="#grep文本过滤" class="headerlink" title="grep文本过滤"></a>grep文本过滤</h3><p><strong>从文件内容中查找关键词</strong></p>
+<p><strong>用法：grep  [-iv]  “关键词”  文件</strong></p>
+<ul>
+<li>仅输出文件中包含“关键词”的行</li>
+<li>选项-i表示忽略大小写，选项-v表示把条件反过来（不包含关键词）</li>
+<li>使用“^ab”查找以ab开头的行，“ab$”查找以ab结尾的行</li>
+<li>#代表注释，被注释的配置不会生效</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep &quot;root&quot; /etc/passwd                 //列出包含root的列</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep -i &quot;root&quot; /etc/passwd              //列出包含root的列，忽略大小写</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep -v &quot;root&quot; /etc/passwd              //列出不包含root的列</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep &quot;^#&quot; /etc/selinux/config           //列出被注释的行</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep -v &quot;^#&quot; /etc/selinux/config        //列出没有被注释的行</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep &quot;^$&quot; /etc/selinux/config           //列出空行</span></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# grep -v &quot;^$&quot; /etc/selinux/config        //列出非空行</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="从命令结果中查找关键词"><a href="#从命令结果中查找关键词" class="headerlink" title="从命令结果中查找关键词"></a>从命令结果中查找关键词</h3><p><strong>用法：命令行|grep  [-iv]  “关键词”</strong></p>
+<ul>
+<li>结合管道操作，针对命令显示结果进行过滤，提取重要信息</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# ifconfig | grep 192.168.10.223                 //查看IP参数中包含目标地址的行</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="进程管控"><a href="#进程管控" class="headerlink" title="进程管控"></a>进程管控</h2><h3 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h3><p><strong>程序vs进程</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.3.1.png" alt="10.3.1"></p>
+<p><strong>top查看进程</strong></p>
+<p><strong>用法：top</strong></p>
+<ul>
+<li>动态显示系统负载及资源占用排名，类似“任务管理器“</li>
+<li>资源消耗越多的进程越靠前，按q 键退出</li>
+</ul>
+<h3 id="查找-杀死进程"><a href="#查找-杀死进程" class="headerlink" title="查找&#x2F;杀死进程"></a>查找&#x2F;杀死进程</h3><p><strong>pgrep查找进程</strong></p>
+<p><strong>用法：pgrep  [-l]  关键词</strong></p>
+<ul>
+<li>列出名称中包含关键词的进程的进程号</li>
+<li>选项-l可以一起列出进程名</li>
+</ul>
+<p><strong>杀死进程</strong></p>
+<p><strong>用法：pkill  [-9]  进程关键词</strong></p>
+<p><strong>或kill  [-9]  进程号</strong></p>
+<ul>
+<li>杀死名称中包含关键词的进程或进程号对应的进程</li>
+<li>选项-9表示强制杀死进程</li>
+</ul>
+<h2 id="ACL访问控制"><a href="#ACL访问控制" class="headerlink" title="ACL访问控制"></a>ACL访问控制</h2><h3 id="认识ACL策略"><a href="#认识ACL策略" class="headerlink" title="认识ACL策略"></a>认识ACL策略</h3><p><strong>为文档定义访问规则，针对除u、g、o以外的个别用户或组</strong></p>
+<ul>
+<li>文档的属主&#x2F;属组标记，把访问者区分为三类一一属主、属组、其他人</li>
+<li>但“其他人“中还有张三李四，如何再区分权限?</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.3.2.png" alt="10.3.2"></p>
+<h3 id="getfacl查看ACL策略"><a href="#getfacl查看ACL策略" class="headerlink" title="getfacl查看ACL策略"></a>getfacl查看ACL策略</h3><p><strong>用法：getfacl  文档路径</strong></p>
+<ul>
+<li>可以列出文档归属，以及各类用户对此文档的访问权限</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# getfacl /root</span></span><br><span class="line"><span class="attr">getfacl</span>: <span class="string">Removing leading &#x27;/&#x27; from absolute path names</span></span><br><span class="line"><span class="comment"># file: root</span></span><br><span class="line"><span class="comment"># owner: root</span></span><br><span class="line"><span class="comment"># group: root</span></span><br><span class="line"><span class="attr">user</span>:<span class="string">:r-x                //属主权限</span></span><br><span class="line"><span class="attr">group</span>:<span class="string">:r-x               //属组权限</span></span><br><span class="line"><span class="attr">other</span>:<span class="string">:---               //其他用户权限</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="setfacl配置ACL策略"><a href="#setfacl配置ACL策略" class="headerlink" title="setfacl配置ACL策略"></a>setfacl配置ACL策略</h3><ul>
+<li>用法1：setfacl  -m  user:用户名：权限组合  文档</li>
+<li>用法2：setfacl  -m  group:组名：权限组合  文档</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# setfacl -m u:zhangsan:rx /root      //增加acl，使张三对/root目录有读取与执行权限</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[root@ntd</span> <span class="string">~]# getfacl /root                       //查看acl</span></span><br><span class="line"><span class="attr">user</span>:<span class="string">:r-x</span></span><br><span class="line"><span class="attr">user</span>:<span class="string">zhangsan:r-x</span></span><br><span class="line"><span class="attr">group</span>:<span class="string">:r-x</span></span><br><span class="line"><span class="attr">mask</span>:<span class="string">:r-x</span></span><br><span class="line"><span class="attr">other</span>:<span class="string">:---</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="setfacl删除ACL策略"><a href="#setfacl删除ACL策略" class="headerlink" title="setfacl删除ACL策略"></a>setfacl删除ACL策略</h3><ul>
+<li>用法1：setfacl  -x  user:用户名  文档：删除用户策略</li>
+<li>用法2：setfacl  -x  group:组名  文档：删除组策略</li>
+<li>用法3：setfacl  -b  文档：清空所有策略</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/lnxpte3.html">https://www.nicopilot.online/posts/lnxpte3.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">Linux渗透测试</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/10_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/lnxpte4.html" title="网络安全-Linux渗透测试4"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-Linux渗透测试4</div></div></a></div><div class="next-post pull-right"><a href="/posts/lnxpte2.html" title="网络安全-Linux渗透测试2"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Linux渗透测试2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/lnxpte2.html" title="网络安全-Linux渗透测试2"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试2</div></div></a></div><div><a href="/posts/lnxpte4.html" title="网络安全-Linux渗透测试4"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试4</div></div></a></div><div><a href="/posts/lnxpte1.html" title="网络安全-Linux渗透测试1"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试1</div></div></a></div><div><a href="/posts/lnxpte5.html" title="网络安全-Linux渗透测试5"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Linux渗透测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%92%E5%B1%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">归属控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">访问控制概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8BLinux%E6%96%87%E6%A1%A3%E7%9A%84%E5%BD%92%E5%B1%9E"><span class="toc-number">1.1.2.</span> <span class="toc-text">查看Linux文档的归属</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E6%96%87%E6%A1%A3%E5%BD%92%E5%B1%9E"><span class="toc-number">1.1.3.</span> <span class="toc-text">更改文档归属</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="toc-number">1.2.</span> <span class="toc-text">权限控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rwx%E6%9D%83%E9%99%90%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">rwx权限的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">更改访问权限</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE"><span class="toc-number">1.3.</span> <span class="toc-text">文件查找</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#find%E6%8C%89%E6%9D%A1%E4%BB%B6%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.1.</span> <span class="toc-text">find按条件查找文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.3.2.</span> <span class="toc-text">find应用示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E6%9C%AC%E8%BF%87%E6%BB%A4"><span class="toc-number">1.4.</span> <span class="toc-text">文本过滤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.1.</span> <span class="toc-text">管道操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#grep%E6%96%87%E6%9C%AC%E8%BF%87%E6%BB%A4"><span class="toc-number">1.4.2.</span> <span class="toc-text">grep文本过滤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%91%BD%E4%BB%A4%E7%BB%93%E6%9E%9C%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="toc-number">1.4.3.</span> <span class="toc-text">从命令结果中查找关键词</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E6%8E%A7"><span class="toc-number">1.5.</span> <span class="toc-text">进程管控</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.5.1.</span> <span class="toc-text">查看进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE-%E6%9D%80%E6%AD%BB%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.5.2.</span> <span class="toc-text">查找&#x2F;杀死进程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ACL%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="toc-number">1.6.</span> <span class="toc-text">ACL访问控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A4%E8%AF%86ACL%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.1.</span> <span class="toc-text">认识ACL策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getfacl%E6%9F%A5%E7%9C%8BACL%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.2.</span> <span class="toc-text">getfacl查看ACL策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setfacl%E9%85%8D%E7%BD%AEACL%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.3.</span> <span class="toc-text">setfacl配置ACL策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setfacl%E5%88%A0%E9%99%A4ACL%E7%AD%96%E7%95%A5"><span class="toc-number">1.6.4.</span> <span class="toc-text">setfacl删除ACL策略</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">61</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>

