@@ -13,10 +13,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> Web应用安全 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -32,10 +38,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> Web应用安全 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -51,10 +63,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> Web应用安全 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -70,10 +88,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> Web应用安全 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -89,10 +113,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> Web应用安全 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -108,10 +138,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> SQL注入 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -127,10 +163,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> SQL注入 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -146,10 +188,16 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
+      
+        <tags>
+            
+            <tag> SQL注入 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -165,7 +213,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -184,7 +232,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -203,7 +251,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -228,7 +276,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -253,7 +301,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -278,7 +326,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -303,7 +351,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -328,7 +376,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -353,7 +401,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -378,7 +426,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -403,7 +451,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -428,7 +476,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -453,7 +501,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -478,7 +526,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -498,12 +546,12 @@
       <link href="/posts/lnxpte1.html"/>
       <url>/posts/lnxpte1.html</url>
       
-        <content type="html"><![CDATA[<h1 id="Linux渗透测试"><a href="#Linux渗透测试" class="headerlink" title="Linux渗透测试"></a>Linux渗透测试</h1><h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><h3 id="Linux是一种操作系统"><a href="#Linux是一种操作系统" class="headerlink" title="Linux是一种操作系统"></a>Linux是一种操作系统</h3><p><strong>曾经，被Microsoft 视为最大的威胁</strong></p><p><strong>而今，互联网领域的幕后老大</strong></p><h3 id="超级计算机500强"><a href="#超级计算机500强" class="headerlink" title="超级计算机500强"></a>超级计算机500强</h3><p><img src="/../img/img_artical/net_sec/10.1.1.png" alt="10.1.1"></p><h3 id="Linux的诞生"><a href="#Linux的诞生" class="headerlink" title="Linux的诞生"></a>Linux的诞生</h3><p><strong>Linux之父，Linus Torwalds</strong></p><ul><li>1991年10月，发布0.02版（第一个公开版）内核，主要用于控制CPU&#x2F;内存&#x2F;磁盘，并调度进程&#x2F;文件等资源</li><li>标准读音：哩呐科斯</li><li>官网：<a href="http://www.kernel.org/">www.kernel.org</a></li></ul><h3 id="开源-自由"><a href="#开源-自由" class="headerlink" title="开源&amp;自由"></a>开源&amp;自由</h3><p><strong>自由软件之父，Richard Stallman</strong></p><ul><li>1989年，提出“自由软件”的概念</li><li>允许自由使用软件、分发软件、修改源代码、再次分发修改后的软件</li><li>操作系统：GNU is Not Unix</li><li>授权协议：General Public Licence</li></ul><h3 id="Linux发行版本"><a href="#Linux发行版本" class="headerlink" title="Linux发行版本"></a>Linux发行版本</h3><p><strong>公开发布的基于Linux内核的完整的操作系统</strong></p><ul><li>Linux内核 + 各种外围软件</li></ul><p><strong>操作系统的名称&#x2F;版本由发行方决定</strong></p><ul><li>红帽Red HatEnterprise Linux 7&#x2F;8&#x2F;9、CentOS7&#x2F;8、Fedora37</li><li>欧拉openEuler22.03&#x2F;22.09</li><li>德边Debian Linux 11.5</li><li>乌班图Ubuntu Linux 22.04&#x2F;22.10、Kali2022.3</li></ul><h3 id="关于openEuler"><a href="#关于openEuler" class="headerlink" title="关于openEuler"></a>关于openEuler</h3><p><strong>openEuler源于华为EulerOS操作系统</strong></p><ul><li>通过社区合作，打造创新平台，构建支持多处理架构、统一和开放的操作系统，推动软硬件应用生态繁荣发展</li><li>最新版：openEuler23.09</li><li>稳定版：openEuler22.03 LTS (长期支持版)</li></ul><h3 id="与Win系统的一些差别"><a href="#与Win系统的一些差别" class="headerlink" title="与Win系统的一些差别"></a>与Win系统的一些差别</h3><p><img src="/../img/img_artical/net_sec/10.1.2.png" alt="10.1.2"></p><h3 id="Linux目录结构"><a href="#Linux目录结构" class="headerlink" title="Linux目录结构"></a>Linux目录结构</h3><p><strong>倒挂的树型结构</strong></p><ul><li>最顶层为根，使用&#x2F;表示</li></ul><p><img src="/../img/img_artical/net_sec/10.1.3.png" alt="10.1.3"></p><h2 id="部署本地Linux环境"><a href="#部署本地Linux环境" class="headerlink" title="部署本地Linux环境"></a>部署本地Linux环境</h2><h3 id="准备计算机及安装光盘"><a href="#准备计算机及安装光盘" class="headerlink" title="准备计算机及安装光盘"></a>准备计算机及安装光盘</h3><p><strong>新建一台openEuler 22.03 LTS虚拟机</strong></p><ul><li>配置内存2GB、磁盘80GB</li><li>准备好安装光盘（虚拟机环境使用ISO镜像文件）</li></ul><p><img src="/../img/img_artical/net_sec/10.1.4.png" alt="10.1.4"></p><h3 id="配置系统安装"><a href="#配置系统安装" class="headerlink" title="配置系统安装"></a>配置系统安装</h3><p><strong>引导计算机从光盘启动，设置安装</strong></p><ul><li>选择“Install openEuler22.03-LTS  –&gt;  选择中文Chinese</li><li>选择“自动分区”、“服务器“</li><li>设置“根密码”为ntd.cn1234</li></ul><p><strong>设置网络和主机名</strong></p><ul><li><p>选择  手动</p></li><li><p>IP地址&#x2F;掩码：192.168.10.223&#x2F;24</p></li><li><p>网关：192.168.10.2</p></li><li><p>DNS服务：192.168.10.2</p></li><li><p>选择需要IPv4地址完成这个连接</p></li><li><p>点击开始安装</p><ul><li>完成安装后，点击重启系统</li></ul></li></ul><h3 id="登入系统"><a href="#登入系统" class="headerlink" title="登入系统"></a>登入系统</h3><p><strong>登入openEuler服务器</strong></p><ul><li>默认未提供桌面</li><li>根据提示，在login：后输入用户名root</li><li>再根据提示输入密码（无显示），即可登录到命令行界面</li></ul><h3 id="命令行终端"><a href="#命令行终端" class="headerlink" title="命令行终端"></a>命令行终端</h3><ul><li>命令行提示解读</li><li>[用户名@主机名 所在目录]权限标识</li><li>符号~代表当前用户的主目录</li><li>最后一位 # 表示管理权限，若为 $ 表示普通权限</li></ul><h2 id="SSH远程控制"><a href="#SSH远程控制" class="headerlink" title="SSH远程控制"></a>SSH远程控制</h2><h3 id="SSH协议及常用软件"><a href="#SSH协议及常用软件" class="headerlink" title="SSH协议及常用软件"></a>SSH协议及常用软件</h3><p><strong>Secure SHell，安全命令行终端</strong></p><ul><li>被控端：启用sshd系统服务，提供授权用户&#x2F;密码</li><li>主控端：支持SSH协议的客户端软件</li></ul><p><strong>常用SSH管理工具</strong></p><ul><li>PC端：MobaXterm、Putty+WinSCP、Xshell+Xftp、SecureCRT等</li><li>手机端：iTerminal、华为云APP、阿里云APP等</li></ul><h3 id="远程执行命令"><a href="#远程执行命令" class="headerlink" title="远程执行命令"></a>远程执行命令</h3><p><strong>使用Win10的ssh命令，可以管理远程的Linux主机</strong></p><ul><li>用法：ssh root@远程主机地址</li></ul><p><strong>使用MobaXterm全能终端，也可以管理远程的Linux主机</strong></p><ul><li>官网：<a href="https://mobaxterm.mobatek.net/">https://mobaxterm.mobatek.net</a></li></ul><p><strong>使用MobaXterm连接Linux主机执行命令</strong></p><ul><li>Session -&gt; SSH -&gt; 填写被控主机信息 -&gt; OK</li></ul><h3 id="远程传输文档"><a href="#远程传输文档" class="headerlink" title="远程传输文档"></a>远程传输文档</h3><p><strong>使用MobaXterm连接Linux主机执行命令</strong></p><ul><li>左侧sftp边栏，来回拖放即可</li></ul><p><strong>使用Win10的scp命令，可以与远程Linux主机互传文档</strong></p><ul><li>用法1（上传）：scp -r passwd.txt <a href="mailto:&#114;&#111;&#x6f;&#x74;&#x40;&#x31;&#x39;&#50;&#x2e;&#49;&#54;&#56;&#x2e;&#49;&#48;&#x2e;&#x32;&#50;&#51;">&#114;&#111;&#x6f;&#x74;&#x40;&#x31;&#x39;&#50;&#x2e;&#49;&#54;&#56;&#x2e;&#49;&#48;&#x2e;&#x32;&#50;&#51;</a>:&#x2F;root&#x2F;mima.txt</li><li>用法2（下载）：scp -r <a href="mailto:&#114;&#x6f;&#111;&#116;&#x40;&#49;&#57;&#x32;&#x2e;&#x31;&#x36;&#x38;&#46;&#49;&#48;&#46;&#50;&#x32;&#51;">&#114;&#x6f;&#111;&#116;&#x40;&#49;&#57;&#x32;&#x2e;&#x31;&#x36;&#x38;&#46;&#49;&#48;&#46;&#50;&#x32;&#51;</a>:&#x2F;etc&#x2F;passwd passwd.txt</li></ul><h2 id="使用Linux环境"><a href="#使用Linux环境" class="headerlink" title="使用Linux环境"></a>使用Linux环境</h2><h3 id="命令行探索"><a href="#命令行探索" class="headerlink" title="命令行探索"></a>命令行探索</h3><p><strong>Print Working Directory，显示当前工作目录</strong></p><ul><li>pwd</li></ul><p><strong>Change Directory，改变工作目录</strong></p><ul><li>cd  目录路径</li></ul><p><strong>List，列出目录内容&#x2F;文档权限</strong></p><ul><li>ls  目录路径</li></ul><h3 id="用户的创建、切换及退出"><a href="#用户的创建、切换及退出" class="headerlink" title="用户的创建、切换及退出"></a>用户的创建、切换及退出</h3><p><strong>useradd，创建用户</strong></p><ul><li>useradd  用户名</li></ul><p><strong>passwd，为用户设置密码</strong></p><ul><li>passwd  用户名</li></ul><p><strong>Substitute User，替换为新用户</strong></p><ul><li>su  -用户名（-代表切换用户时进入到用户的家目录）</li></ul><p><strong>exit，退出当前的命令行环境</strong></p><ul><li>exit</li></ul><h2 id="配置Linux网络"><a href="#配置Linux网络" class="headerlink" title="配置Linux网络"></a>配置Linux网络</h2><h3 id="查看IP-网关地址"><a href="#查看IP-网关地址" class="headerlink" title="查看IP&#x2F;网关地址"></a>查看IP&#x2F;网关地址</h3><p><strong>查看IP地址参数</strong></p><ul><li>ifconfig</li><li>ifconfig 网卡名</li></ul><p><strong>查看默认网关记录：route -n</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# route -n</span></span><br><span class="line"><span class="attr">Kernel</span> <span class="string">IP routing table</span></span><br><span class="line"><span class="attr">Destination</span>     <span class="string">Gateway         Genmask         Flags Metric Ref    Use Iface</span></span><br><span class="line"><span class="attr">0.0.0.0</span>         <span class="string">192.168.10.2    0.0.0.0         UG    100    0        0 ens160</span></span><br><span class="line"><span class="attr">192.168.10.0</span>    <span class="string">0.0.0.0         255.255.255.0   U     100    0        0 ens160</span></span><br><span class="line"><span class="attr">192.168.122.0</span>   <span class="string">0.0.0.0         255.255.255.0   U     0      0        0 virbr0</span></span><br></pre></td></tr></table></figure><h3 id="查看DNS-主机名信息"><a href="#查看DNS-主机名信息" class="headerlink" title="查看DNS&#x2F;主机名信息"></a>查看DNS&#x2F;主机名信息</h3><p><strong>查看当前使用的DNS信息: cat &#x2F;etc&#x2F;resolv.conf</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# cat /etc/resolv.conf</span></span><br><span class="line"><span class="comment"># Generated by NetworkManager</span></span><br><span class="line"><span class="attr">nameserver</span> <span class="string">192.168.10.2</span></span><br></pre></td></tr></table></figure><p><strong>查看主机名：hostname</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# hostname</span></span><br><span class="line"><span class="attr">localhost.localdomain</span></span><br></pre></td></tr></table></figure><h3 id="修改网络连接"><a href="#修改网络连接" class="headerlink" title="修改网络连接"></a>修改网络连接</h3><p><strong>nmtui工具 &#x3D;&gt; Edit a connection</strong></p><p><img src="/../img/img_artical/net_sec/10.1.5.png" alt="10.1.5"></p><h3 id="激活-停用连接"><a href="#激活-停用连接" class="headerlink" title="激活&#x2F;停用连接"></a>激活&#x2F;停用连接</h3><p><strong>使用nmtui工具 &#x3D;&gt; Activate a connection</strong></p><ul><li>网卡名前面的*表示已激活，否则未激活</li><li>如果地址参数有变更，可以先停用，然后再启用</li></ul><p><img src="/../img/img_artical/net_sec/10.1.6.png" alt="10.1.6"></p><h3 id="配置主机名"><a href="#配置主机名" class="headerlink" title="配置主机名"></a>配置主机名</h3><p><strong>使用nmtui工具 &#x3D;&gt; Set system hostname</strong></p><ul><li>根据提示输入新主机名，并回车确认</li></ul><p><img src="/../img/img_artical/net_sec/10.1.7.png" alt="10.1.7"></p><h2 id="选购ECS云主机"><a href="#选购ECS云主机" class="headerlink" title="选购ECS云主机"></a>选购ECS云主机</h2><h3 id="什么是云计算？"><a href="#什么是云计算？" class="headerlink" title="什么是云计算？"></a>什么是云计算？</h3><p><strong>基于互联网处理请求并交付资源</strong></p><ul><li>用户端只关注资源可用性（提需求、拿结果）</li><li>服务端&#x2F;云端组织运算处理</li></ul><p><img src="/../img/img_artical/net_sec/10.1.8.png" alt="10.1.8"></p><h3 id="知名云服务商"><a href="#知名云服务商" class="headerlink" title="知名云服务商"></a>知名云服务商</h3><ul><li>国外：亚马逊AWS、微软Azure、IBM SCE+</li><li>国内：华为云、阿里云、百度云、腾讯云</li></ul><p><img src="/../img/img_artical/net_sec/10.1.9.png" alt="10.1.9"></p><h3 id="最常见的云产品-云主机"><a href="#最常见的云产品-云主机" class="headerlink" title="最常见的云产品-云主机"></a>最常见的云产品-云主机</h3><p><strong>云主机&#x2F;云服务器，实际上就是通过互联网提供的虚拟机</strong></p><ul><li>华为云ECS (Elastic Cloud Server，弹性云服务器)</li><li>阿里云ECS (Elastic Compute Service，弹性计算服务)</li><li>腾讯云CVM (Cloud Virtual Machine，云虚拟机)</li><li>百度云BCC (Baidu Cloud Compute，百度云计算)</li></ul><h3 id="云服务器选型要点"><a href="#云服务器选型要点" class="headerlink" title="云服务器选型要点"></a>云服务器选型要点</h3><p><strong>控制台 -&gt; 弹性云服务器 -&gt; 购买弹性云服务器</strong></p><ul><li>计费模式（包年包月、按需付费）</li><li>规格（CPU&#x2F;内存&#x2F;硬盘）</li><li>镜像（Linux系统）</li><li>登录方式（设密码）</li><li>流量计费（按带宽、按流量）</li></ul><h3 id="选购一台ECS云服务器"><a href="#选购一台ECS云服务器" class="headerlink" title="选购一台ECS云服务器"></a>选购一台ECS云服务器</h3><ul><li>选购 &#x3D;&gt; … &#x3D;&gt; 立即购买 &#x3D;&gt; 接受许可协议 &#x3D;&gt;</li><li>提交申请 &#x3D;&gt; 确认实例</li></ul><p><img src="/../img/img_artical/net_sec/10.1.10.png" alt="10.1.10"></p><h3 id="ECS基本操作"><a href="#ECS基本操作" class="headerlink" title="ECS基本操作"></a>ECS基本操作</h3><ul><li>基本管理：开机、关机、重启、删除、远程登录</li><li>更多操作：更改配置、重装系统、更换系统</li></ul><p><img src="/../img/img_artical/net_sec/10.1.11.png" alt="10.1.11"></p>]]></content>
+        <content type="html"><![CDATA[<h1 id="Linux渗透测试"><a href="#Linux渗透测试" class="headerlink" title="Linux渗透测试"></a>Linux渗透测试</h1><h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><h3 id="Linux是一种操作系统"><a href="#Linux是一种操作系统" class="headerlink" title="Linux是一种操作系统"></a>Linux是一种操作系统</h3><p><strong>曾经，被Microsoft 视为最大的威胁</strong></p><p><strong>而今，互联网领域的幕后老大</strong></p><h3 id="超级计算机500强"><a href="#超级计算机500强" class="headerlink" title="超级计算机500强"></a>超级计算机500强</h3><p><img src="/../img/img_artical/net_sec/10.1.1.png" alt="10.1.1"></p><h3 id="Linux的诞生"><a href="#Linux的诞生" class="headerlink" title="Linux的诞生"></a>Linux的诞生</h3><p><strong>Linux之父，Linus Torwalds</strong></p><ul><li>1991年10月，发布0.02版（第一个公开版）内核，主要用于控制CPU&#x2F;内存&#x2F;磁盘，并调度进程&#x2F;文件等资源</li><li>标准读音：哩呐科斯</li><li>官网：<a href="http://www.kernel.org/">www.kernel.org</a></li></ul><h3 id="开源-自由"><a href="#开源-自由" class="headerlink" title="开源&amp;自由"></a>开源&amp;自由</h3><p><strong>自由软件之父，Richard Stallman</strong></p><ul><li>1989年，提出“自由软件”的概念</li><li>允许自由使用软件、分发软件、修改源代码、再次分发修改后的软件</li><li>操作系统：GNU is Not Unix</li><li>授权协议：General Public Licence</li></ul><h3 id="Linux发行版本"><a href="#Linux发行版本" class="headerlink" title="Linux发行版本"></a>Linux发行版本</h3><p><strong>公开发布的基于Linux内核的完整的操作系统</strong></p><ul><li>Linux内核 + 各种外围软件</li></ul><p><strong>操作系统的名称&#x2F;版本由发行方决定</strong></p><ul><li>红帽Red HatEnterprise Linux 7&#x2F;8&#x2F;9、CentOS7&#x2F;8、Fedora37</li><li>欧拉openEuler22.03&#x2F;22.09</li><li>德边Debian Linux 11.5</li><li>乌班图Ubuntu Linux 22.04&#x2F;22.10、Kali2022.3</li></ul><h3 id="关于openEuler"><a href="#关于openEuler" class="headerlink" title="关于openEuler"></a>关于openEuler</h3><p><strong>openEuler源于华为EulerOS操作系统</strong></p><ul><li>通过社区合作，打造创新平台，构建支持多处理架构、统一和开放的操作系统，推动软硬件应用生态繁荣发展</li><li>最新版：openEuler23.09</li><li>稳定版：openEuler22.03 LTS (长期支持版)</li></ul><h3 id="与Win系统的一些差别"><a href="#与Win系统的一些差别" class="headerlink" title="与Win系统的一些差别"></a>与Win系统的一些差别</h3><p><img src="/../img/img_artical/net_sec/10.1.2.png" alt="10.1.2"></p><h3 id="Linux目录结构"><a href="#Linux目录结构" class="headerlink" title="Linux目录结构"></a>Linux目录结构</h3><p><strong>倒挂的树型结构</strong></p><ul><li>最顶层为根，使用&#x2F;表示</li></ul><p><img src="/../img/img_artical/net_sec/10.1.3.png" alt="10.1.3"></p><h2 id="部署本地Linux环境"><a href="#部署本地Linux环境" class="headerlink" title="部署本地Linux环境"></a>部署本地Linux环境</h2><h3 id="准备计算机及安装光盘"><a href="#准备计算机及安装光盘" class="headerlink" title="准备计算机及安装光盘"></a>准备计算机及安装光盘</h3><p><strong>新建一台openEuler 22.03 LTS虚拟机</strong></p><ul><li>配置内存2GB、磁盘80GB</li><li>准备好安装光盘（虚拟机环境使用ISO镜像文件）</li></ul><p><img src="/../img/img_artical/net_sec/10.1.4.png" alt="10.1.4"></p><h3 id="配置系统安装"><a href="#配置系统安装" class="headerlink" title="配置系统安装"></a>配置系统安装</h3><p><strong>引导计算机从光盘启动，设置安装</strong></p><ul><li>选择“Install openEuler22.03-LTS  –&gt;  选择中文Chinese</li><li>选择“自动分区”、“服务器“</li><li>设置“根密码”为ntd.cn1234</li></ul><p><strong>设置网络和主机名</strong></p><ul><li><p>选择  手动</p></li><li><p>IP地址&#x2F;掩码：192.168.10.223&#x2F;24</p></li><li><p>网关：192.168.10.2</p></li><li><p>DNS服务：192.168.10.2</p></li><li><p>选择需要IPv4地址完成这个连接</p></li><li><p>点击开始安装</p><ul><li>完成安装后，点击重启系统</li></ul></li></ul><h3 id="登入系统"><a href="#登入系统" class="headerlink" title="登入系统"></a>登入系统</h3><p><strong>登入openEuler服务器</strong></p><ul><li>默认未提供桌面</li><li>根据提示，在login：后输入用户名root</li><li>再根据提示输入密码（无显示），即可登录到命令行界面</li></ul><h3 id="命令行终端"><a href="#命令行终端" class="headerlink" title="命令行终端"></a>命令行终端</h3><ul><li>命令行提示解读</li><li>[用户名@主机名 所在目录]权限标识</li><li>符号~代表当前用户的主目录</li><li>最后一位 # 表示管理权限，若为 $ 表示普通权限</li></ul><h2 id="SSH远程控制"><a href="#SSH远程控制" class="headerlink" title="SSH远程控制"></a>SSH远程控制</h2><h3 id="SSH协议及常用软件"><a href="#SSH协议及常用软件" class="headerlink" title="SSH协议及常用软件"></a>SSH协议及常用软件</h3><p><strong>Secure SHell，安全命令行终端</strong></p><ul><li>被控端：启用sshd系统服务，提供授权用户&#x2F;密码</li><li>主控端：支持SSH协议的客户端软件</li></ul><p><strong>常用SSH管理工具</strong></p><ul><li>PC端：MobaXterm、Putty+WinSCP、Xshell+Xftp、SecureCRT等</li><li>手机端：iTerminal、华为云APP、阿里云APP等</li></ul><h3 id="远程执行命令"><a href="#远程执行命令" class="headerlink" title="远程执行命令"></a>远程执行命令</h3><p><strong>使用Win10的ssh命令，可以管理远程的Linux主机</strong></p><ul><li>用法：ssh root@远程主机地址</li></ul><p><strong>使用MobaXterm全能终端，也可以管理远程的Linux主机</strong></p><ul><li>官网：<a href="https://mobaxterm.mobatek.net/">https://mobaxterm.mobatek.net</a></li></ul><p><strong>使用MobaXterm连接Linux主机执行命令</strong></p><ul><li>Session -&gt; SSH -&gt; 填写被控主机信息 -&gt; OK</li></ul><h3 id="远程传输文档"><a href="#远程传输文档" class="headerlink" title="远程传输文档"></a>远程传输文档</h3><p><strong>使用MobaXterm连接Linux主机执行命令</strong></p><ul><li>左侧sftp边栏，来回拖放即可</li></ul><p><strong>使用Win10的scp命令，可以与远程Linux主机互传文档</strong></p><ul><li>用法1（上传）：scp -r passwd.txt <a href="mailto:&#x72;&#x6f;&#111;&#x74;&#x40;&#x31;&#57;&#50;&#x2e;&#49;&#54;&#x38;&#46;&#x31;&#x30;&#46;&#50;&#50;&#51;">&#x72;&#x6f;&#111;&#x74;&#x40;&#x31;&#57;&#50;&#x2e;&#49;&#54;&#x38;&#46;&#x31;&#x30;&#46;&#50;&#50;&#51;</a>:&#x2F;root&#x2F;mima.txt</li><li>用法2（下载）：scp -r <a href="mailto:&#x72;&#x6f;&#x6f;&#x74;&#x40;&#x31;&#x39;&#x32;&#46;&#49;&#54;&#56;&#46;&#49;&#x30;&#x2e;&#50;&#x32;&#51;">&#x72;&#x6f;&#x6f;&#x74;&#x40;&#x31;&#x39;&#x32;&#46;&#49;&#54;&#56;&#46;&#49;&#x30;&#x2e;&#50;&#x32;&#51;</a>:&#x2F;etc&#x2F;passwd passwd.txt</li></ul><h2 id="使用Linux环境"><a href="#使用Linux环境" class="headerlink" title="使用Linux环境"></a>使用Linux环境</h2><h3 id="命令行探索"><a href="#命令行探索" class="headerlink" title="命令行探索"></a>命令行探索</h3><p><strong>Print Working Directory，显示当前工作目录</strong></p><ul><li>pwd</li></ul><p><strong>Change Directory，改变工作目录</strong></p><ul><li>cd  目录路径</li></ul><p><strong>List，列出目录内容&#x2F;文档权限</strong></p><ul><li>ls  目录路径</li></ul><h3 id="用户的创建、切换及退出"><a href="#用户的创建、切换及退出" class="headerlink" title="用户的创建、切换及退出"></a>用户的创建、切换及退出</h3><p><strong>useradd，创建用户</strong></p><ul><li>useradd  用户名</li></ul><p><strong>passwd，为用户设置密码</strong></p><ul><li>passwd  用户名</li></ul><p><strong>Substitute User，替换为新用户</strong></p><ul><li>su  -用户名（-代表切换用户时进入到用户的家目录）</li></ul><p><strong>exit，退出当前的命令行环境</strong></p><ul><li>exit</li></ul><h2 id="配置Linux网络"><a href="#配置Linux网络" class="headerlink" title="配置Linux网络"></a>配置Linux网络</h2><h3 id="查看IP-网关地址"><a href="#查看IP-网关地址" class="headerlink" title="查看IP&#x2F;网关地址"></a>查看IP&#x2F;网关地址</h3><p><strong>查看IP地址参数</strong></p><ul><li>ifconfig</li><li>ifconfig 网卡名</li></ul><p><strong>查看默认网关记录：route -n</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# route -n</span></span><br><span class="line"><span class="attr">Kernel</span> <span class="string">IP routing table</span></span><br><span class="line"><span class="attr">Destination</span>     <span class="string">Gateway         Genmask         Flags Metric Ref    Use Iface</span></span><br><span class="line"><span class="attr">0.0.0.0</span>         <span class="string">192.168.10.2    0.0.0.0         UG    100    0        0 ens160</span></span><br><span class="line"><span class="attr">192.168.10.0</span>    <span class="string">0.0.0.0         255.255.255.0   U     100    0        0 ens160</span></span><br><span class="line"><span class="attr">192.168.122.0</span>   <span class="string">0.0.0.0         255.255.255.0   U     0      0        0 virbr0</span></span><br></pre></td></tr></table></figure><h3 id="查看DNS-主机名信息"><a href="#查看DNS-主机名信息" class="headerlink" title="查看DNS&#x2F;主机名信息"></a>查看DNS&#x2F;主机名信息</h3><p><strong>查看当前使用的DNS信息: cat &#x2F;etc&#x2F;resolv.conf</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# cat /etc/resolv.conf</span></span><br><span class="line"><span class="comment"># Generated by NetworkManager</span></span><br><span class="line"><span class="attr">nameserver</span> <span class="string">192.168.10.2</span></span><br></pre></td></tr></table></figure><p><strong>查看主机名：hostname</strong></p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[root@localhost</span> <span class="string">~]# hostname</span></span><br><span class="line"><span class="attr">localhost.localdomain</span></span><br></pre></td></tr></table></figure><h3 id="修改网络连接"><a href="#修改网络连接" class="headerlink" title="修改网络连接"></a>修改网络连接</h3><p><strong>nmtui工具 &#x3D;&gt; Edit a connection</strong></p><p><img src="/../img/img_artical/net_sec/10.1.5.png" alt="10.1.5"></p><h3 id="激活-停用连接"><a href="#激活-停用连接" class="headerlink" title="激活&#x2F;停用连接"></a>激活&#x2F;停用连接</h3><p><strong>使用nmtui工具 &#x3D;&gt; Activate a connection</strong></p><ul><li>网卡名前面的*表示已激活，否则未激活</li><li>如果地址参数有变更，可以先停用，然后再启用</li></ul><p><img src="/../img/img_artical/net_sec/10.1.6.png" alt="10.1.6"></p><h3 id="配置主机名"><a href="#配置主机名" class="headerlink" title="配置主机名"></a>配置主机名</h3><p><strong>使用nmtui工具 &#x3D;&gt; Set system hostname</strong></p><ul><li>根据提示输入新主机名，并回车确认</li></ul><p><img src="/../img/img_artical/net_sec/10.1.7.png" alt="10.1.7"></p><h2 id="选购ECS云主机"><a href="#选购ECS云主机" class="headerlink" title="选购ECS云主机"></a>选购ECS云主机</h2><h3 id="什么是云计算？"><a href="#什么是云计算？" class="headerlink" title="什么是云计算？"></a>什么是云计算？</h3><p><strong>基于互联网处理请求并交付资源</strong></p><ul><li>用户端只关注资源可用性（提需求、拿结果）</li><li>服务端&#x2F;云端组织运算处理</li></ul><p><img src="/../img/img_artical/net_sec/10.1.8.png" alt="10.1.8"></p><h3 id="知名云服务商"><a href="#知名云服务商" class="headerlink" title="知名云服务商"></a>知名云服务商</h3><ul><li>国外：亚马逊AWS、微软Azure、IBM SCE+</li><li>国内：华为云、阿里云、百度云、腾讯云</li></ul><p><img src="/../img/img_artical/net_sec/10.1.9.png" alt="10.1.9"></p><h3 id="最常见的云产品-云主机"><a href="#最常见的云产品-云主机" class="headerlink" title="最常见的云产品-云主机"></a>最常见的云产品-云主机</h3><p><strong>云主机&#x2F;云服务器，实际上就是通过互联网提供的虚拟机</strong></p><ul><li>华为云ECS (Elastic Cloud Server，弹性云服务器)</li><li>阿里云ECS (Elastic Compute Service，弹性计算服务)</li><li>腾讯云CVM (Cloud Virtual Machine，云虚拟机)</li><li>百度云BCC (Baidu Cloud Compute，百度云计算)</li></ul><h3 id="云服务器选型要点"><a href="#云服务器选型要点" class="headerlink" title="云服务器选型要点"></a>云服务器选型要点</h3><p><strong>控制台 -&gt; 弹性云服务器 -&gt; 购买弹性云服务器</strong></p><ul><li>计费模式（包年包月、按需付费）</li><li>规格（CPU&#x2F;内存&#x2F;硬盘）</li><li>镜像（Linux系统）</li><li>登录方式（设密码）</li><li>流量计费（按带宽、按流量）</li></ul><h3 id="选购一台ECS云服务器"><a href="#选购一台ECS云服务器" class="headerlink" title="选购一台ECS云服务器"></a>选购一台ECS云服务器</h3><ul><li>选购 &#x3D;&gt; … &#x3D;&gt; 立即购买 &#x3D;&gt; 接受许可协议 &#x3D;&gt;</li><li>提交申请 &#x3D;&gt; 确认实例</li></ul><p><img src="/../img/img_artical/net_sec/10.1.10.png" alt="10.1.10"></p><h3 id="ECS基本操作"><a href="#ECS基本操作" class="headerlink" title="ECS基本操作"></a>ECS基本操作</h3><ul><li>基本管理：开机、关机、重启、删除、远程登录</li><li>更多操作：更改配置、重装系统、更换系统</li></ul><p><img src="/../img/img_artical/net_sec/10.1.11.png" alt="10.1.11"></p>]]></content>
       
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -528,7 +576,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -553,7 +601,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -578,7 +626,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -603,7 +651,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -628,7 +676,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -653,7 +701,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -678,7 +726,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -703,7 +751,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -728,7 +776,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -753,7 +801,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -778,7 +826,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -803,7 +851,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -828,7 +876,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -853,7 +901,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -878,7 +926,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -903,7 +951,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -928,7 +976,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -953,7 +1001,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -978,7 +1026,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1003,7 +1051,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1028,7 +1076,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1053,7 +1101,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1078,7 +1126,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1103,7 +1151,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1128,7 +1176,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1153,7 +1201,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1178,7 +1226,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1203,7 +1251,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1228,7 +1276,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1253,7 +1301,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1278,7 +1326,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1303,7 +1351,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1328,7 +1376,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1353,7 +1401,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1378,7 +1426,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1403,7 +1451,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1428,7 +1476,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
@@ -1453,7 +1501,7 @@
       
       <categories>
           
-          <category> 网络安全（更新ing） </category>
+          <category> 网络安全 </category>
           
       </categories>
       
